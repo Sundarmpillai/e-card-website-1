@@ -1,17 +1,42 @@
 import React from 'react'
+import {connect} from 'react-redux'
+import {firestoreConnect} from 'react-redux-firebase'
+import {compose} from 'redux'
 
 const ViewConnection = (props) => {
-    const id = props.match.params.id
-    return(
-        <div className="container section project-details">
-            <div className="card z-depth-0">
-                <div className="card-content">
-                    <span className="card-title">Connection-{id} Name</span>
-                    <p>Other Information to be Displayed Soon </p>
+    const {conn_profile} = props;
+    if(conn_profile){
+        return(
+            <div className="container section project-details">
+                <div className="card z-depth-0">
+                    <div className="card-content">
+                        <span className="card-title">Name - {conn_profile.fN}</span>
+                        <p>Company - {conn_profile.cmp}</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    )
+        )
+    }else{
+        return(
+            <div className= "container center">
+                <p>Loading Profile...</p>
+            </div>
+        )
+    }
 }
 
-export default ViewConnection
+const mapStateToProps = (state, ownProps) => { //for id receive from selecting an item from the list
+    const id = ownProps.match.params.id         
+    const profiles = state.firestore.data.user;     // check with the id values of the documents in the firestore 
+    const profile = profiles ? profiles[id]:null    // and when the value has a match pass that document as an object
+    return{
+        conn_profile: profile
+    }
+}
+
+export default compose(
+    connect(mapStateToProps),
+    firestoreConnect([
+        {collection:'user'}
+    ])
+)(ViewConnection)
