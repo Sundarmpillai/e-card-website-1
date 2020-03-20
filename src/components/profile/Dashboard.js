@@ -4,13 +4,16 @@ import ConnectionList from '../connections/ConnectionList'
 import {connect} from 'react-redux'
 import {firestoreConnect} from 'react-redux-firebase'
 import {compose} from 'redux'
+import {Redirect} from 'react-router-dom'
 
 class Dashboard extends Component{
     render(){
-        // console.log(this.props);
-        const {profiles} = this.props;
+        const {profiles, auth} = this.props;
+        
+        if(!auth.uid) return<Redirect to='/login' />
+        
         return(
-            <div className="container">
+            <div className="themed-container " fluid="md">
                 <div className="dashboard container">
                     <div className ="row">
                         <div className="col s12 m6">
@@ -29,7 +32,8 @@ class Dashboard extends Component{
 //variable name must be same when passing props to the nested component and mapping stateProps
 const mapStateToProps = (state) => {
     return{
-        profiles: state.firestore.ordered.user // get the  list of user from the
+        profiles: state.firestore.ordered.user, // get the  list of user from the
+        auth: state.firebase.auth
     }
 }
 

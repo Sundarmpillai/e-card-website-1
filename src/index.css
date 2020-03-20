@@ -37,5 +37,24 @@ textarea.materialize-textarea:focus:not([readonly])
   box-shadow: none;
 }
 
+.circular_view{
+  object-fit: cover;
+  width:100px;
+  height:100px;
+  border-radius: 50%;
+}
 
+.info-view{
+  display:inline
+}
 
+.card-view{
+  object-fit: cover;
+  width:300px;
+  height:150px;
+  padding: 10px;
+}
+
+.card-small {
+  width:350px;
+ }

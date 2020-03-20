@@ -20,3 +20,24 @@ export const logout = () => {
         });
     }
 }
+
+export const register = (newUser) => {
+    return(dispatch,getState,{firebase}) => {
+        const firestore = firebase.firestore();
+
+        firebase.auth().createUserWithEmailAndPassword(
+            newUser.em,
+            newUser.pwd
+        ).then((resp) =>{
+            return firestore.collection('user').doc(resp.user.uid).set({
+                fN:newUser.fN,
+                lN:newUser.lN,
+                init:newUser.fN[0] + newUser.lN[0]
+            })
+        }).then(() => {
+            dispatch({type: 'REGISTER_SUCCESS'})
+        }).catch(err =>{
+            dispatch({type:'REGISTER_ERROR',err})
+        })
+    }
+}

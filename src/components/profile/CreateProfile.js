@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import {createProfile} from '../../store/actions/profileAction'
-
+import {Redirect} from 'react-router-dom'
 class CreateProfile extends Component {
     state = {
         fN : '',
@@ -18,6 +18,8 @@ class CreateProfile extends Component {
         this.props.createProfile(this.state);
     }
     render() {
+        const {auth} = this.props;
+        if(!auth.uid) return<Redirect to='/login' />
         return (
             <div className="container">
                 <form onSubmit = {this.handleSubmit} className="white">
@@ -39,10 +41,17 @@ class CreateProfile extends Component {
     }
 }
 
+const mapStateToProps = (state) => {
+    return{
+        auth:state.firebase.auth
+    }
+
+}
+
 const mapDispatchToProps = (dispatch) => {
     return {
         createProfile: (profile) => dispatch(createProfile(profile))
     }
 }
 
-export default connect(null,mapDispatchToProps)(CreateProfile)
+export default connect(mapStateToProps,mapDispatchToProps)(CreateProfile)

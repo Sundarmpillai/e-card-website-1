@@ -6,6 +6,7 @@ import ViewConnection from './components/connections/ViewConnection'
 import Login from './components/auth/Login'
 import Register from './components/auth/Register'
 import CreateProfile from './components/profile/CreateProfile'
+// import 'bootstrap/dist/css/bootstrap.min.css';
 class App extends Component{
   render(){
     return (
