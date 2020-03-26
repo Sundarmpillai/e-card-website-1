@@ -14,11 +14,11 @@ import { ReactReduxFirebaseProvider,isLoaded ,reactReduxFirebase} from 'react-re
 import { reduxFirestore,createFirestoreInstance,getFirestore } from 'redux-firestore'
 import fbConfig from './config/fbConfig'
 
-const rrfConfig = {userProfile: 'users'} // react-redux-firebase config
+const rrfConfig = {userProfile: 'user', useFirestoreForProfile:true} // react-redux-firebase config
 const initialState = {}
 // Initialize firebase instance
 if (!firebase.apps.length) {
-   firebase.initializeApp({fbConfig});
+   firebase.initializeApp({rrfConfig});
 }
 
 const store = createStore(

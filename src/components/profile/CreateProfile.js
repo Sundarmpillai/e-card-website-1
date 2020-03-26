@@ -5,7 +5,13 @@ import {Redirect} from 'react-router-dom'
 class CreateProfile extends Component {
     state = {
         fN : '',
-        cmp: ''
+        lN : '',
+        cmp: '',
+        adr: '',
+        pNo: '',
+        wNo: '',
+        pos: '',
+        eM: ''
     }
     handelChange = (e) => {
         this.setState({
@@ -16,6 +22,7 @@ class CreateProfile extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.createProfile(this.state);
+        this.props.history.push('/');
     }
     render() {
         const {auth} = this.props;
@@ -31,6 +38,26 @@ class CreateProfile extends Component {
                     <div className = "input-field">
                         <label htmlFor="company">Company</label>
                         <input type="text" id="cmp" onChange={this.handelChange}/>
+                    </div>
+                    <div className = "input-field">
+                        <label htmlFor="company">Position</label>
+                        <input type="text" id="pos" onChange={this.handelChange}/>
+                    </div>
+                    <div className = "input-field">
+                        <label htmlFor="company">Email Address</label>
+                        <input type="text" id="eM" onChange={this.handelChange}/>
+                    </div>
+                    <div className = "input-field">
+                        <label htmlFor="company">Personal Phone Number</label>
+                        <input type="text" id="pNo" onChange={this.handelChange}/>
+                    </div>
+                    <div className = "input-field">
+                        <label htmlFor="company">Work Phone Number</label>
+                        <input type="text" id="wNo" onChange={this.handelChange}/>
+                    </div>
+                    <div className = "input-field">
+                        <label htmlFor="company">Address</label>
+                        <input type="text" id="adr" onChange={this.handelChange}/>
                     </div>
                     <div className="input-filed">
                         <button className="btn pink lighten-1 z-depth-0">Upload</button>

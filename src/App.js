@@ -6,6 +6,7 @@ import ViewConnection from './components/connections/ViewConnection'
 import Login from './components/auth/Login'
 import Register from './components/auth/Register'
 import CreateProfile from './components/profile/CreateProfile'
+import UserProfile from './components/profile/UserProfile'
 // import 'bootstrap/dist/css/bootstrap.min.css';
 class App extends Component{
   render(){
@@ -19,6 +20,7 @@ class App extends Component{
             <Route path='/login' component={Login} />
             <Route path='/register' component={Register} />
             <Route path='/create' component={CreateProfile} />
+            <Route path='/profile' component={UserProfile} />
           </Switch>
         </div>
       </BrowserRouter>

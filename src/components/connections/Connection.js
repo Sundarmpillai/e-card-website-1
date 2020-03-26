@@ -15,7 +15,7 @@ if(profile.pPic == null){
         <div>      
             <div className="card shadow-box-example hoverable project-summary">
                 <div className="card-content grey-text text-darken-3">
-                    <img className='circular_view' src= {profilePic} width="20%" height="20%" roundedCircle/>
+                    <img className='circular_view' src= {profilePic} width="20%" height="20%"/>
                     <span className="card-title">{profile.fN} {profile.lN}</span>      {/*set profile user name   (the name of the accessor must be same as the field name of the database)*/}
                     <p>Company: {profile.cmp}</p>                                  {/*set profile user company (the name of the accessor must be same as the field name of the database)*/}
                 </div>
