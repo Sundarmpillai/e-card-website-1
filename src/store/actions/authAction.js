@@ -23,7 +23,6 @@ export const logout = () => {
 export const register = (newUser) => {
     return(dispatch,getState,{firebase}) => {
         const firestore = firebase.firestore();
-
         firebase.auth().createUserWithEmailAndPassword(
             newUser.em,
             newUser.pwd

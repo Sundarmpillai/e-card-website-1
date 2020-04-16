@@ -21,15 +21,40 @@ if (!firebase.apps.length) {
    firebase.initializeApp({rrfConfig});
 }
 
+const loadState = () => {
+  try {
+    const serializedState = localStorage.getItem('state');
+    if(serializedState === null) {
+      return undefined;
+    }
+    return JSON.parse(serializedState);
+  } catch (e) {
+    return undefined;
+  }
+};
+
+const saveState = (state) => {
+  try {
+    const serializedState = JSON.stringify(state);
+    localStorage.setItem('state', serializedState);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const peristedState = loadState();
+
 const store = createStore(
     rootReducer,
-    initialState,
+    peristedState,
     compose(
-    // reduxFirestore(firebase),
     applyMiddleware(thunk.withExtraArgument({firebase})) // to add other middleware
-    // reactReduxFirebase({attachAuthIsReady: true}) // pass in firebase instance instead of config
     )
   );
+
+  store.subscribe(() => {
+    saveState(store.getState());
+  });
 
 const rrfProps = {
     firebase,
@@ -45,12 +70,12 @@ const rrfProps = {
 }
 
 
-    ReactDOM.render(<Provider store={store}>
-      <ReactReduxFirebaseProvider {...rrfProps}>
-          <AuthIsLoaded>
-            <App />
-          </AuthIsLoaded>
-      </ReactReduxFirebaseProvider>
+ReactDOM.render(<Provider store={store}>
+    <ReactReduxFirebaseProvider {...rrfProps}>
+        <AuthIsLoaded>
+          <App />
+        </AuthIsLoaded>
+    </ReactReduxFirebaseProvider>
   </Provider>, document.getElementById('root'));
   serviceWorker.unregister();
   

@@ -7,8 +7,8 @@ import UserProfile from '../../profile/UserProfile'
 const LoggedInLink = (props) => {
     return(
         <ul className="right">
-            <li><NavLink to='/create'>Create Profile</NavLink></li>
-            <li><a onClick={props.logout} to='/'>Log Out</a></li>
+            {/* <li><NavLink to='/create'>Create Profile</NavLink></li> */}
+            <li><a onClick={props.logout} to='/'>Logout</a></li>
             <li><NavLink to='/profile' className='btn-floating pink lighten-1 center'>
                 {props.profile.fN}
                 <UserProfile profile={props.profile} />

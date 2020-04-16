@@ -4,11 +4,13 @@ import {connect} from 'react-redux'
 import {register} from '../../store/actions/authAction'
 
 class Register extends Component {
+    
     state = {
         eM : '',
         pwd: '',
         fN:'',
-        lN:''
+        lN:'',
+        pNo:null
     }
     handelChange = (e) => {
         this.setState({
@@ -19,11 +21,11 @@ class Register extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.register(this.state);
-        this.props.history.push('/create');
+        this.props.history.push(this.state,'/create',); // After the registration is completed, create page will be loaded.
     }
     render() {
         const {auth,authError} = this.props;
-        if(auth.uid) return <Redirect to='/' />
+        if(auth.uid) return <Redirect to='/create' />
         return (
             <div className="container">
                 <form onSubmit = {this.handleSubmit} className="white">
@@ -45,7 +47,7 @@ class Register extends Component {
                         <input type="password" id="pwd" onChange={this.handelChange}/>
                     </div>
                     <div className="input-filed">
-                        <button className="btn pink lighten-1 z-depth-0">Register</button>
+                        <button className="btn pink lighten-1 z-depth-0" >Register</button>
                     <div className="red-text center">
                         {authError ? <p> {authError} </p>: null}
                     </div>
