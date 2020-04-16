@@ -58,3 +58,15 @@ textarea.materialize-textarea:focus:not([readonly])
 .card-small {
   width:350px;
  }
+
+ .form-input input{
+  float:left;
+}
+
+.divElement{
+  float: left;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  padding-bottom: 15%;
+}
