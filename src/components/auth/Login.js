@@ -1,14 +1,16 @@
-import React, { Component } from 'react'
-import {connect} from 'react-redux'
-import {login} from '../../store/actions/authAction'
-import {Redirect} from 'react-router-dom'
+import React, { Component } from 'react';
+import {connect} from 'react-redux';
+import {login} from '../../store/actions/authAction';
+import {Redirect} from 'react-router-dom';
+import {Button, Container, Checkbox, Grid, FormControlLabel, Link, Typography, TextField} from '@material-ui/core'
 
 class Login extends Component {
     state = {
         email : '',
         password: ''
     }
-    handelChange = (e) => {
+
+    handleChange = (e) => {
         this.setState({
             [e.target.id]: e.target.value
         })
@@ -18,32 +20,77 @@ class Login extends Component {
         e.preventDefault();
         this.props.login(this.state);
     }
+    
     render() {
         const {authError, auth} = this.props;
         if(auth.uid) return <Redirect to='/'/>
         return (
-            <div className="container">
-                <form onSubmit = {this.handleSubmit} className="white">
-                    <h5 className = "grey-text text-darken-3">Login</h5>
-                    <div className = "input-field">
-                        <label htmlFor="email">Email</label>
-                        <input type="email" id= "email" onChange ={this.handelChange}/>
-                    </div>
-                    <div className = "input-field">
-                        <label htmlFor="password">Password</label>
-                        <input type="password" id="password" onChange={this.handelChange}/>
-                    </div>
-                    <div className="input-filed">
-                        <button className="btn pink lighten-1 z-depth-0">Login</button>
-                        <div className="red-text center">
-                            {authError ? <p>{authError}</p> : null}
-                        </div>
-                    </div>
-                </form>       
-            </div>
-        )
+            <Container component="main" maxWidth="xs">
+                <form onSubmit={this.handleSubmit} noValidate>
+                    <Typography component="h1" variant="h5">
+                        Login
+                    </Typography>
+                    <hr/>
+                    <TextField
+                     variant="outlined" 
+                     margin="dense"
+                     fullWidth
+                     required
+                     id="email"
+                     label="Email"
+                     name="email"
+                     autoComplete="email"
+                     autoFocus
+                    />
+                    <br />
+                    <TextField 
+                     variant="outlined"
+                     margin="dense"
+                     fullWidth
+                     required
+                     name="password"
+                     label="Password"
+                     type="password"
+                     id="password"
+                     autoComplete="current-password"
+                    />
+
+                    <br/><br/>
+
+                    <FormControlLabel
+                    control={<Checkbox value="remember" color="primary" />}
+                    label="Remember Me"
+                    />
+
+                    <br/><br/>
+
+                    <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    >Login
+                    </Button>
+
+                    <br/><br/>
+
+                    <Grid container>
+                        <Grid item xs>
+                            <Link href='#' variant='body2'>
+                                Forgot Password?
+                            </Link>
+                        </Grid>
+                    <Grid item>
+                        <Link href='#' variant='body2'>
+                            {"Don't have an account? Sign Up"}
+                        </Link>
+                    </Grid>
+                    </Grid>
+                </form> 
+            </Container>
+            )
+        }
     }
-}
 
 const mapStateToProps = (state) => {
     return{
