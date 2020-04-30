@@ -3,6 +3,7 @@ import {Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {register} from '../../store/actions/authAction'
 import * as validator from './Validations.js'
+import {Button, Container, Typography, TextField} from '@material-ui/core'
 
 class Register extends Component {
     
@@ -59,39 +60,82 @@ class Register extends Component {
     render() {
         const {auth,authError} = this.props;
         if(auth.uid) return <Redirect to='/create' />
+
         return (
-            <div className="container">
-                <form onSubmit = {this.handleSubmit} className="white" noValidate>
-                    <h5 className = "grey-text text-darken-3">Register</h5>
-                    <div className = "input-field">
-                        <label htmlFor="email">First Name</label>
-                        <input type="text" id= "fN" onChange ={this.handleChange}/>
-                        <div>{this.state.errors.fN}</div>
-                    </div>
-                    <div className = "input-field">
-                        <label htmlFor="email">Last Name</label>
-                        <input type="text" id= "lN" onChange ={this.handleChange}/>
-                        <div>{this.state.errors.lN}</div>
-                    </div>
-                    <div className = "input-field">
-                        <label htmlFor="email">Email</label>
-                        <input type="email" id= "em" onChange ={this.handleChange} noValidate/>
-                        <div>{this.state.errors.eM}</div>
-                    </div>
-                    <div className = "input-field">
-                        <label htmlFor="password">Password</label>
-                        <input type="password" id="pwd" onChange={this.handleChange}/>
-                        <div>{this.state.errors.pwd}</div>
-                    </div>
-                    <div className="input-filed">
-                        <button className="btn pink lighten-1 z-depth-0" >Register</button>
-                    <div className="red-text center">
+            <Container component="main" maxWidth="xs">
+            <form onSubmit = {this.handleSubmit} noValidate>
+                    <Typography component="h1" variant="h5">
+                        Register
+                    </Typography>
+                    <hr/>
+                    <TextField 
+                    variant="outlined"
+                    margin="dense"
+                    fullWidth
+                    required
+                    id="fN"
+                    label="First Name"
+                    name="First Name"
+                    autoComplete
+                    autoFocus
+                    onChange={this.handleChange}
+                    />
+                    <div>{this.state.errors.fN}</div>
+                    <br />
+                    <TextField 
+                    variant="outlined"
+                    margin="dense"
+                    fullWidth
+                    required
+                    id="lN"
+                    label="Last Name"
+                    name="Last Name"
+                    autoComplete
+                    onChange={this.handleChange}
+                    />
+                    <div>{this.state.errors.lN}</div>
+                    <br />
+                    <TextField 
+                     variant="outlined"
+                     margin="dense"
+                     fullWidth
+                     required
+                     id="eM"
+                     label="Email"
+                     name="email"
+                     autoComplete="email"
+                     onChange={this.handleChange}
+                    />
+                    <div>{this.state.errors.eM}</div>
+                    <br />
+                    <TextField 
+                     variant="outlined"
+                     margin="dense"
+                     fullWidth
+                     required
+                     name="password"
+                     label="Password"
+                     type="password"
+                     id="pwd"
+                     autoComplete="current-password"
+                     onChange={this.handleChange}
+                    />
+                    <div>{this.state.errors.pwd}</div>
+                    <br/><br/>
+                
+                    <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    >Register
+                    </Button>
+                    {/* <div className="red-text center">
                         {authError ? <p> {authError} </p>: null}
-                    </div>
-                    </div>
-                </form>       
-            </div>
-        )
+                    </div> */}
+
+                </form>
+            </Container>
+        );
     }
 }
 
