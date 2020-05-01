@@ -51,13 +51,12 @@ class Login extends Component {
         }
     }
 
-    
     render() {
         const {authError, auth} = this.props;
         if(auth.uid) return <Redirect to='/'/>
         return (
             <Container component="main" maxWidth="xs">
-                <form onSubmit={this.handleSubmit} noValidate>
+                <form onSubmit={this.handleSubmit}>
                     <Typography component="h1" variant="h5">
                         Login
                     </Typography>
@@ -74,7 +73,7 @@ class Login extends Component {
                      autoFocus
                      onChange={this.handleChange} 
                     />
-                    <div>{this.state.errors.email}</div>
+                    <Typography color="secondary">{this.state.errors.email}</Typography>
                     <br />
                     <TextField 
                      variant="outlined"
@@ -88,8 +87,8 @@ class Login extends Component {
                      autoComplete="current-password"
                      onChange={this.handleChange} 
                     />
-                    <div>{this.state.errors.password}</div>
-                    <br/><br/>
+                    <Typography color="secondary">{this.state.errors.password}</Typography>
+                    <br/>
 
                     <FormControlLabel
                     control={<Checkbox value="remember" color="primary" />}

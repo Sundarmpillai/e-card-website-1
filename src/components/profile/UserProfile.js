@@ -5,7 +5,7 @@ import {compose} from 'redux'
 import {Redirect} from 'react-router-dom'
 import firebase from 'firebase';
 import {updateProfile} from '../../store/actions/updateProfile'
-
+import {Button, Container, TextField} from '@material-ui/core'
 
 class UserProfile extends Component {
     state = {
@@ -90,49 +90,52 @@ class UserProfile extends Component {
                 profilePic = userProfile.pPic;
             } 
             return(
-                <div className="container section">
+                <Container component="main" maxWidth="xs">
                     <form onSubmit = {this.handleSubmit} className="white">
                         <div className="card">
                                 <div className="card-content">
                                         <img className='circular_view' src= {profilePic} width="20%" height="20%"/>
                                         <span className="card-title">Name - {this.state.fN} {this.state.lN}</span>
-                                        <div  className=" card-small" style={{display:'inline-block'}}>
-                                            <div className="input-field">
+                                        <div className=" card-small" style={{display:'inline-block'}}>
+                                            <TextField>
                                                 <i className="small material-icons inline prefix" style={{float:'left'}}>work</i>
                                                 <input type='text'value={this.state.cmp || 'Company'} id='cmp' onChange ={this.handelChange}/>
-                                            </div>
-                                            <div className="input-field">
+                                            </TextField>
+                                            <TextField>
                                                 <i className="small material-icons inline prefix" style={{float:'left'}}>person_pin</i>
                                                 <input type='text'value={this.state.pos || 'Position'} id='pos' onChange ={this.handelChange}/>
-                                            </div>
-                                            <div className="input-field">
+                                            </TextField>
+                                            <TextField className="input-field">
                                                 <i className="small material-icons inline prefix" style={{float:'left'}}>mail</i>
                                                 <input type='text'value={this.state.eM || 'E-Mail'} id='eM' onChange ={this.handelChange}/>
-                                            </div>
-                                            <div className="input-field">
+                                            </TextField>
+                                            <TextField className="input-field">
                                                 <i className="small material-icons inline prefix" style={{float:'left'}}>phone_android</i>                         
                                                 <input type='text'value={this.state.pNo || 'Personal Number'} id='pNo' onChange ={this.handelChange}/>
-                                            </div>
-                                            <div className="input-field">
+                                            </TextField>
+                                            <TextField className="input-field">
                                                 <i className="small material-icons inline prefix" style={{float:'left'}}>phone</i>
                                                 <input type='text'value={this.state.wNo || 'Work Number'} id='wNo' onChange ={this.handelChange}/>
-                                            </div>
-                                            <div className="input-field">
+                                            </TextField>
+                                            <TextField>
                                                 <i className="small material-icons inline prefix" style={{float:'left'}}>location_city</i>
                                                 <input type='text'value={this.state.adr || 'Address'} id='adr' onChange ={this.handelChange}/>
-                                            </div>
-                                            <div className="input-filed">
-                                                <button className="btn pink lighten-1 z-depth-0">Update</button>
-                                            </div>
+                                            </TextField>
+                                                <Button 
+                                                fullWidth
+                                                variant="contained"
+                                                color="primary">
+                                                Update
+                                                </Button>
                                         </div>
                                         <div style={{float:'right',backgroundColor:'#D3D3D3'}}>
                                             <img className='card-view' src={this.state.front} style={{display:'block'}} />
                                             <img className='card-view' src={this.state.back} />
                                         </div>
                                 </div>
-                            </div>
-                    </form>
-                </div>
+                                </div>
+                             </form>
+                </Container>
             )
         }else{
             return(

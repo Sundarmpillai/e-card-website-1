@@ -8,7 +8,7 @@ import {Button, Container, Typography, TextField} from '@material-ui/core'
 class Register extends Component {
     
     state = {
-        em : '',
+        em: '',
         pwd: '',
         fN:'',
         lN:'',
@@ -16,8 +16,8 @@ class Register extends Component {
         errors: {
             fN: '',
             lN: '',
-            eM: '',
             pwd: '',
+            eM: ''
         },
     }
 
@@ -63,7 +63,7 @@ class Register extends Component {
 
         return (
             <Container component="main" maxWidth="xs">
-            <form onSubmit = {this.handleSubmit} noValidate>
+            <form onSubmit = {this.handleSubmit}>
                     <Typography component="h1" variant="h5">
                         Register
                     </Typography>
@@ -80,7 +80,7 @@ class Register extends Component {
                     autoFocus
                     onChange={this.handleChange}
                     />
-                    <div>{this.state.errors.fN}</div>
+                    <Typography color="secondary">{this.state.errors.fN}</Typography>
                     <br />
                     <TextField 
                     variant="outlined"
@@ -93,20 +93,20 @@ class Register extends Component {
                     autoComplete
                     onChange={this.handleChange}
                     />
-                    <div>{this.state.errors.lN}</div>
+                    <Typography color="secondary">{this.state.errors.lN}</Typography>
                     <br />
                     <TextField 
                      variant="outlined"
                      margin="dense"
                      fullWidth
                      required
-                     id="eM"
+                     id="em"
                      label="Email"
                      name="email"
                      autoComplete="email"
                      onChange={this.handleChange}
                     />
-                    <div>{this.state.errors.eM}</div>
+                    <Typography color="secondary">{this.state.errors.eM}</Typography>
                     <br />
                     <TextField 
                      variant="outlined"
@@ -120,7 +120,7 @@ class Register extends Component {
                      autoComplete="current-password"
                      onChange={this.handleChange}
                     />
-                    <div>{this.state.errors.pwd}</div>
+                    <Typography color="secondary">{this.state.errors.pwd}</Typography>
                     <br/><br/>
                 
                     <Button
@@ -129,6 +129,7 @@ class Register extends Component {
                     color="primary"
                     >Register
                     </Button>
+
                     {/* <div className="red-text center">
                         {authError ? <p> {authError} </p>: null}
                     </div> */}

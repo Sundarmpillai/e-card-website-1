@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 import LoggedInLink from './LoggedInLink'
 import LoggedOutLink from './LoggedOutLink'
 import {connect} from 'react-redux'
-import {AppBar, Button, Toolbar, Typography} from '@material-ui/core';
+import {AppBar, Toolbar, Typography} from '@material-ui/core';
 import {makeStyles} from '@material-ui/styles';
 
 const useStyles = makeStyles((theme) => ({  
@@ -29,7 +29,7 @@ const Navbar = (props) => {
             <AppBar color='inherit' position='static'>
                 <Toolbar variant="dense">
                 <Typography variant="h4" className={classes.title}>
-                    <Link to="/" style={{ textDecoration: 'none' }}>
+                    <Link to="/" style={{color: 'black', textDecoration: 'none' }}>
                         E-Card Website
                     </Link>
                 </Typography>
