@@ -2,57 +2,141 @@ import React, { Component } from 'react'
 import {Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {register} from '../../store/actions/authAction'
+import * as validator from './Validations.js'
+import {Button, Container, Typography, TextField} from '@material-ui/core'
 
 class Register extends Component {
+    
     state = {
-        eM : '',
+        em: '',
         pwd: '',
         fN:'',
-        lN:''
+        lN:'',
+        pNo: null,
+        errors: {
+            fN: '',
+            lN: '',
+            pwd: '',
+            eM: ''
+        },
     }
-    handelChange = (e) => {
-        this.setState({
-            [e.target.id]: e.target.value
-        })
+
+    validateInputAndSetState = (id, value) => {
+        const errors = validator.validate(id, value, this.state.errors);
+        this.setState({errors, [id]: value});
+    }
+
+    handleChange = (e) => {
+        const { id, value } = e.target;
+        this.validateInputAndSetState(id, value);
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
-        this.props.register(this.state);
-        this.props.history.push('/create');
+
+        // iterate through the component state as key value pairs and
+        //  run the validation on each value.
+        // if the validation function handles that key value pair
+        //  then it is validated otherwise skipped
+        for (let [id, value] of Object.entries(this.state)) {
+            console.log(`${id} : ${value}`);
+            this.validateInputAndSetState(id, value);
+        }
+        
+        // if error object is empty then the form is valid
+        const isFormValid = validator.isErrorObjectEmpty(this.state.errors);
+        // submit if the form is valid     
+        if (isFormValid) {
+            console.log('Form is valid');
+            this.props.register(this.state);
+            this.props.history.push(this.state,'/create',); // After the registration is completed, create page will be loaded.
+        } else {
+            console.log('Form is invalid. Are errors displayed?');
+        }
+        
+        console.log(this.state);
     }
+    
     render() {
         const {auth,authError} = this.props;
-        if(auth.uid) return <Redirect to='/' />
+        if(auth.uid) return <Redirect to='/create' />
+
         return (
-            <div className="container">
-                <form onSubmit = {this.handleSubmit} className="white">
-                    <h5 className = "grey-text text-darken-3">Register</h5>
-                    <div className = "input-field">
-                        <label htmlFor="email">First Name</label>
-                        <input type="text" id= "fN" onChange ={this.handelChange}/>
-                    </div>
-                    <div className = "input-field">
-                        <label htmlFor="email">Last Name</label>
-                        <input type="text" id= "lN" onChange ={this.handelChange}/>
-                    </div>
-                    <div className = "input-field">
-                        <label htmlFor="email">Email</label>
-                        <input type="email" id= "em" onChange ={this.handelChange}/>
-                    </div>
-                    <div className = "input-field">
-                        <label htmlFor="password">Password</label>
-                        <input type="password" id="pwd" onChange={this.handelChange}/>
-                    </div>
-                    <div className="input-filed">
-                        <button className="btn pink lighten-1 z-depth-0">Register</button>
+            <Container component="main" maxWidth="xs">
+            <form onSubmit = {this.handleSubmit} noValidate>
+                    <Typography component="h1" variant="h5">
+                        Register
+                    </Typography>
+                    <hr/>
+                    <TextField 
+                    variant="outlined"
+                    margin="dense"
+                    fullWidth
+                    required
+                    id="fN"
+                    label="First Name"
+                    name="First Name"
+                    autoComplete
+                    autoFocus
+                    onChange={this.handleChange}
+                    />
+                    <Typography color="secondary">{this.state.errors.fN}</Typography>
+                    <br />
+                    <TextField 
+                    variant="outlined"
+                    margin="dense"
+                    fullWidth
+                    required
+                    id="lN"
+                    label="Last Name"
+                    name="Last Name"
+                    autoComplete
+                    onChange={this.handleChange}
+                    />
+                    <Typography color="secondary">{this.state.errors.lN}</Typography>
+                    <br />
+                    <TextField 
+                     variant="outlined"
+                     margin="dense"
+                     fullWidth
+                     required
+                     id="em"
+                     label="Email"
+                     name="email"
+                     autoComplete="email"
+                     onChange={this.handleChange}
+                    />
+                    <Typography color="secondary">{this.state.errors.eM}</Typography>
+                    <br />
+                    <TextField 
+                     variant="outlined"
+                     margin="dense"
+                     fullWidth
+                     required
+                     name="password"
+                     label="Password"
+                     type="password"
+                     id="pwd"
+                     autoComplete="current-password"
+                     onChange={this.handleChange}
+                    />
+                    <Typography color="secondary">{this.state.errors.pwd}</Typography>
+                    <br/><br/>
+                
+                    <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    >Register
+                    </Button>
+
                     <div className="red-text center">
                         {authError ? <p> {authError} </p>: null}
                     </div>
-                    </div>
-                </form>       
-            </div>
-        )
+
+                </form>
+            </Container>
+        );
     }
 }
 
