@@ -16,7 +16,7 @@ const LoggedInLink = (props) => {
       <li>
         <NavLink to="/profile" className="btn-floating pink lighten-1 center">
           {props.profile.fN}
-          <UserProfile profile={props.profile} />
+          {/* <UserProfile profile={props.profile} /> */}
         </NavLink>
       </li>
     </ul>

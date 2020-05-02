@@ -56,7 +56,7 @@ class Login extends Component {
         if(auth.uid) return <Redirect to='/'/>
         return (
             <Container component="main" maxWidth="xs">
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={this.handleSubmit} noValidate>
                     <Typography component="h1" variant="h5">
                         Login
                     </Typography>
@@ -104,9 +104,9 @@ class Login extends Component {
                     color="primary"
                     >Login
                     </Button>
-                    {/* <div className="red-text center">
-                            {authError ? <p>{authError}</p> : null}
-                        </div> */}
+                    <div className="red-text center">
+                        {authError ? <p>{authError}</p> : null}
+                    </div>
 
                     <br/><br/>
 

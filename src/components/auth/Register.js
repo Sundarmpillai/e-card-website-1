@@ -63,7 +63,7 @@ class Register extends Component {
 
         return (
             <Container component="main" maxWidth="xs">
-            <form onSubmit = {this.handleSubmit}>
+            <form onSubmit = {this.handleSubmit} noValidate>
                     <Typography component="h1" variant="h5">
                         Register
                     </Typography>
@@ -130,9 +130,9 @@ class Register extends Component {
                     >Register
                     </Button>
 
-                    {/* <div className="red-text center">
+                    <div className="red-text center">
                         {authError ? <p> {authError} </p>: null}
-                    </div> */}
+                    </div>
 
                 </form>
             </Container>
