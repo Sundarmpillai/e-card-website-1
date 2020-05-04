@@ -3,7 +3,14 @@ import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { register } from "../../store/actions/authAction";
 import * as validator from "./Validation";
-import { Button, Container, Typography, TextField } from "@material-ui/core";
+import {
+  Button,
+  Container,
+  Typography,
+  TextField,
+  CardContent,
+  Card,
+} from "@material-ui/core";
 
 class Register extends Component {
   state = {
@@ -56,70 +63,74 @@ class Register extends Component {
     return (
       <Container component="main" maxWidth="xs">
         <form onSubmit={this.handleSubmit} noValidate>
-          <Typography component="h1" variant="h5">
-            Register
-          </Typography>
-          <hr />
-          <TextField
-            variant="outlined"
-            margin="dense"
-            fullWidth
-            required
-            id="fN"
-            label="First Name"
-            name="First Name"
-            onChange={this.handleChange}
-          />
-          <Typography color="secondary">{this.state.errors.fN}</Typography>
-          <br />
-          <TextField
-            variant="outlined"
-            margin="dense"
-            fullWidth
-            required
-            id="lN"
-            label="Last Name"
-            name="Last Name"
-            onChange={this.handleChange}
-          />
-          <Typography color="secondary">{this.state.errors.lN}</Typography>
-          <br />
-          <TextField
-            variant="outlined"
-            margin="dense"
-            fullWidth
-            required
-            id="em"
-            label="Email"
-            name="email"
-            autoComplete="email"
-            onChange={this.handleChange}
-          />
-          <Typography color="secondary">{this.state.errors.eM}</Typography>
-          <br />
-          <TextField
-            variant="outlined"
-            margin="dense"
-            fullWidth
-            required
-            name="password"
-            label="Password"
-            type="password"
-            id="pwd"
-            autoComplete="current-password"
-            onChange={this.handleChange}
-          />
-          <Typography color="secondary">{this.state.errors.pwd}</Typography>
-          <br />
-          <br />
+          <Card>
+            <CardContent>
+              <Typography component="h1" variant="h5">
+                Register
+              </Typography>
+              <hr />
+              <TextField
+                variant="outlined"
+                margin="dense"
+                fullWidth
+                required
+                id="fN"
+                label="First Name"
+                name="First Name"
+                onChange={this.handleChange}
+              />
+              <Typography color="secondary">{this.state.errors.fN}</Typography>
+              <br />
+              <TextField
+                variant="outlined"
+                margin="dense"
+                fullWidth
+                required
+                id="lN"
+                label="Last Name"
+                name="Last Name"
+                onChange={this.handleChange}
+              />
+              <Typography color="secondary">{this.state.errors.lN}</Typography>
+              <br />
+              <TextField
+                variant="outlined"
+                margin="dense"
+                fullWidth
+                required
+                id="em"
+                label="Email"
+                name="email"
+                autoComplete="email"
+                onChange={this.handleChange}
+              />
+              <Typography color="secondary">{this.state.errors.eM}</Typography>
+              <br />
+              <TextField
+                variant="outlined"
+                margin="dense"
+                fullWidth
+                required
+                name="password"
+                label="Password"
+                type="password"
+                id="pwd"
+                autoComplete="current-password"
+                onChange={this.handleChange}
+              />
+              <Typography color="secondary">{this.state.errors.pwd}</Typography>
+              <br />
+              <br />
 
-          <Button type="submit" variant="contained" color="primary">
-            Register
-          </Button>
+              <Button type="submit" variant="contained" color="primary">
+                Register
+              </Button>
 
-          <div className="red-text center">
-            {authError ? <p> {authError} </p> : null}
-          </div>
+              <div className="red-text center">
+                {authError ? <p> {authError} </p> : null}
+              </div>
+            </CardContent>
+          </Card>
         </form>
       </Container>
     );

@@ -9,7 +9,7 @@ const LoggedOutLink = () => {
         <Button style={{ color: "white" }}>
           <NavLink
             to="/register"
-            style={{ color: "black", textDecoration: "none" }}
+            style={{ color: "white", textDecoration: "none" }}
           >
             Sign Up
           </NavLink>
@@ -19,7 +19,7 @@ const LoggedOutLink = () => {
         <Button style={{ color: "white" }}>
           <NavLink
             to="/login"
-            style={{ color: "black", textDecoration: "none" }}
+            style={{ color: "white", textDecoration: "none" }}
           >
             Login
           </NavLink>

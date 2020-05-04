@@ -19,10 +19,7 @@ const LoggedInLink = (props) => {
       </li>
       <li style={{ display: "inline" }}>
         <Button style={{ color: "white" }}>
-          <NavLink
-            to="/profile"
-            style={{ color: "black", textDecoration: "none" }}
-          >
+          <NavLink to="/profile" style={{ textDecoration: "none" }}>
             <Avatar
               src={
                 props.profile.pPic ||

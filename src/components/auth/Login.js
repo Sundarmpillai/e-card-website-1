@@ -12,6 +12,8 @@ import {
   Link,
   Typography,
   TextField,
+  Card,
+  CardContent,
 } from "@material-ui/core";
 
 class Login extends Component {
@@ -60,70 +62,81 @@ class Login extends Component {
     return (
       <Container component="main" maxWidth="xs">
         <form onSubmit={this.handleSubmit} noValidate>
-          <Typography component="h1" variant="h5">
-            Login
-          </Typography>
-          <hr />
-          <TextField
-            variant="outlined"
-            margin="dense"
-            fullWidth
-            required
-            id="email"
-            label="Email"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            onChange={this.handleChange}
-          />
-          <Typography color="secondary">{this.state.errors.email}</Typography>
-          <br />
-          <TextField
-            variant="outlined"
-            margin="dense"
-            fullWidth
-            required
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            onChange={this.handleChange}
-          />
-          <Typography color="secondary">
-            {this.state.errors.password}
-          </Typography>
-          <br />
+          <Card>
+            <CardContent>
+              <Typography component="h1" variant="h5">
+                Login
+              </Typography>
+              <hr />
+              <TextField
+                variant="outlined"
+                margin="dense"
+                fullWidth
+                required
+                id="email"
+                label="Email"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                onChange={this.handleChange}
+              />
+              <Typography color="secondary">
+                {this.state.errors.email}
+              </Typography>
+              <br />
+              <TextField
+                variant="outlined"
+                margin="dense"
+                fullWidth
+                required
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                onChange={this.handleChange}
+              />
+              <Typography color="secondary">
+                {this.state.errors.password}
+              </Typography>
+              <br />
 
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember Me"
-          />
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember Me"
+              />
 
-          <br />
-          <br />
+              <br />
+              <br />
 
-          <Button type="submit" fullWidth variant="contained" color="primary">
-            Login
-          </Button>
-          <div className="red-text center">
-            {authError ? <p>{authError}</p> : null}
-          </div>
-          <br />
-          <br />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+              >
+                Login
+              </Button>
+              <div className="red-text center">
+                {authError ? <p>{authError}</p> : null}
+              </div>
+              <br />
+              <br />
 
-          <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot Password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
+              <Grid container>
+                <Grid item xs>
+                  <Link href="#" variant="body2">
+                    Forgot Password?
+                  </Link>
+                </Grid>
+                <Grid item>
+                  <Link href="#" variant="body2">
+                    {"Don't have an account? Sign Up"}
+                  </Link>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
         </form>
       </Container>
     );
