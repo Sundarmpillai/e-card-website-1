@@ -16,6 +16,29 @@ import { createFirestoreInstance } from "redux-firestore";
 import fbConfig from "./config/fbConfig";
 import throttle from "lodash/throttle";
 
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Card from "@material-ui/core/Card";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+  },
+  circlular: {
+    display: "flex",
+    "& > * + *": {
+      marginLeft: theme.spacing(2),
+    },
+  },
+}));
+
 const rrfConfig = { userProfile: "user", useFirestoreForProfile: true }; // react-redux-firebase config
 // Initialize firebase instance
 if (!firebase.apps.length) {
@@ -73,8 +96,42 @@ const rrfProps = {
 };
 
 function AuthIsLoaded({ children }) {
+  const classes = useStyles();
   const auth = useSelector((state) => state.firebase.auth);
-  if (!isLoaded(auth)) return <div>Loading Screen...</div>;
+  if (!isLoaded(auth))
+    return (
+      <div>
+        <Grid container spcing={6}>
+          <Grid item xs={12}>
+            {" "}
+            <div>
+              <p></p>
+            </div>
+          </Grid>
+          <Grid item xs={12}>
+            <Card
+              style={{
+                width: "60%",
+                height: "300px",
+                margin: "auto",
+              }}
+            >
+              <div
+                className={classes.circlular}
+                style={{
+                  margin: "auto",
+                  paddingTop: "120px",
+                  width: "15%",
+                }}
+              >
+                <CircularProgress />
+                <Typography>Loading... </Typography>
+              </div>
+            </Card>
+          </Grid>
+        </Grid>
+      </div>
+    );
   return children;
 }
 

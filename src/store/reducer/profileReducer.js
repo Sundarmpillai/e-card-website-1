@@ -1,9 +1,5 @@
 const initState = {
-  user: [
-    { id: 1, fName: "John", company: "ECU" },
-    { id: 2, fName: "Jack", company: "IBM" },
-    { id: 3, fName: "Kelly", company: "NXU" },
-  ],
+  prof: [],
 };
 
 const profileReducer = (state = initState, action) => {
@@ -26,6 +22,11 @@ const profileReducer = (state = initState, action) => {
     case "DELETE_PROFILE_ERROR":
       console.log("delete profile error", action.e);
       return state;
+    case "GET_PROFILE":
+      return {
+        ...state,
+        prof: action.doc.data(),
+      };
     default:
       return state;
   }
