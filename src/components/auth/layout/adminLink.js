@@ -10,6 +10,9 @@ const LoggedInLink = (props) => {
     <ul>
       {/* <li><NavLink to='/create'>Create Profile</NavLink></li> */}
       <li style={{ display: "inline" }}>
+        <Button style={{ color: "white" }}>Update Contents</Button>
+      </li>
+      <li style={{ display: "inline" }}>
         <Button style={{ color: "white" }}>Settings</Button>
       </li>
       <li style={{ display: "inline" }}>
@@ -18,8 +21,11 @@ const LoggedInLink = (props) => {
         </Button>
       </li>
       <li style={{ display: "inline" }}>
-        <Button style={{ color: "white" }}>
-          <NavLink to="/profile" style={{ textDecoration: "none" }}>
+        <Button>
+          <NavLink
+            to="/profile"
+            style={{ color: "black", textDecoration: "none" }}
+          >
             <Avatar
               src={
                 props.profile.pPic ||

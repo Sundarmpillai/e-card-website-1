@@ -1,34 +1,59 @@
 import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import Avatar from "@material-ui/core/Avatar";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    maxWidth: "90%",
+    margin: "auto",
+  },
+  title: {
+    fontSize: 14,
+  },
+  pos: {
+    marginBottom: 12,
+  },
+  large: {
+    width: theme.spacing(10),
+    height: theme.spacing(10),
+  },
+}));
 
 const Connection = ({ profile }) => {
-  var profilePic;
-  if (profile.pPic == null) {
-    profilePic =
-      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png";
-  } else {
-    profilePic = profile.pPic;
-  }
-  // myFunction(profile.pPic);
+  const classes = useStyles();
   //set the profile prop object values
   return (
     <div>
-      <div className="card shadow-box-example hoverable project-summary">
-        <div className="card-content grey-text text-darken-3">
-          <img
-            className="circular_view"
-            src={profilePic}
-            alt=""
-            width="20%"
-            height="20%"
-          />
-          <span className="card-title">
-            {profile.fN} {profile.lN}
-          </span>{" "}
-          {/*set profile user name   (the name of the accessor must be same as the field name of the database)*/}
-          <p>Company: {profile.cmp}</p>{" "}
-          {/*set profile user company (the name of the accessor must be same as the field name of the database)*/}
-        </div>
-      </div>
+      <Card className={classes.root}>
+        <CardContent>
+          <Grid container spcing={3}>
+            <Grid item xs={6}>
+              <Avatar
+                alt={profile.fN}
+                src={
+                  profile.pPic ||
+                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                }
+                className={classes.large}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Typography className={classes.pos}>
+                <label style={{ fontWeight: "bold" }}>Name :</label>
+                {profile.fN} {profile.lN}
+              </Typography>
+              <Typography className={classes.pos}>
+                <label style={{ fontWeight: "bold" }}>Company:</label>{" "}
+                {profile.cmp}
+              </Typography>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
     </div>
   );
 };

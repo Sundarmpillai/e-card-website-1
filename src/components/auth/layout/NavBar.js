@@ -2,24 +2,47 @@ import React from "react";
 import { Link } from "react-router-dom";
 import LoggedInLink from "./LoggedInLink";
 import LoggedOutLink from "./LoggedOutLink";
+import AdminLink from "./adminLink";
 import { connect } from "react-redux";
+import { AppBar, Toolbar, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+
+  title: {
+    flex: 1,
+    fontSize: 32,
+    fontFamily: "Sans-Serif",
+    flexGrow: 1,
+  },
+}));
 
 const Navbar = (props) => {
+  const classes = useStyles();
   const { auth, profile } = props;
+
+  const adminlinks = profile.status ? <AdminLink profile={profile} /> : null;
   const links = auth.uid ? (
     <LoggedInLink profile={profile} />
   ) : (
     <LoggedOutLink />
   );
   return (
-    <nav className="nav-wrapper grey darken-3">
-      <div className="container">
-        <Link to="/" className="brand-logo">
-          E-Card
-        </Link>
-        {links}
-      </div>
-    </nav>
+    <div className={classes.root}>
+      <AppBar position="static" style={{ backgroundColor: "#3949ab" }}>
+        <Toolbar variant="dense">
+          <Typography variant="h4" className={classes.title}>
+            <Link to="/" style={{ color: "white", textDecoration: "none" }}>
+              E-Card Website
+            </Link>
+          </Typography>
+          {adminlinks === null ? links : adminlinks}
+        </Toolbar>
+      </AppBar>
+    </div>
   );
 };
 

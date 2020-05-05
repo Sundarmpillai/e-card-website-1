@@ -1,328 +1,313 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
 import { updateConnection } from "../../store/actions/adminAction";
 import { deleteConnection } from "../../store/actions/adminAction";
-import firebase from "firebase";
+import Card from "@material-ui/core/Card";
+import Avatar from "@material-ui/core/Avatar";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import { Paper } from "@material-ui/core";
 
-class ViewConnection extends Component {
-  state = {
-    prof: [],
-    update: {
-      fN: "",
-      lN: "",
-      cmp: "",
-      adr: "",
-      pNo: "",
-      wNo: "",
-      pos: "",
-      eM: "",
-      pPic: "",
-      front: "",
-      back: "",
-      status: "",
-    },
+function ViewConnection(props) {
+  const initState = {
+    fN: "",
+    lN: "",
+    cmp: "",
+    adr: "",
+    pNo: 0,
+    wNo: 0,
+    pos: "",
+    eM: "",
+    pPic: "",
+    front: "",
+    back: "",
+    status: false,
   };
 
-  componentDidMount() {
-    const { update } = this.state;
-    // console.log(this.props.conn_profile);
-    this.setState({
-      update: {
-        ...update,
-        fN: this.props.conn_profile.fN,
-        lN: this.props.conn_profile.lN,
-        cmp: this.props.conn_profile.cmp,
-        adr: this.props.conn_profile.adr,
-        pNo: this.props.conn_profile.pNo,
-        wNo: this.props.conn_profile.wNo,
-        pos: this.props.conn_profile.pos,
-        eM: this.props.conn_profile.eM,
-        pPic: this.props.conn_profile.pPic,
-        front: this.props.conn_profile.front,
-        back: this.props.conn_profile.back,
-        status: this.props.conn_profile.status,
-      },
-    });
-  }
+  const [doc, setDoc] = useState(initState);
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.conn_profile !== this.props.conn_profile) {
-      this.setState({
-        prof: this.props.conn_profile,
+  useEffect(() => {
+    const profile = JSON.parse(localStorage.getItem("profile"));
+    console.log(profile);
+    if (profile) {
+      setDoc({
+        ...doc,
+        fN: profile.fN || "",
+        lN: profile.lN || "",
+        cmp: profile.cmp || "",
+        adr: profile.adr || "",
+        pNo: profile.pNo || 0,
+        wNo: profile.wNo || 0,
+        pos: profile.pos || "",
+        eM: profile.eM || "",
+        pPic: profile.pPic || "",
+        front: profile.front || "",
+        back: profile.back || "",
+        status: profile.status || false,
       });
     }
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  handelChange = (e) => {
-    const { update } = this.state;
-    this.setState({
-      update: { ...update, [e.target.id]: e.target.value },
-    });
+  useEffect(() => {
+    localStorage.setItem("profile", JSON.stringify(props.conn_profile));
+  });
+
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      maxWidth: "100%",
+    },
+    title: {
+      fontSize: 14,
+    },
+    pos: {
+      marginBottom: 12,
+    },
+    large: {
+      width: theme.spacing(15),
+      height: theme.spacing(15),
+    },
+    tField: {
+      padding: 10,
+    },
+  }));
+
+  const handleChange = (e) => {
+    setDoc({ ...doc, [e.target.id]: e.target.value });
   };
 
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    var uid = this.props.match.params.id;
-    this.props.updateConnection(this.state.update, uid);
+    var uid = props.match.params.id;
+    props.updateConnection(doc, uid);
   };
 
-  onDelete = (e) => {
+  const onDelete = (e) => {
     var uid = this.props.match.params.id;
     this.props.deleteConnection(this.state.update, uid); // change it one parameter to pass:
     this.props.history.goBack();
   };
 
-  onImageChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      this.setState({
-        //   update: { ...update, [e.target.id]: e.target.value },
-        pPic: URL.createObjectURL(event.target.files[0]),
-      });
-    }
-  };
+  const { admin_profile, auth } = props;
+  const classes = useStyles();
+  let admin = admin_profile.status;
 
-  frontView = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      this.setState({
-        front: URL.createObjectURL(event.target.files[0]),
-      });
-    }
-  };
-
-  backView = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      this.setState({
-        back: URL.createObjectURL(event.target.files[0]),
-      });
-    }
-  };
-
-  fileUploadHandler = (e) => {
-    const ref = firebase.storage().ref();
-    const file = document.getElementById("pPic").files[0];
-    try {
-      const name = new Date() + "-" + file.name;
-      const metadata = {
-        contentType: file.type,
-      };
-      const task = ref.child(name).put(file, metadata);
-      task
-        .then((snapshot) => snapshot.ref.getDownloadURL())
-        .then((url) => {
-          this.setState({
-            pPic: url,
-          });
-        })
-        .catch(console.error);
-    } catch (err) {
-      console.log(0);
-    }
-  };
-
-  sendMail = (e) => {
-    window.location.href = "mailto:" + this.props.conn_profile.eM;
-  };
-
-  renderProfile(profile, admin) {
-    // console.log("reached", profile);
-    return (
-      <div className="container section">
-        <form onSubmit={this.handleSubmit} className="white">
-          <div className="card">
-            <div className="card-content">
-              <img
-                className="circular_view"
+  if (!auth.uid) return <Redirect to="/" />;
+  if (admin_profile.isEmpty) {
+    admin = true;
+  }
+  return (
+    <form style={{ margin: "auto", width: "80%", padding: "10px" }}>
+      <Card style={{ width: "auto" }}>
+        <Grid container spcing={1}>
+          <Grid item xs={6}>
+            <Typography variant="h5" style={{ padding: "10px" }}>
+              Profile
+            </Typography>
+            <div style={{ marginBottom: "10px" }}>
+              <Avatar
+                className={classes.large}
+                alt={doc.fN}
                 src={
-                  profile.pPic ||
+                  doc.pPic ||
                   "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                 }
-                alt=""
-                width="20%"
-                height="20%"
+                style={{ margin: "auto" }}
               />
+            </div>
+            <Paper elevation={3} style={{ width: "80%", margin: "auto" }}>
               {admin ? (
                 <div>
-                  <input
-                    type="text"
+                  <TextField
+                    className={classes.tField}
                     id="fN"
-                    value={profile.fN}
-                    onChange={this.handelChange}
+                    label="First Name"
+                    value={doc.fN}
+                    onChange={handleChange}
+                    variant="outlined"
                   />
-                  <input
-                    type="text"
+                  <TextField
+                    className={classes.tField}
                     id="lN"
-                    value={profile.lN}
-                    onChange={this.handelChange}
+                    label="Last Name"
+                    value={doc.lN}
+                    onChange={handleChange}
+                    variant="outlined"
                   />
                 </div>
               ) : (
-                <span className="card-title">
-                  Name - {profile.fN} {profile.lN}
-                </span>
+                <Typography variant="body1" style={{ padding: "10px" }}>
+                  <label style={{ fontWeight: "bold" }}>Name - </label>
+                  {doc.fN} {doc.lN}
+                </Typography>
               )}
-              <div className=" card-small" style={{ display: "inline-block" }}>
-                <div className="input-field">
-                  <i
-                    className="small material-icons inline prefix"
-                    style={{ float: "left" }}
-                  >
-                    work
-                  </i>
+              <div>
+                <div>
                   {admin ? (
-                    <input
-                      type="text"
-                      value={profile.cmp || "Company"}
-                      id="cmp"
-                      onChange={this.handelChange}
-                    />
+                    <div>
+                      <TextField
+                        className={classes.tField}
+                        id="cmp"
+                        label="Company"
+                        value={doc.cmp}
+                        onChange={handleChange}
+                        variant="outlined"
+                      />
+                      <TextField
+                        className={classes.tField}
+                        id="pos"
+                        label="Position"
+                        value={doc.pos}
+                        onChange={handleChange}
+                        variant="outlined"
+                      />
+                    </div>
                   ) : (
-                    <p>Company - {profile.cmp}</p>
+                    <Typography variant="body1" style={{ padding: "10px" }}>
+                      <label style={{ fontWeight: "bold" }}>Company - </label>
+                      {doc.cmp}
+                      <label style={{ fontWeight: "bold" }}> Position - </label>
+                      {doc.pos}
+                    </Typography>
                   )}
                 </div>
-                <div className="input-field">
-                  <i
-                    className="small material-icons inline prefix"
-                    style={{ float: "left" }}
-                  >
-                    person_pin
-                  </i>
+                <div>
                   {admin ? (
-                    <input
-                      type="text"
-                      value={profile.pos || "Position"}
-                      id="pos"
-                      onChange={this.handelChange}
-                    />
-                  ) : (
-                    <p id="pos">Position - {profile.pos}</p>
-                  )}
-                </div>
-                <div className="input-field">
-                  <i
-                    className="small material-icons inline prefix"
-                    style={{ float: "left" }}
-                  >
-                    mail
-                  </i>
-                  {admin ? (
-                    <input
-                      type="text"
-                      value={profile.eM || "E-Mail"}
+                    <TextField
+                      className={classes.tField}
                       id="eM"
-                      onChange={this.handelChange}
+                      label="E-Mail"
+                      value={doc.eM}
+                      onChange={handleChange}
+                      variant="outlined"
                     />
                   ) : (
-                    <p id="eM">Email - {profile.eM}</p>
+                    <Typography variant="body1" style={{ padding: "10px" }}>
+                      <label style={{ fontWeight: "bold" }}>E-Mail - </label>
+                      {doc.eM}
+                    </Typography>
                   )}
-                </div>
-                <div className="input-field" style={{ whiteSpace: "nowrap" }}>
-                  <i
-                    className="small material-icons inline prefix"
-                    style={{ float: "left" }}
-                  >
-                    phone_android
-                  </i>
                   {admin ? (
-                    <input
-                      type="text"
-                      value={profile.pNo || "Personal Number"}
-                      id="pNo"
-                      onChange={this.handelChange}
-                    />
+                    <div>
+                      <TextField
+                        className={classes.tField}
+                        id="pNo"
+                        label="Personal Number"
+                        value={doc.pNo}
+                        onChange={handleChange}
+                        variant="outlined"
+                      />
+                      <TextField
+                        className={classes.tField}
+                        id="wNo"
+                        label="Work Number"
+                        value={doc.wNo}
+                        onChange={handleChange}
+                        variant="outlined"
+                      />
+                    </div>
                   ) : (
-                    <p id="pNo">Personal Number- {profile.pNo}</p>
+                    <Typography variant="body1" style={{ padding: "10px" }}>
+                      <label style={{ fontWeight: "bold" }}>
+                        Personal Number -{" "}
+                      </label>
+                      {doc.pNo}
+                      <label style={{ fontWeight: "bold" }}>
+                        {" "}
+                        Work Number -{" "}
+                      </label>
+                      {doc.wNo}
+                    </Typography>
                   )}
-                </div>
-                <div className="input-field">
-                  <i
-                    className="small material-icons inline prefix"
-                    style={{ float: "left" }}
-                  >
-                    phone
-                  </i>
                   {admin ? (
-                    <input
-                      type="text"
-                      value={profile.wNo || "Work Number"}
-                      id="wNo"
-                      onChange={this.handelChange}
-                    />
-                  ) : (
-                    <p id="wNo">Work Number - {profile.wNo}</p>
-                  )}
-                </div>
-                <div className="input-field">
-                  <i
-                    className="small material-icons inline prefix"
-                    style={{ float: "left" }}
-                  >
-                    location_city
-                  </i>
-                  {admin ? (
-                    <input
-                      type="text"
-                      value={profile.adr || "Address"}
+                    <TextField
+                      className={classes.tField}
                       id="adr"
-                      onChange={this.handelChange}
+                      label="Address"
+                      value={doc.adr}
+                      onChange={handleChange}
+                      variant="outlined"
                     />
                   ) : (
-                    <p id="adr">Adress - {profile.adr}</p>
+                    <Typography
+                      id="adr"
+                      variant="body1"
+                      style={{ padding: "10px" }}
+                    >
+                      <label style={{ fontWeight: "bold" }}>Address - </label>
+                      {doc.adr}
+                    </Typography>
                   )}
                 </div>
               </div>
-              <div style={{ float: "right", backgroundColor: "#D3D3D3" }}>
-                <img
-                  className="card-view"
-                  src={profile.front}
-                  alt="Card Front View"
-                  style={{ display: "block" }}
-                />
-                <img
-                  className="card-view"
-                  src={profile.back}
-                  alt="Card Back View"
-                />
-              </div>
-              <div className="input-filed" style={{ clear: "left" }}>
-                <button className="btn pink lighten-1 z-depth-0">Update</button>
-                <button
-                  className="btn pink lighten-1 z-depth-0"
-                  style={{ margin: 10 }}
-                  onClick={this.onDelete}
-                >
-                  Delete
-                </button>
-              </div>
+            </Paper>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="h6" style={{ padding: "10px" }}>
+              Card Images
+            </Typography>
+            <div>
+              <img
+                className="card-view"
+                src={
+                  doc.front ||
+                  "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
+                }
+                alt="Card Front View"
+                style={{ display: "block" }}
+              />
+              <img
+                className="card-view"
+                src={
+                  doc.back ||
+                  "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
+                }
+                alt="Card Back View"
+              />
             </div>
+          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <div style={{ float: "right" }}>
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
+              Update
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ margin: "10px" }}
+              onClick={onDelete}
+            >
+              Delete
+            </Button>
           </div>
-        </form>
-      </div>
-    );
-  }
-
-  render() {
-    // const { conn_profile } = this.props;
-    // console.log("state", this.state.update);
-    const { admin_profile } = this.props;
-    const { update } = this.state;
-    let status = admin_profile.status;
-    const profileView =
-      update === null ? (
-        <Redirect to="/" />
-      ) : (
-        this.renderProfile(update, status)
-      );
-    return <div>{profileView}</div>;
-  }
+        </Grid>
+      </Card>
+    </form>
+  );
 }
+
+// const sendMail = (e) => {
+//   window.location.href = "mailto:" + this.props.conn_profile.eM;
+// };
+
 const mapStateToProps = (state, ownProps) => {
   //for id receive from selecting an item from the list
   const id = ownProps.match.params.id;
   const profiles = state.firestore.data.user; // check with the id values of the documents in the firestore
-  const profile = profiles ? profiles[id] : null; // and when the value has a match pass that document as an object
+  var profile = profiles ? profiles[id] : null; // and when the value has a match pass that document as an object
+  if (profile !== null && profile !== undefined) {
+    localStorage.setItem("profile", JSON.stringify(profile));
+  }
+  if (profile === null) {
+    profile = JSON.parse(localStorage.getItem("profile"));
+  }
   return {
     conn_profile: profile,
     auth: state.firebase.auth,

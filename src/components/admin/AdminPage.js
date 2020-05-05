@@ -1,93 +1,137 @@
-import React, { Component } from "react";
-import Notification from "../profile/Notification";
+import React, { useState } from "react";
+import NotificationList from "../profile/NotificationList";
 import ConnectionList from "../connections/ConnectionList";
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import { Paper, Card } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 
-class Admin extends Component {
-  constructor(props) {
-    super(props);
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+  },
+  circlular: {
+    display: "flex",
+    "& > * + *": {
+      marginLeft: theme.spacing(2),
+    },
+  },
+}));
 
-    this.state = {
-      people: "",
-      term: "",
-    };
-    this.searchBar = this.searchBar.bind(this);
+function Admin(props) {
+  // Declare a new state variable, which we'll call "count"
+  const [term, setTerm] = useState("");
+
+  const classes = useStyles();
+
+  function searchBar(e) {
+    setTerm(e.target.value);
   }
 
-  searchBar(e) {
-    this.setState({
-      term: e.target.value,
+  const { profiles, auth, current_user, notification } = props;
+  if (!auth.uid) return <Redirect to="/login" />;
+
+  if (current_user.pNo === 0) return <Redirect to="/create" />;
+
+  if (!current_user.status) return <Redirect to="/" />;
+  const conn_list = [];
+  localStorage.removeItem("profile");
+  localStorage.removeItem("create");
+  profiles &&
+    profiles.map((user) => {
+      return conn_list.push(user);
     });
-  }
-
-  componentDidMount() {
-    this.setState({
-      people: this.props.profiles,
-    });
-  }
-
-  render() {
-    // console.log('props',this.props.profiles);
-    // console.log('state',this.state.profiles);
-    const { profiles, auth, current_user } = this.props;
-    if (!auth.uid) return <Redirect to="/login" />;
-
-    if (current_user.pNo === "") return <Redirect to="/create" />;
-    const conn_list = [];
-    profiles &&
-      profiles.map((user) => {
-        return conn_list.push(user);
-      });
-    return (
-      <div className="themed-container " fluid="md">
-        <div className="dashboard container">
-          <div className="row">
-            <input
-              type="text"
-              value={this.state.term}
-              onChange={this.searchBar}
-            />
-            <div
-              className="col s12 m6"
-              style={{ overflow: "auto", height: "550px" }}
-            >
-              {conn_list.filter(searchingFor(this.state.term)).map((person) => (
-                <ul key={person.id}>
-                  <ConnectionList profiles={person} />{" "}
-                  {/* Display the list of connection the user has */}
-                </ul>
-              ))}
-            </div>
-
-            <div className="col s12 m5 offset-m1">
-              <Notification />
-            </div>
+  return (
+    <div className={classes.root}>
+      <Grid container spcing={3}>
+        <Grid item xs={12}>
+          <div>
+            <p></p>
           </div>
-        </div>
-      </div>
-    );
-  }
+        </Grid>
+        <Grid item xs={6}>
+          <Paper style={{ width: "50%", margin: "auto" }}>
+            <TextField
+              id="filled-basic"
+              label="Search"
+              variant="filled"
+              onChange={searchBar}
+              style={{ width: "100%" }}
+            />
+          </Paper>
+        </Grid>
+      </Grid>
+      <Grid container spacing={3}>
+        <Grid item xs={6}>
+          <div style={{ overflow: "auto", height: "400px" }}>
+            {conn_list.filter(searchingFor(term)).map((person) => (
+              <ul key={person.id}>
+                <ConnectionList profiles={person} />
+                {/* Display all users that are registered in the E-Card system*/}
+              </ul>
+            ))}
+          </div>
+        </Grid>
+        <Grid item xs={6}>
+          <div
+            style={{
+              paddingTop: "15px",
+              margin: "auto",
+              width: "50%",
+            }}
+          >
+            <Card>
+              <Typography
+                variant="h6"
+                style={{ paddingLeft: "15px", paddingBottom: "5px" }}
+              >
+                {" "}
+                Notifications{" "}
+              </Typography>
+              <Card
+                style={{ paddingLeft: "25px", paddingBottom: "10px" }}
+                elevation={0}
+              >
+                <NotificationList notification={notification} />
+              </Card>
+            </Card>
+          </div>
+        </Grid>
+      </Grid>
+    </div>
+  );
 }
 
 function searchingFor(term) {
   return function (x) {
-    return x.fN.toLowerCase().includes(term.toLowerCase()) || !term;
+    if (x !== null) {
+      return x.fN.toLowerCase().includes(term.toLowerCase()) || !term;
+    }
+    return "";
   };
 }
 
-//variable name must be same when passing props to the nested component and mapping stateProps
 const mapStateToProps = (state) => {
+  // firebase.firestore().collection("notify").doc()
   return {
     profiles: state.firestore.ordered.user, // get the  list of user from the firestore
     auth: state.firebase.auth,
     current_user: state.firebase.profile,
+    notification: state.firestore.ordered.notify,
   };
 };
 
 export default compose(
   connect(mapStateToProps),
-  firestoreConnect([{ collection: "user" }])
+  firestoreConnect([{ collection: "user" }, { collection: "notify", limit: 5 }])
 )(Admin);
