@@ -1,6 +1,6 @@
 export const createProfile = (profile) => {
   return (dispatch, getState, { firebase }) => {
-    //make asyn call to database
+    //make async call to database
     const firestore = firebase.firestore();
     const id = getState().firebase.auth.uid.toString();
     firestore
@@ -21,7 +21,7 @@ export const createProfile = (profile) => {
 
 export const updateProfile = (profile) => {
   return (dispatch, getState, { firebase }) => {
-    //make asyn call to database
+    //make async call to database
     const firestore = firebase.firestore();
     const id = getState().firebase.auth.uid.toString();
     firestore
@@ -36,6 +36,59 @@ export const updateProfile = (profile) => {
       })
       .catch((e) => {
         dispatch({ type: "UPDATE_PROFILE_ERROR", e });
+      });
+  };
+};
+
+export const updateEmail = (credentials) => {
+  return (dispatch, getState, { firebase }) => {
+    const mail = getState().firebase.auth.email.toString();
+    const user = firebase.auth().currentUser;
+    console.log(mail);
+
+    const credential = firebase.auth.EmailAuthProvider.credential(
+      mail,
+      credentials.password
+    );
+
+    user
+      .reauthenticateWithCredential(credential)
+      .then(function (userCredential) {
+        userCredential.user
+          .updateEmail(credentials.email)
+          .then(() => {
+            dispatch({ type: "UPDATE_PROFILE" });
+          })
+          .catch((e) => {
+            dispatch({ type: "UPDATE_PROFILE_ERROR", e });
+          });
+      });
+  };
+};
+
+export const changePwd = (credentials) => {
+  return (dispatch, getState, { firebase }) => {
+    const mail = getState().firebase.auth.email.toString();
+    const user = firebase.auth().currentUser;
+    console.log("Current", credentials.currPwd);
+    console.log("New", credentials.password);
+
+    const credential = firebase.auth.EmailAuthProvider.credential(
+      mail,
+      credentials.currPwd
+    );
+
+    user
+      .reauthenticateWithCredential(credential)
+      .then(function (userCredential) {
+        userCredential.user
+          .updatePassword(credentials.password)
+          .then(() => {
+            dispatch({ type: "UPDATE_PROFILE" });
+          })
+          .catch((e) => {
+            dispatch({ type: "UPDATE_PROFILE_ERROR", e });
+          });
       });
   };
 };

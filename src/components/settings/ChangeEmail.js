@@ -1,15 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { login } from "../../store/actions/authAction";
 import { Redirect } from "react-router-dom";
-import * as validator from "./Validation";
+import { updateEmail } from "../../store/actions/profileAction";
+import * as validator from "../auth/Validation";
+import { logout } from "../../store/actions/authAction";
 import {
   Button,
   Container,
-  Checkbox,
   Grid,
-  FormControlLabel,
-  Link,
   Typography,
   TextField,
   Card,
@@ -35,6 +33,8 @@ class Login extends Component {
     this.validateInputAndSetState(id, value);
   };
 
+  handleClick = (e) => {};
+
   handleSubmit = (e) => {
     e.preventDefault();
     // iterate through the component state as key value pairs and
@@ -51,23 +51,27 @@ class Login extends Component {
 
     if (isFormValid) {
       console.log("Form Valid");
-      this.props.login(this.state);
+      this.props.updateEmail(this.state);
+      this.props.logout();
     } else {
       console.log("Form invalid");
     }
   };
   render() {
     const { authError, auth } = this.props;
-    if (!auth.isEmpty) return <Redirect to="/" />;
+    if (!auth.uid) return <Redirect to="/login" />;
     return (
       <Container component="main" maxWidth="xs">
         <form onSubmit={this.handleSubmit} noValidate>
           <Card>
-            <CardContent>
+            <CardContent style={{ margin: "10px" }}>
               <Typography component="h1" variant="h5">
-                Login
+                Change E-Mail Address
               </Typography>
               <hr />
+              <Typography variant="body1">
+                Type in the new Email address below
+              </Typography>
               <TextField
                 variant="outlined"
                 margin="dense"
@@ -84,6 +88,9 @@ class Login extends Component {
                 {this.state.errors.email}
               </Typography>
               <br />
+              <Typography variant="body1">
+                Type in your current password
+              </Typography>
               <TextField
                 variant="outlined"
                 margin="dense"
@@ -99,14 +106,7 @@ class Login extends Component {
               <Typography color="secondary">
                 {this.state.errors.password}
               </Typography>
-              <br />
 
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember Me"
-              />
-
-              <br />
               <br />
 
               <Button
@@ -115,26 +115,12 @@ class Login extends Component {
                 variant="contained"
                 color="primary"
               >
-                Login
+                Submit
               </Button>
               <div className="red-text center">
                 {authError ? <p>{authError}</p> : null}
               </div>
               <br />
-              <br />
-
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot Password?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link href="#" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </Grid>
-              </Grid>
             </CardContent>
           </Card>
         </form>
@@ -152,7 +138,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login: (creds) => dispatch(login(creds)),
+    updateEmail: (creds) => dispatch(updateEmail(creds)),
+    logout: () => dispatch(logout()),
   };
 };
 
