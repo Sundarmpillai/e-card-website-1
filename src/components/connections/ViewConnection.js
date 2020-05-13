@@ -13,6 +13,16 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { Paper } from "@material-ui/core";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Slide from "@material-ui/core/Slide";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function ViewConnection(props) {
   const initState = {
@@ -28,6 +38,16 @@ function ViewConnection(props) {
     front: "",
     back: "",
     status: false,
+  };
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const [doc, setDoc] = useState(initState);
@@ -89,9 +109,10 @@ function ViewConnection(props) {
   };
 
   const onDelete = (e) => {
-    var uid = this.props.match.params.id;
-    this.props.deleteConnection(this.state.update, uid); // change it one parameter to pass:
-    this.props.history.goBack();
+    handleClose();
+    var uid = props.match.params.id;
+    props.deleteConnection(doc, uid); // change it one parameter to pass:
+    props.history.goBack();
   };
 
   const { admin_profile, auth } = props;
@@ -274,18 +295,51 @@ function ViewConnection(props) {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <div style={{ float: "right" }}>
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
-              Update
-            </Button>
+          <div style={{ float: "right", margin: "10px" }}>
+            {admin ? (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                style={{ margin: "5px" }}
+              >
+                Update
+              </Button>
+            ) : null}
             <Button
               variant="contained"
               color="primary"
-              style={{ margin: "10px" }}
-              onClick={onDelete}
+              onClick={handleClickOpen}
+              style={{ margin: "5px" }}
             >
               Delete
             </Button>
+            <Dialog
+              open={open}
+              TransitionComponent={Transition}
+              keepMounted
+              onClose={handleClose}
+              aria-labelledby="alert-dialog-slide-title"
+              aria-describedby="alert-dialog-slide-description"
+            >
+              <DialogTitle id="alert-dialog-slide-title">
+                {"Delete Connection"}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-slide-description">
+                  Are you sure that you want to delete {doc.fN} {doc.lN} from
+                  your list of connection?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose} color="primary">
+                  No
+                </Button>
+                <Button onClick={onDelete} color="primary">
+                  Yes
+                </Button>
+              </DialogActions>
+            </Dialog>
           </div>
         </Grid>
       </Card>
@@ -294,7 +348,7 @@ function ViewConnection(props) {
 }
 
 // const sendMail = (e) => {
-//   window.location.href = "mailto:" + this.props.conn_profile.eM;
+//   window.location.href = "mailto:" + props.conn_profile.eM;
 // };
 
 const mapStateToProps = (state, ownProps) => {

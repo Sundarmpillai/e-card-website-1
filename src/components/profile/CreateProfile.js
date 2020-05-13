@@ -44,6 +44,7 @@ function CreateProfile(props) {
         pos: profile.pos || "",
         eM: profile.eM || "",
         pPic: profile.pPic || "",
+        conn: profile.conn || [],
         front: profile.front || "",
         back: profile.back || "",
         status: profile.status || false,
