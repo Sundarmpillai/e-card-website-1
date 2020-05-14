@@ -48,6 +48,7 @@ function UserProfile(props) {
         pPic: profile.pPic || "",
         front: profile.front || "",
         back: profile.back || "",
+        conn: profile.conn || [],
         status: profile.status || false,
       });
     }
@@ -83,12 +84,13 @@ function UserProfile(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    this.props.updateProfile(this.state.update);
+    console.log(doc);
+    props.updateProfile(doc);
   };
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
-      this.setState({
+      setDoc({
         pPic: URL.createObjectURL(event.target.files[0]),
       });
     }
@@ -96,7 +98,7 @@ function UserProfile(props) {
 
   // const constrontView = (event) => {
   //   if (event.target.files && event.target.files[0]) {
-  //     this.setState({
+  //     setState({
   //       front: URL.createObjectURL(event.target.files[0]),
   //     });
   //   }
@@ -104,7 +106,7 @@ function UserProfile(props) {
 
   const backView = (event) => {
     if (event.target.files && event.target.files[0]) {
-      this.setState({
+      setDoc({
         back: URL.createObjectURL(event.target.files[0]),
       });
     }
@@ -112,7 +114,7 @@ function UserProfile(props) {
 
   const frontView = (event) => {
     if (event.target.files && event.target.files[0]) {
-      this.setState({
+      setDoc({
         front: URL.createObjectURL(event.target.files[0]),
       });
     }
@@ -130,13 +132,13 @@ function UserProfile(props) {
       task
         .then((snapshot) => snapshot.ref.getDownloadURL())
         .then((url) => {
-          this.setState({
+          setDoc({
             pPic: url,
           });
         })
         .catch(console.error);
     } catch (err) {
-      console.log(0);
+      console.log(err);
     }
   };
 
@@ -278,7 +280,6 @@ function UserProfile(props) {
                       <input
                         type="file"
                         id="front"
-                        onChange={frontView}
                         style={{ whiteSpace: "normal", wordWrap: "break-word" }}
                       />
                     </div>
@@ -298,7 +299,7 @@ function UserProfile(props) {
                   <div style={{ margin: "10px" }}>
                     <div>
                       <span style={{ fontSize: "10px" }}>Upload</span>
-                      <input type="file" id="back" onChange={backView} />
+                      <input type="file" id="back" />
                     </div>
                   </div>
                 </div>
@@ -310,8 +311,8 @@ function UserProfile(props) {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={fileUploadHandler}
                 style={{ margin: 10 }}
+                onClick={handleSubmit}
               >
                 Update
               </Button>
