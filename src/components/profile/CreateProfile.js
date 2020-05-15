@@ -11,6 +11,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
+import * as validator from "../auth/Validation";
+
 function CreateProfile(props) {
   const initState = {
     fN: "",
@@ -25,6 +27,20 @@ function CreateProfile(props) {
     front: "",
     back: "",
     status: false,
+    errors: {
+      fN: "",
+      lN: "",
+      cmp: "",
+      adr: "",
+      pNo: "",
+      wNo: "",
+      pos: "",
+      eM: "",
+      pPic: "",
+      front: "",
+      back: "",
+      // status: false,
+    },
   };
 
   const [doc, setDoc] = useState(initState);
@@ -43,7 +59,8 @@ function CreateProfile(props) {
         wNo: profile.wNo || 0,
         pos: profile.pos || "",
         eM: profile.eM || "",
-        pPic: profile.pPic || "",
+        // pPic: profile.pPic || "",
+        pPic: "",
         conn: profile.conn || [],
         front: profile.front || "",
         back: profile.back || "",
@@ -77,19 +94,53 @@ function CreateProfile(props) {
     },
   }));
 
+  const validateInputAndSetState = (id, value) => {
+    const errors = validator.validate(id, value, doc.errors);
+    setDoc({ ...doc, errors, [id]: value });
+  };
+
+  // handleChange = (e) => {
+  //   const { id, value } = e.target;
+  //   this.validateInputAndSetState(id, value);
+  // };
+
   const handleChange = (e) => {
-    setDoc({ ...doc, [e.target.id]: e.target.value });
+    const {id, value} = e.target;
+    validateInputAndSetState(id, value);
+    console.log(id, doc[id]);
+    // setDoc({ ...doc, [e.target.id]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    props.createProfile(doc);
-    props.history.push("/");
+    console.log('in handle submit');
+    console.log(doc);
+
+    // iterate through the component state as key value pairs and
+    //  run the validation on each value.
+    // if the validation function handles that key value pair
+    //  then it is validated otherwise skipped
+    for (let [id, value] of Object.entries(doc)) {
+      validateInputAndSetState(id, value);
+    }
+
+    // if error object is empty then the form is valid
+    const isFormValid = validator.isErrorObjectEmpty(doc.errors);
+    // submit if the form is valid
+
+    if (isFormValid) {
+      console.log("Form is Valid.");
+      props.createProfile(doc);
+      props.history.push("/");
+    } else {
+      console.log("Form is INVALID. Are all errors displayed?");
+    }
   };
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
-      this.setState({
+      setDoc({ 
+        ...doc, 
         pPic: URL.createObjectURL(event.target.files[0]),
       });
     }
@@ -97,7 +148,8 @@ function CreateProfile(props) {
 
   const frontView = (event) => {
     if (event.target.files && event.target.files[0]) {
-      this.setState({
+      setDoc({
+        ...doc,
         front: URL.createObjectURL(event.target.files[0]),
       });
     }
@@ -105,7 +157,8 @@ function CreateProfile(props) {
 
   const backView = (event) => {
     if (event.target.files && event.target.files[0]) {
-      this.setState({
+      setDoc({
+        ...doc,
         back: URL.createObjectURL(event.target.files[0]),
       });
     }
@@ -123,7 +176,8 @@ function CreateProfile(props) {
       task
         .then((snapshot) => snapshot.ref.getDownloadURL())
         .then((url) => {
-          this.setState({
+          setDoc({
+            ...doc,
             pPic: url,
           });
         })
@@ -159,6 +213,7 @@ function CreateProfile(props) {
                 }
                 style={{ margin: "10px" }}
               />
+              <div style={{color:'red'}}>{doc.errors.pPic}</div>
               <div style={{ margin: "10px" }}>
                 <div>
                   <span style={{ fontSize: "10px" }}>Upload</span>
@@ -181,6 +236,7 @@ function CreateProfile(props) {
                   onChange={handleChange}
                   variant="outlined"
                 />
+                <div>{doc.errors.fN}</div>
                 <TextField
                   className={classes.tField}
                   id="lN"
@@ -189,6 +245,7 @@ function CreateProfile(props) {
                   onChange={handleChange}
                   variant="outlined"
                 />
+                <div>{doc.errors.lN}</div>
               </div>
             </div>
             <div style={{ clear: "left" }}>
@@ -200,6 +257,7 @@ function CreateProfile(props) {
                 onChange={handleChange}
                 variant="outlined"
               />
+              <div>{doc.errors.pNo}</div>
             </div>
             <Typography variant="h6" style={{ padding: "10px" }}>
               Work Information
@@ -213,6 +271,7 @@ function CreateProfile(props) {
                 onChange={handleChange}
                 variant="outlined"
               />
+              <div>{doc.errors.cmp}</div>
               <TextField
                 className={classes.tField}
                 id="pos"
@@ -221,6 +280,7 @@ function CreateProfile(props) {
                 onChange={handleChange}
                 variant="outlined"
               />
+              <div>{doc.errors.pos}</div>
             </div>
             <div>
               <TextField
@@ -231,6 +291,7 @@ function CreateProfile(props) {
                 onChange={handleChange}
                 variant="outlined"
               />
+              <div>{doc.errors.eM}</div>
             </div>
             <div>
               <TextField
@@ -241,6 +302,7 @@ function CreateProfile(props) {
                 onChange={handleChange}
                 variant="outlined"
               />
+              <div>{doc.errors.wNo}</div>
               <TextField
                 className={classes.tField}
                 id="adr"
@@ -249,6 +311,7 @@ function CreateProfile(props) {
                 onChange={handleChange}
                 variant="outlined"
               />
+              <div>{doc.errors.adr}</div>
             </div>
           </Grid>
           <Grid>
@@ -284,6 +347,7 @@ function CreateProfile(props) {
                       style={{ whiteSpace: "normal", wordWrap: "break-word" }}
                     />
                   </div>
+                <div>{doc.errors.front}</div>
                 </div>
               </div>
               <div style={{ position: "relative", margin: "5px" }}>
@@ -302,6 +366,7 @@ function CreateProfile(props) {
                     <span style={{ fontSize: "10px" }}>Upload</span>
                     <input type="file" id="back" onChange={backView} />
                   </div>
+                  <div>{doc.errors.back}</div>
                 </div>
               </div>
             </div>
@@ -313,6 +378,7 @@ function CreateProfile(props) {
               variant="contained"
               color="primary"
               onClick={fileUploadHandler}
+              type="submit"
               style={{ float: "right", margin: "10px" }}
             >
               Create
