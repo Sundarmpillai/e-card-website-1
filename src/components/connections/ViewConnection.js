@@ -111,7 +111,7 @@ function ViewConnection(props) {
   const onDelete = (e) => {
     handleClose();
     var uid = props.match.params.id;
-    props.deleteConnection(doc, uid); // change it one parameter to pass:
+    props.deleteConnection([uid]); // change it one parameter to pass:
     props.history.goBack();
   };
 

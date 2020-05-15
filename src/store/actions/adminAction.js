@@ -39,18 +39,40 @@ export const updateConnection = (profile, uid) => {
   };
 };
 
-export const deleteConnection = (profile, uid) => {
+// export const deleteConnection = (uid) => {
+//   return (dispatch, getState, { firebase }) => {
+//     for (let i = 0; i < uid.length; i++) {
+//       const firestore = firebase.firestore();
+//       firestore
+//         .collection("user")
+//         .doc(uid[i])
+//         .delete()
+//         .then(() => {
+//           dispatch({ type: "DELETE_PROFILE" });
+//         })
+//         .catch((e) => {
+//           dispatch({ type: "DELETE_PROFILE_ERROR", e });
+//         });
+//     }
+//   };
+// };
+
+export const deleteConnection = (uid) => {
+  debugger;
   return (dispatch, getState, { firebase }) => {
     const firestore = firebase.firestore();
-    firestore
-      .collection("user")
-      .doc(uid)
-      .delete()
-      .then(() => {
-        dispatch({ type: "DELETE_PROFILE", profile });
-      })
-      .catch((e) => {
-        dispatch({ type: "DELETE_PROFILE_ERROR", e });
-      });
+    console.log(uid);
+    // for (let i = 0; i < uid.length; i++) {
+    //   firestore
+    //     .collection("user")
+    //     .doc(uid[i])
+    //     .delete()
+    //     .then(() => {
+    //       dispatch({ type: "DELETE_PROFILE" });
+    //     })
+    //     .catch((e) => {
+    //       dispatch({ type: "DELETE_PROFILE_ERROR", e });
+    //     });
+    // }
   };
 };
