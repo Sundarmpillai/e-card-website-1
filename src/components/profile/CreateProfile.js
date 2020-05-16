@@ -213,7 +213,7 @@ function CreateProfile(props) {
                 }
                 style={{ margin: "10px" }}
               />
-              <div style={{color:'red'}}>{doc.errors.pPic}</div>
+              <Typography color="secondary">{doc.errors.pPic}</Typography>
               <div style={{ margin: "10px" }}>
                 <div>
                   <span style={{ fontSize: "10px" }}>Upload</span>
@@ -236,7 +236,7 @@ function CreateProfile(props) {
                   onChange={handleChange}
                   variant="outlined"
                 />
-                <div>{doc.errors.fN}</div>
+                <Typography color="secondary">{doc.errors.fN}</Typography>
                 <TextField
                   className={classes.tField}
                   id="lN"
@@ -245,7 +245,7 @@ function CreateProfile(props) {
                   onChange={handleChange}
                   variant="outlined"
                 />
-                <div>{doc.errors.lN}</div>
+                <Typography color="secondary">{doc.errors.lN}</Typography>
               </div>
             </div>
             <div style={{ clear: "left" }}>
@@ -257,7 +257,7 @@ function CreateProfile(props) {
                 onChange={handleChange}
                 variant="outlined"
               />
-              <div>{doc.errors.pNo}</div>
+              <Typography color="secondary">{doc.errors.pNo}</Typography>
             </div>
             <Typography variant="h6" style={{ padding: "10px" }}>
               Work Information
@@ -271,7 +271,7 @@ function CreateProfile(props) {
                 onChange={handleChange}
                 variant="outlined"
               />
-              <div>{doc.errors.cmp}</div>
+              <Typography color="secondary">{doc.errors.cmp}</Typography>
               <TextField
                 className={classes.tField}
                 id="pos"
@@ -280,7 +280,7 @@ function CreateProfile(props) {
                 onChange={handleChange}
                 variant="outlined"
               />
-              <div>{doc.errors.pos}</div>
+              <Typography color="secondary">{doc.errors.pos}</Typography>
             </div>
             <div>
               <TextField
@@ -291,7 +291,7 @@ function CreateProfile(props) {
                 onChange={handleChange}
                 variant="outlined"
               />
-              <div>{doc.errors.eM}</div>
+              <Typography color="secondary">{doc.errors.eM}</Typography>
             </div>
             <div>
               <TextField
@@ -302,7 +302,7 @@ function CreateProfile(props) {
                 onChange={handleChange}
                 variant="outlined"
               />
-              <div>{doc.errors.wNo}</div>
+              <Typography color="secondary">{doc.errors.wNo}</Typography>
               <TextField
                 className={classes.tField}
                 id="adr"
@@ -311,7 +311,7 @@ function CreateProfile(props) {
                 onChange={handleChange}
                 variant="outlined"
               />
-              <div>{doc.errors.adr}</div>
+              <Typography color="secondary">{doc.errors.adr}</Typography>
             </div>
           </Grid>
           <Grid>
@@ -347,7 +347,7 @@ function CreateProfile(props) {
                       style={{ whiteSpace: "normal", wordWrap: "break-word" }}
                     />
                   </div>
-                <div>{doc.errors.front}</div>
+                <Typography color="secondary">{doc.errors.front}</Typography>
                 </div>
               </div>
               <div style={{ position: "relative", margin: "5px" }}>
@@ -366,7 +366,7 @@ function CreateProfile(props) {
                     <span style={{ fontSize: "10px" }}>Upload</span>
                     <input type="file" id="back" onChange={backView} />
                   </div>
-                  <div>{doc.errors.back}</div>
+                  <Typography color="secondary">{doc.errors.back}</Typography>
                 </div>
               </div>
             </div>
