@@ -20,6 +20,9 @@ const LoggedInLink = (props) => {
   return (
     <ul>
       <li style={{ display: "inline" }}>
+        <Button style={{ color: "white" }}>Graph</Button>
+      </li>
+      <li style={{ display: "inline" }}>
         <Button style={{ color: "white" }}>Update Contents</Button>
       </li>
       <li style={{ display: "inline" }}>

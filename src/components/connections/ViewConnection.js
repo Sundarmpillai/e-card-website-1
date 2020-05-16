@@ -111,7 +111,7 @@ function ViewConnection(props) {
   const onDelete = (e) => {
     handleClose();
     var uid = props.match.params.id;
-    props.deleteConnection([uid]); // change it one parameter to pass:
+    props.deleteConnection(uid); // change it one parameter to pass:
     props.history.goBack();
   };
 
@@ -372,7 +372,7 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     updateConnection: (profile, id) => dispatch(updateConnection(profile, id)),
-    deleteConnection: (profile, id) => dispatch(deleteConnection(profile, id)),
+    deleteConnection: (profile) => dispatch(deleteConnection(profile)),
   };
 };
 
