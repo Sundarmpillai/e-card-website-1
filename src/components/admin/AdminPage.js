@@ -55,7 +55,7 @@ function Admin(props) {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <div style={{ width: "80%", margin: "auto" }}>
-            <GridView profiles={conn_list} func={deleteConnection()} />
+            <GridView profiles={conn_list} />
           </div>
         </Grid>
       </Grid>
