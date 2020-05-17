@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
+import { firestoreConnect } from "react-redux-firebase";
+import { compose } from "redux";
 
 import PropTypes from "prop-types";
-import clsx from "clsx";
 import { Link } from "react-router-dom";
-import { lighten, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -13,21 +14,27 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
-import Tooltip from "@material-ui/core/Tooltip";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
-import TextField from "@material-ui/core/TextField";
+
+import {
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Slide,
+  IconButton,
+} from "@material-ui/core";
 
 import { deleteConnection } from "../../store/actions/adminAction";
-import { Button } from "@material-ui/core";
 
 function getData(profiles) {
   const rows = [];
@@ -68,11 +75,11 @@ const headCells = [
     disablePadding: true,
     label: "Full Name",
   },
-  { id: "fN", numeric: true, disablePadding: false, label: "Company" },
-  { id: "lN", numeric: true, disablePadding: false, label: "Position" },
-  { id: "cmp", numeric: true, disablePadding: false, label: "Personal Number" },
+  { id: "cmp", numeric: true, disablePadding: false, label: "Company" },
+  { id: "pos", numeric: true, disablePadding: false, label: "Position" },
+  { id: "pNo", numeric: true, disablePadding: false, label: "Personal Number" },
   {
-    id: "pos",
+    id: "eM",
     numeric: true,
     disablePadding: false,
     label: "E-Mail",
@@ -80,15 +87,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const {
-    classes,
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onRequestSort,
-  } = props;
+  const { classes, order, orderBy, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -96,9 +95,7 @@ function EnhancedTableHead(props) {
   return (
     <TableHead>
       <TableRow style={{ background: "#e0e0e0" }}>
-        <TableCell padding="checkbox">
-          <Typography>Delete</Typography>
-        </TableCell>
+        <TableCell>{""}</TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
@@ -135,78 +132,6 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-const useToolbarStyles = makeStyles((theme) => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-  },
-  highlight:
-    theme.palette.type === "light"
-      ? {
-          color: theme.palette.primary.main,
-          backgroundColor: lighten(theme.palette.primary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.primary.dark,
-        },
-  title: {
-    flex: "1 1 100%",
-  },
-}));
-
-const EnhancedTableToolbar = (props) => {
-  const classes = useToolbarStyles();
-  const { numSelected, itemList, remove } = props;
-
-  function handleDelete(e) {
-    debugger;
-    remove(itemList[0]);
-  }
-
-  return (
-    <Toolbar
-      className={clsx(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
-    >
-      {numSelected > 0 ? (
-        <Typography
-          className={classes.title}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
-          className={classes.title}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Registered Users
-        </Typography>
-      )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <Button aria-label="delete" onClick={handleDelete}>
-            <DeleteIcon />
-          </Button>
-        </Tooltip>
-      ) : null}
-    </Toolbar>
-  );
-};
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-  itemList: PropTypes.array,
-  remove: PropTypes.func,
-};
-
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -231,7 +156,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function GridView({ profiles }, props) {
+function GridView(props) {
+  const { profiles } = props;
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("fN");
@@ -242,6 +168,23 @@ function GridView({ profiles }, props) {
 
   const [term, setTerm] = useState("");
   const [id, setID] = useState("fN");
+
+  const [open, setOpen] = React.useState(false);
+
+  const [prof, setProf] = useState({});
+
+  const handleClickOpen = (prof) => {
+    setProf(prof);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
 
   function handleID(e) {
     setID(e.target.id);
@@ -264,7 +207,6 @@ function GridView({ profiles }, props) {
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
-
   const rows = getData(profiles)
     .filter(searchingFor(term, id))
     .map((person) => {
@@ -285,25 +227,6 @@ function GridView({ profiles }, props) {
   const handleChange = (event) => {
     setItem(event.target.value);
   };
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
-  };
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -322,10 +245,41 @@ function GridView({ profiles }, props) {
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
-  const handleDelete = (e) => {
-    console.log(selected);
-    deleteConnection(selected[0]);
-  };
+  function handleDialog(row) {
+    return (
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle id="alert-dialog-slide-title">
+          {"Delete Connection"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Are you sure that you want to delete {row.fN} {row.lN} from your
+            list of connection?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            No
+          </Button>
+          <Button onClick={(e) => handleDelete(row.id)} color="primary">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  function handleDelete(id) {
+    props.deleteConnection(id);
+    handleClose();
+  }
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -344,13 +298,21 @@ function GridView({ profiles }, props) {
               value={item}
               onChange={handleChange}
             >
-              <MenuItem id="fN" value={"First Name"} onClick={handleID}>
+              <MenuItem
+                id="fN"
+                value={"First Name"}
+                onClick={(e) => handleID(e)}
+              >
                 First Name
               </MenuItem>
-              <MenuItem id="lN" value={"Last Name"} onClick={handleID}>
+              <MenuItem
+                id="lN"
+                value={"Last Name"}
+                onClick={(e) => handleID(e)}
+              >
                 Last Name
               </MenuItem>
-              <MenuItem id="cmp" value={"Company"} onClick={handleID}>
+              <MenuItem id="cmp" value={"Company"} onClick={(e) => handleID(e)}>
                 Company
               </MenuItem>
             </Select>
@@ -395,15 +357,18 @@ function GridView({ profiles }, props) {
                         scope="row"
                         padding="none"
                       >
-                        <Button
+                        <IconButton
+                          id={row.id}
                           style={{
                             backgroundColor: "#3f51b5",
                             margin: "5px",
                             color: "white",
                           }}
+                          onClick={(e) => handleClickOpen(row)}
                         >
-                          Delete
-                        </Button>
+                          <DeleteIcon />
+                        </IconButton>
+                        {open ? handleDialog(prof) : null}
                       </TableCell>
                       <TableCell
                         component="th"
@@ -457,11 +422,22 @@ function GridView({ profiles }, props) {
     </div>
   );
 }
-
-const mapDispatchToProps = (dispatch) => {
+const mapStateToProps = (state) => {
+  // firebase.firestore().collection("notify").doc()
   return {
-    deleteConnection: (id) => dispatch(deleteConnection(id)),
+    profiles: state.firestore.ordered.user, // get the  list of user from the firestore
+    auth: state.firebase.auth,
+    current_user: state.firebase.profile,
   };
 };
 
-export default connect(null, mapDispatchToProps)(GridView);
+// const mapDispatchToProps = (dispatch) => {
+//   return {
+//     deleteConnection: (id) => dispatch(deleteConnection(id)),
+//   };
+// };
+
+export default compose(
+  connect(mapStateToProps, { deleteConnection }),
+  firestoreConnect([{ collection: "user" }])
+)(GridView);

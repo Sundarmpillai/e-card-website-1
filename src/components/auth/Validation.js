@@ -66,7 +66,7 @@ export const validate = (id, value, _errors) => {
     }
   }
 
-  if (id === "email" || id === 'em' || id === 'eM') {
+  if (id === "email" || id === "em" || id === "eM") {
     if (checkMinLength(value, 1)) {
       errors[id] = "Email cannot be blank";
     } else if (!validEmailRegex.test(value)) {
@@ -76,7 +76,7 @@ export const validate = (id, value, _errors) => {
     }
   }
 
-  if (id === "password" || id === 'pwd') {
+  if (id === "password" || id === "pwd") {
     if (checkMinLength(value, 1)) {
       errors[id] = "Please enter your password";
     } else if (checkMinLength(value, 8)) {
@@ -87,62 +87,80 @@ export const validate = (id, value, _errors) => {
   }
 
   // Position
-  if (id === 'pos') {
-    if (validNameRegex.test(value)){
-      errors[id] = 'Position must not contain special characters or numbers'
+  if (id === "pos") {
+    if (validNameRegex.test(value)) {
+      errors[id] = "Position must not contain special characters or numbers";
     } else if (checkMinLength(value, 1)) {
-      errors[id] = 'Position should not be blank'
+      errors[id] = "Position should not be blank";
     } else {
-      errors[id] = ''
+      errors[id] = "";
     }
   }
 
   // Company name
-  if (id === 'cmp') {
+  if (id === "cmp") {
     if (checkMinLength(value, 1)) {
-      errors[id] = 'Company Name should not be blank'
+      errors[id] = "Company Name should not be blank";
     } else {
-      errors[id] = ''
+      errors[id] = "";
     }
   }
 
   // Address
-  if (id === 'adr') {
+  if (id === "adr") {
     if (checkMinLength(value, 1)) {
-      errors[id] = 'Address details should not be blank'
+      errors[id] = "Address details should not be blank";
     } else {
-      errors[id] = ''
+      errors[id] = "";
     }
   }
 
   // personal phone number
-  if (id === 'pNo') {
+  if (id === "pNo") {
     if (Number(value) === 0) {
-      errors[id] = 'Personal Number should not be blank'
-    } else if (!validPhoneNoRegex.test(value)){
-      errors[id] = 'Personal Number must contain exactly 10 digits'
+      errors[id] = "Personal Number should not be blank";
+    } else if (!validPhoneNoRegex.test(value)) {
+      errors[id] = "Personal Number must contain exactly 10 digits";
     } else {
-      errors[id] = ''
+      errors[id] = "";
     }
   }
 
   // work phone number
-  if (id === 'wNo') {
+  if (id === "wNo") {
     if (Number(value) === 0) {
-      errors[id] = 'Work Number should not be blank'
-    } else if (!validPhoneNoRegex.test(value)){
-      errors[id] = 'Work Number must contain exactly 10 digits'
+      errors[id] = "Work Number should not be blank";
+    } else if (!validPhoneNoRegex.test(value)) {
+      errors[id] = "Work Number must contain exactly 10 digits";
     } else {
-      errors[id] = ''
+      errors[id] = "";
     }
   }
 
   // profile picture
-  if (id === 'pPic') {
+  if (id === "pPic") {
     if (checkMinLength(value, 1)) {
-      errors[id] = 'Please upload a proper profile picture'
+      errors[id] = "Please upload a proper profile picture";
     } else {
-      errors[id] = ''
+      errors[id] = "";
+    }
+  }
+
+  // visiting card front image
+  if (id === "front") {
+    if (checkMinLength(value, 1)) {
+      errors[id] = "Please upload visiting card front view picture";
+    } else {
+      errors[id] = "";
+    }
+  }
+
+  // visiting card back image
+  if (id === "back") {
+    if (checkMinLength(value, 1)) {
+      errors[id] = "Please upload visiting card back view picture";
+    } else {
+      errors[id] = "";
     }
   }
 

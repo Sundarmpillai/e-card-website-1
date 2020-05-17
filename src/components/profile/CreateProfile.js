@@ -10,8 +10,8 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-
 import * as validator from "../auth/Validation";
+
 
 function CreateProfile(props) {
   const initState = {
@@ -23,6 +23,7 @@ function CreateProfile(props) {
     wNo: 0,
     pos: "",
     eM: "",
+    conn: [],
     pPic: "",
     front: "",
     back: "",
@@ -43,28 +44,28 @@ function CreateProfile(props) {
     },
   };
 
+  const [valid, setValid] = useState(true);
+
   const [doc, setDoc] = useState(initState);
 
   useEffect(() => {
     const profile = JSON.parse(localStorage.getItem("create"));
-    console.log(profile);
     if (profile) {
       setDoc({
         ...doc,
-        fN: profile.fN || "",
-        lN: profile.lN || "",
-        cmp: profile.cmp || "",
-        adr: profile.adr || "",
-        pNo: profile.pNo || 0,
-        wNo: profile.wNo || 0,
-        pos: profile.pos || "",
-        eM: profile.eM || "",
-        // pPic: profile.pPic || "",
+        fN: "",
+        lN: "",
+        cmp: "",
+        adr: "",
+        pNo: 0,
+        wNo: 0,
+        pos: "",
+        eM: "",
         pPic: "",
-        conn: profile.conn || [],
-        front: profile.front || "",
-        back: profile.back || "",
-        status: profile.status || false,
+        conn: [],
+        front: "",
+        back: "",
+        status: false,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -99,22 +100,16 @@ function CreateProfile(props) {
     setDoc({ ...doc, errors, [id]: value });
   };
 
-  // handleChange = (e) => {
-  //   const { id, value } = e.target;
-  //   this.validateInputAndSetState(id, value);
-  // };
-
   const handleChange = (e) => {
-    const {id, value} = e.target;
+    const { id, value } = e.target;
     validateInputAndSetState(id, value);
-    console.log(id, doc[id]);
+    setValid(validator.isErrorObjectEmpty(doc.errors)); //if the error state is empty then valid become true
     // setDoc({ ...doc, [e.target.id]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('in handle submit');
-    console.log(doc);
+    console.log("in handle submit");
 
     // iterate through the component state as key value pairs and
     //  run the validation on each value.
@@ -123,24 +118,26 @@ function CreateProfile(props) {
     for (let [id, value] of Object.entries(doc)) {
       validateInputAndSetState(id, value);
     }
-
     // if error object is empty then the form is valid
     const isFormValid = validator.isErrorObjectEmpty(doc.errors);
     // submit if the form is valid
 
     if (isFormValid) {
+      setValid(true); // set the valid state to true since the form is valid
       console.log("Form is Valid.");
-      props.createProfile(doc);
-      props.history.push("/");
+      delete doc.errors; // delete error state from the final object.
+      // props.createProfile(doc);
+      // props.history.push("/");
     } else {
       console.log("Form is INVALID. Are all errors displayed?");
+      setValid(false);
     }
   };
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
-      setDoc({ 
-        ...doc, 
+      setDoc({
+        ...doc,
         pPic: URL.createObjectURL(event.target.files[0]),
       });
     }
@@ -186,7 +183,7 @@ function CreateProfile(props) {
       console.log(0);
     }
   };
-  const { auth, profile } = props;
+  const { auth } = props;
   const classes = useStyles();
   if (!auth.uid) return <Redirect to="/login" />;
   return (
@@ -228,15 +225,28 @@ function CreateProfile(props) {
             </div>
             <div style={{ clear: "left", position: "relative" }}>
               <div>
-                <TextField
+                {/* <TextField
                   className={classes.tField}
                   id="fN"
                   label="First Name"
                   value={doc.fN}
                   onChange={handleChange}
                   variant="outlined"
+                /> */}
+
+                {/* Material UI built in error message is used in this textfield */}
+                {/* vlaid is a state object that returns true or false on validation*/}
+                <TextField
+                  error={!valid}
+                  className={classes.tField}
+                  id="fN"
+                  label={valid ? "First Name" : "Error"}
+                  value={doc.fN}
+                  helperText={valid ? null : doc.errors.fN}
+                  onChange={handleChange}
+                  variant="outlined"
                 />
-                <Typography color="secondary">{doc.errors.fN}</Typography>
+                {/* No need for seperate field for the error msg */}
                 <TextField
                   className={classes.tField}
                   id="lN"
@@ -329,7 +339,7 @@ function CreateProfile(props) {
               <div style={{ position: "relative", margin: "5px" }}>
                 <img
                   src={
-                    profile.front ||
+                    doc.front ||
                     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
                   }
                   height="160"
@@ -347,13 +357,13 @@ function CreateProfile(props) {
                       style={{ whiteSpace: "normal", wordWrap: "break-word" }}
                     />
                   </div>
-                <Typography color="secondary">{doc.errors.front}</Typography>
+                  <Typography color="secondary">{doc.errors.front}</Typography>
                 </div>
               </div>
               <div style={{ position: "relative", margin: "5px" }}>
                 <img
                   src={
-                    profile.back ||
+                    doc.back ||
                     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
                   }
                   height="160"

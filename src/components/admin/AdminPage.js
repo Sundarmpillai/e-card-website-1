@@ -6,7 +6,6 @@ import { Redirect } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import GridView from "../admin/GridView";
-import { deleteConnection } from "../../store/actions/adminAction";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,7 +54,7 @@ function Admin(props) {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <div style={{ width: "80%", margin: "auto" }}>
-            <GridView profiles={conn_list} func={deleteConnection()} />
+            <GridView profiles={conn_list} />
           </div>
         </Grid>
       </Grid>
