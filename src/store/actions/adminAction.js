@@ -59,7 +59,7 @@ export const updateConnection = (profile, uid) => {
 
 export const deleteConnection = (uid) => {
   return (dispatch, getState, { firebase }) => {
-    const firestore = firebase.firestore();
+    // const firestore = firebase.firestore();
     console.log(uid);
     // firestore
     //   .collection("user")

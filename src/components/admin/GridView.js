@@ -4,9 +4,8 @@ import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
 
 import PropTypes from "prop-types";
-import clsx from "clsx";
 import { Link } from "react-router-dom";
-import { lighten, makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -15,9 +14,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
 import Paper from "@material-ui/core/Paper";
-import Tooltip from "@material-ui/core/Tooltip";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -27,11 +24,7 @@ import Select from "@material-ui/core/Select";
 
 import {
   Button,
-  Container,
-  Typography,
   TextField,
-  Card,
-  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
