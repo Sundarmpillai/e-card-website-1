@@ -6,7 +6,6 @@ import { Redirect } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import GridView from "../admin/GridView";
-import { deleteConnection } from "../../store/actions/adminAction";
 
 const useStyles = makeStyles((theme) => ({
   root: {
