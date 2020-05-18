@@ -247,80 +247,88 @@ function CreateProfile(props) {
                 />
                 {/* No need for seperate field for the error msg */}
                 <TextField
+                  error={!valid}
                   className={classes.tField}
                   id="lN"
-                  label="Last Name"
+                  label={valid ? "Last Name" : "Error"}
                   value={doc.lN}
+                  helperText={valid ? null : doc.errors.lN}
                   onChange={handleChange}
                   variant="outlined"
                 />
-                <Typography color="secondary">{doc.errors.lN}</Typography>
               </div>
             </div>
             <div style={{ clear: "left" }}>
               <TextField
+                error={!valid}
                 className={classes.tField}
                 id="pNo"
-                label="Personal Number"
+                label={valid ? "Personal Number" : "Error"}
                 value={doc.pNo}
+                helperText={valid ? null : doc.errors.pNo}
                 onChange={handleChange}
                 variant="outlined"
               />
-              <Typography color="secondary">{doc.errors.pNo}</Typography>
             </div>
             <Typography variant="h6" style={{ padding: "10px" }}>
               Work Information
             </Typography>
             <div>
               <TextField
+                error={!valid}
                 className={classes.tField}
                 id="cmp"
-                label="Company"
+                label={valid ? "Company" : "Error"}
                 value={doc.cmp}
+                helperText={valid ? null : doc.errors.cmp}
                 onChange={handleChange}
-                variant="outlined"
-              />
-              <Typography color="secondary">{doc.errors.cmp}</Typography>
+                variant="outlined" 
+                />
+
               <TextField
+                error={!valid}
                 className={classes.tField}
                 id="pos"
-                label="Position"
+                label={valid ? "Position" : "Error"}
                 value={doc.pos}
+                helperText={valid ? null : doc.errors.pos}
                 onChange={handleChange}
                 variant="outlined"
               />
-              <Typography color="secondary">{doc.errors.pos}</Typography>
             </div>
             <div>
               <TextField
+                error={!valid}
                 className={classes.tField}
                 id="eM"
-                label="E-Mail"
+                label={valid ? "E-Mail" : "Error"}
                 value={doc.eM}
+                helperText={valid ? null : doc.errors.eM}
                 onChange={handleChange}
                 variant="outlined"
               />
-              <Typography color="secondary">{doc.errors.eM}</Typography>
             </div>
             <div>
               <TextField
+                error={!valid}
                 className={classes.tField}
                 id="wNo"
-                label="Work Number"
+                label={valid ? "Work Phone Number" : "Error"}
                 value={doc.wNo}
+                helperText={valid ? null : doc.errors.wNo}
                 onChange={handleChange}
                 variant="outlined"
               />
-              <Typography color="secondary">{doc.errors.wNo}</Typography>
               <TextField
+                error={!valid}
                 className={classes.tField}
                 id="adr"
-                label="Address"
+                label={valid ? "Address" : "Error"}
                 value={doc.adr}
+                helperText={valid ? null : doc.errors.adr}
                 onChange={handleChange}
                 variant="outlined"
               />
-              <Typography color="secondary">{doc.errors.adr}</Typography>
             </div>
           </Grid>
           <Grid>
@@ -373,7 +381,10 @@ function CreateProfile(props) {
                 <div style={{ margin: "10px" }}>
                   <div>
                     <span style={{ fontSize: "10px" }}>Upload</span>
-                    <input type="file" id="back" onChange={backView} />
+                    <input 
+                    type="file" 
+                    id="back" 
+                    onChange={backView} />
                   </div>
                   <Typography color="secondary">{doc.errors.back}</Typography>
                 </div>

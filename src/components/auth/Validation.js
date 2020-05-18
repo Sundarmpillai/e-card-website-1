@@ -164,6 +164,25 @@ export const validate = (id, value, _errors) => {
     }
   }
 
+  // visiting card front image
+  if (id === 'front') {
+    if (checkMinLength(value, 1)) {
+      errors[id] = 'Please upload visiting card front view picture'
+    } else {
+      errors[id] = ''
+    }
+  }
+
+  // visiting card back image
+  if (id === 'back') {
+    if (checkMinLength(value, 1)) {
+      errors[id] = 'Please upload visiting card back view picture'
+    } else {
+      errors[id] = ''
+    }
+  }
+
+
   // return error object
   return errors;
 };
