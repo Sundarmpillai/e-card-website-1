@@ -33,7 +33,6 @@ function UserProfile(props) {
 
   useEffect(() => {
     const profile = JSON.parse(localStorage.getItem("current_user_profile"));
-    console.log(profile);
     if (profile) {
       setDoc({
         ...doc,
@@ -76,6 +75,9 @@ function UserProfile(props) {
     tField: {
       padding: 10,
     },
+    input: {
+      display: "none",
+    },
   }));
 
   const handleChange = (e) => {
@@ -85,43 +87,75 @@ function UserProfile(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(doc);
-    props.updateProfile(doc);
+    // props.updateProfile(doc);
   };
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
-      setDoc({
-        pPic: URL.createObjectURL(event.target.files[0]),
-      });
+      setDoc({ ...doc, pPic: URL.createObjectURL(event.target.files[0]) });
     }
   };
 
-  // const constrontView = (event) => {
-  //   if (event.target.files && event.target.files[0]) {
-  //     setState({
-  //       front: URL.createObjectURL(event.target.files[0]),
-  //     });
-  //   }
-  // };
-
   const backView = (event) => {
     if (event.target.files && event.target.files[0]) {
-      setDoc({
-        back: URL.createObjectURL(event.target.files[0]),
-      });
+      setDoc({ ...doc, back: URL.createObjectURL(event.target.files[0]) });
     }
   };
 
   const frontView = (event) => {
     if (event.target.files && event.target.files[0]) {
-      setDoc({
-        front: URL.createObjectURL(event.target.files[0]),
-      });
+      setDoc({ ...doc, front: URL.createObjectURL(event.target.files[0]) });
     }
   };
 
-  const fileUploadHandler = (e) => {
-    const ref = firebase.storage().ref();
+  const ref = firebase.storage().ref();
+
+  const frontUpload = (e) => {
+    const file = document.getElementById("front").files[0];
+    try {
+      const name = new Date() + "-" + file.name;
+      const metadata = {
+        contentType: file.type,
+      };
+      const task = ref.child(name).put(file, metadata);
+      task
+        .then((snapshot) => snapshot.ref.getDownloadURL())
+        .then((url) => {
+          setDoc({
+            ...doc,
+            front: url,
+          });
+          console.log("DONE");
+        })
+        .catch(console.error);
+    } catch (err) {
+      console.log(0);
+    }
+  };
+  const backUpload = (e) => {
+    const file = document.getElementById("back").files[0];
+    try {
+      const name = new Date() + "-" + file.name;
+      const metadata = {
+        contentType: file.type,
+      };
+      const task = ref.child(name).put(file, metadata);
+      task
+        .then((snapshot) => snapshot.ref.getDownloadURL())
+        .then((url) => {
+          setDoc({
+            ...doc,
+            back: url,
+          });
+          console.log("DONE");
+        })
+        .catch(console.error);
+    } catch (err) {
+      console.log(0);
+    }
+  };
+
+  const pPicUpload = (e) => {
     const file = document.getElementById("pPic").files[0];
     try {
       const name = new Date() + "-" + file.name;
@@ -133,45 +167,66 @@ function UserProfile(props) {
         .then((snapshot) => snapshot.ref.getDownloadURL())
         .then((url) => {
           setDoc({
+            ...doc,
             pPic: url,
           });
+          console.log("DONE");
         })
         .catch(console.error);
     } catch (err) {
-      console.log(err);
+      console.log(0);
     }
   };
 
-  function renderProfile(profile) {
+  function renderProfile() {
     return (
-      <form
-        onSubmit={handleSubmit}
-        style={{ margin: "auto", width: "80%", padding: "10px" }}
-      >
+      <form style={{ margin: "auto", width: "80%", padding: "10px" }}>
         <Card style={{ width: "auto" }}>
           <Grid container spcing={1}>
             <Grid item xs={6}>
               <Typography variant="h4" style={{ padding: "10px" }}>
                 Profile
               </Typography>
-              <Avatar
-                className={classes.large}
-                alt={doc.fN}
-                src={
-                  doc.pPic ||
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                }
-                style={{ margin: "10px" }}
-              />
-              <div style={{ margin: "10px" }}>
-                <div>
-                  <span style={{ fontSize: "10px" }}>Upload</span>
-                  <input
-                    type="file"
-                    id="pPic"
-                    onChange={onImageChange}
-                    style={{ whiteSpace: "normal", wordWrap: "break-word" }}
-                  />
+              <div style={{ position: "relative" }}>
+                <Avatar
+                  className={classes.large}
+                  alt={doc.fN}
+                  src={
+                    doc.pPic ||
+                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                  }
+                  style={{ margin: "10px" }}
+                />
+                <div style={{ margin: "10px" }}>
+                  <div>
+                    <input
+                      id="pPic"
+                      onChange={onImageChange}
+                      style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                      accept="image/*"
+                      className={classes.input}
+                      multiple
+                      type="file"
+                    />
+                    <label htmlFor="pPic">
+                      <Button
+                        component="span"
+                        variant="contained"
+                        color="primary"
+                        style={{ margin: "10px" }}
+                      >
+                        Select
+                      </Button>
+                    </label>
+                    <Button
+                      component="span"
+                      onClick={pPicUpload}
+                      variant="contained"
+                      color="primary"
+                    >
+                      Upload
+                    </Button>
+                  </div>
                 </div>
               </div>
               <div>
@@ -266,40 +321,103 @@ function UserProfile(props) {
                 <div style={{ position: "relative", margin: "5px" }}>
                   <img
                     src={
-                      profile.front ||
+                      doc.front ||
                       "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
                     }
                     height="160"
                     width="250"
                     alt="Card Front View"
                   />
-                  <br />
-                  <div style={{ margin: "10px" }}>
+                  <div
+                    align="right"
+                    style={{
+                      clear: "right",
+                      float: "right",
+                      marginLeft: "10px",
+                      marginBottom: "10px",
+                    }}
+                  >
                     <div>
-                      <span style={{ fontSize: "10px" }}>Upload</span>
                       <input
-                        type="file"
                         id="front"
+                        onChange={frontView}
                         style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                        accept="image/*"
+                        className={classes.input}
+                        multiple
+                        type="file"
                       />
+                      <label htmlFor="front">
+                        <Button
+                          component="span"
+                          variant="contained"
+                          color="primary"
+                          style={{ margin: "10px" }}
+                        >
+                          Select
+                        </Button>
+                      </label>
+                      <Button
+                        component="span"
+                        onClick={frontUpload}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Upload
+                      </Button>
                     </div>
                   </div>
                 </div>
-                <div style={{ position: "relative", margin: "5px" }}>
+                <div
+                  style={{
+                    position: "relative",
+                    margin: "5px",
+                    clear: "right",
+                  }}
+                >
                   <img
                     src={
-                      profile.back ||
+                      doc.back ||
                       "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
                     }
                     height="160"
                     width="250"
                     alt="Card Back View"
                   />
-                  <br />
-                  <div style={{ margin: "10px" }}>
+                  <div
+                    style={{
+                      float: "right",
+                      marginLeft: "10px",
+                    }}
+                  >
                     <div>
-                      <span style={{ fontSize: "10px" }}>Upload</span>
-                      <input type="file" id="back" />
+                      <input
+                        id="back"
+                        onChange={backView}
+                        style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                        accept="image/*"
+                        className={classes.input}
+                        multiple
+                        type="file"
+                      />
+                      <label htmlFor="back">
+                        <Button
+                          component="span"
+                          variant="contained"
+                          color="primary"
+                          style={{ margin: "10px" }}
+                        >
+                          Select
+                        </Button>
+                      </label>
+                      <Button
+                        component="span"
+                        onClick={backUpload}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Upload
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -328,7 +446,7 @@ function UserProfile(props) {
   const classes = useStyles();
   if (!auth.uid) return <Redirect to="/login" />;
 
-  const profileView = doc === null ? <Redirect to="/" /> : renderProfile(doc);
+  const profileView = doc === null ? <Redirect to="/" /> : renderProfile();
   if (profileView) {
     return <div>{profileView}</div>;
   } else {
