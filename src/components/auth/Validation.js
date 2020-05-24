@@ -79,7 +79,7 @@ export const validate = (id, value, _errors) => {
   if (id === "password" || id === "pwd") {
     if (checkMinLength(value, 1)) {
       errors[id] = "Please enter your password";
-    } else if (checkMinLength(value, 8)) {
+    } else if (checkMinLength(value, 6)) {
       errors[id] = "Password must be at least 8 characters";
     } else {
       errors[id] = "";
@@ -165,23 +165,22 @@ export const validate = (id, value, _errors) => {
   }
 
   // visiting card front image
-  if (id === 'front') {
+  if (id === "front") {
     if (checkMinLength(value, 1)) {
-      errors[id] = 'Please upload visiting card front view picture'
+      errors[id] = "Please upload visiting card front view picture";
     } else {
-      errors[id] = ''
+      errors[id] = "";
     }
   }
 
   // visiting card back image
-  if (id === 'back') {
+  if (id === "back") {
     if (checkMinLength(value, 1)) {
-      errors[id] = 'Please upload visiting card back view picture'
+      errors[id] = "Please upload visiting card back view picture";
     } else {
-      errors[id] = ''
+      errors[id] = "";
     }
   }
-
 
   // return error object
   return errors;

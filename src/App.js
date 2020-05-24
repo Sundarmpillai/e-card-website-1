@@ -8,9 +8,9 @@ import Register from "./components/auth/Register";
 import CreateProfile from "./components/profile/CreateProfile";
 import UserProfile from "./components/profile/UserProfile";
 import Admin from "./components/admin/AdminPage";
-// import Admin2 from "./components/admin/AdminPage2";
 import ChangePwd from "./components/settings/ChangePassword";
 import ChangeEmail from "./components/settings/ChangeEmail";
+import Graphs from "./components/admin/Graphs";
 
 // import 'bootstrap/dist/css/bootstrap.min.css';
 class App extends Component {
@@ -29,8 +29,7 @@ class App extends Component {
             <Route path="/admin" component={Admin} />
             <Route path="/pwd" component={ChangePwd} />
             <Route path="/email" component={ChangeEmail} />
-
-            {/* <Route path="/admin2" component={Admin2} /> */}
+            <Route path="/graph" component={Graphs} />
           </Switch>
         </div>
       </BrowserRouter>

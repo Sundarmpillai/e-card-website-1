@@ -92,3 +92,21 @@ export const changePwd = (credentials) => {
       });
   };
 };
+
+export const deleteConnection = (uid, id) => {
+  return (dispatch, getState, { firebase }) => {
+    const firestore = firebase.firestore();
+    firestore
+      .collection("user")
+      .doc(uid)
+      .update({
+        conn: firebase.firestore.FieldValue.arrayRemove(id),
+      })
+      .then(() => {
+        dispatch({ type: "DELETE_PROFILE" });
+      })
+      .catch((e) => {
+        dispatch({ type: "DELETE_PROFILE_ERROR", e });
+      });
+  };
+};

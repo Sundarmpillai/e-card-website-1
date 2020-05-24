@@ -14,7 +14,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Paper from "@material-ui/core/Paper";
+import Card from "@material-ui/core/Card";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -34,11 +34,13 @@ import {
   IconButton,
 } from "@material-ui/core";
 
-import { deleteConnection } from "../../store/actions/adminAction";
+import { deleteUser } from "../../store/actions/adminAction";
 
 function getData(profiles) {
   const rows = [];
-  profiles.map((profile) => rows.push(profile));
+  if (profiles !== undefined) {
+    profiles.map((profile) => rows.push(profile));
+  }
   return rows;
 }
 
@@ -94,7 +96,7 @@ function EnhancedTableHead(props) {
 
   return (
     <TableHead>
-      <TableRow style={{ background: "#e0e0e0" }}>
+      <TableRow style={{ background: "#3f51b5" }}>
         <TableCell>{""}</TableCell>
         {headCells.map((headCell) => (
           <TableCell
@@ -102,6 +104,7 @@ function EnhancedTableHead(props) {
             align={headCell.numeric ? "right" : "left"}
             padding={headCell.disablePadding ? "none" : "default"}
             sortDirection={orderBy === headCell.id ? order : false}
+            style={{ color: "white" }}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -277,17 +280,15 @@ function GridView(props) {
   }
 
   function handleDelete(id) {
-    props.deleteConnection(id);
+    props.deleteUser(id);
     handleClose();
   }
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
-        {/* <EnhancedTableToolbar
-          remove={deleteConnection(selected)}
-          numSelected={selected.length}
-          itemList={selected}
-        /> */}
+      <Card className={classes.paper} variant="outlined">
+        <div style={{ display: "inline", float: "left", margin: "10px" }}>
+          <h2>Registered Users</h2>
+        </div>
         <div style={{ display: "inline", float: "right", margin: "10px" }}>
           <TextField id="standard-basic" label="Search" onChange={searchBar} />
           <div style={{ float: "right", marginLeft: "5px" }}>
@@ -408,7 +409,7 @@ function GridView(props) {
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
-      </Paper>
+      </Card>
       <FormControlLabel
         control={
           <Switch
@@ -438,6 +439,6 @@ const mapStateToProps = (state) => {
 // };
 
 export default compose(
-  connect(mapStateToProps, { deleteConnection }),
+  connect(mapStateToProps, { deleteUser }),
   firestoreConnect([{ collection: "user" }])
 )(GridView);

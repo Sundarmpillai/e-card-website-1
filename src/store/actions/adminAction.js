@@ -39,28 +39,20 @@ export const updateConnection = (profile, uid) => {
   };
 };
 
-// export const deleteConnection = (uid) => {
-//   return (dispatch, getState, { firebase }) => {
-//     for (let i = 0; i < uid.length; i++) {
-//       const firestore = firebase.firestore();
-//       firestore
-//         .collection("user")
-//         .doc(uid[i])
-//         .delete()
-//         .then(() => {
-//           dispatch({ type: "DELETE_PROFILE" });
-//         })
-//         .catch((e) => {
-//           dispatch({ type: "DELETE_PROFILE_ERROR", e });
-//         });
-//     }
-//   };
-// };
-
-export const deleteConnection = (uid) => {
+export const deleteUser = (uid) => {
   return (dispatch, getState, { firebase }) => {
-    // const firestore = firebase.firestore();
-    console.log(uid);
+    const firestore = firebase.firestore();
+    const storage = firebase.storage().ref(uid);
+    storage
+      .listAll()
+      .then(function (result) {
+        result.items.forEach(function (file) {
+          file.delete();
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     // firestore
     //   .collection("user")
     //   .doc(uid)

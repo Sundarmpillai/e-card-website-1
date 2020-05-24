@@ -4,7 +4,8 @@ import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
 import { updateConnection } from "../../store/actions/adminAction";
-import { deleteConnection } from "../../store/actions/adminAction";
+import { deleteUser } from "../../store/actions/adminAction";
+import { deleteConnection } from "../../store/actions/profileAction";
 import Card from "@material-ui/core/Card";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
@@ -54,7 +55,6 @@ function ViewConnection(props) {
 
   useEffect(() => {
     const profile = JSON.parse(localStorage.getItem("profile"));
-    console.log(profile);
     if (profile) {
       setDoc({
         ...doc,
@@ -108,11 +108,19 @@ function ViewConnection(props) {
     props.updateConnection(doc, uid);
   };
 
-  const onDelete = (e) => {
+  const onDelete = (status) => {
     handleClose();
     var uid = props.match.params.id;
-    props.deleteConnection(uid); // change it one parameter to pass:
-    props.history.goBack();
+    if (status) {
+      // if the user is an admin it will delete the profile from the system
+      props.deleteUser(uid);
+      props.history.goBack();
+    } else {
+      console.log(props.admin_profile.id);
+      // if the user is normal user it will remove the connectin list from their list.
+      props.deleteConnection(uid, props.admin_profile.id);
+      props.history.goBack();
+    }
   };
 
   const { admin_profile, auth } = props;
@@ -142,7 +150,7 @@ function ViewConnection(props) {
                 style={{ margin: "auto" }}
               />
             </div>
-            <Paper elevation={3} style={{ width: "80%", margin: "auto" }}>
+            <Paper elevation={3} style={{ width: "90%", margin: "auto" }}>
               {admin ? (
                 <div>
                   <TextField
@@ -335,7 +343,7 @@ function ViewConnection(props) {
                 <Button onClick={handleClose} color="primary">
                   No
                 </Button>
-                <Button onClick={onDelete} color="primary">
+                <Button onClick={(e) => onDelete(admin)} color="primary">
                   Yes
                 </Button>
               </DialogActions>
@@ -372,7 +380,8 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     updateConnection: (profile, id) => dispatch(updateConnection(profile, id)),
-    deleteConnection: (profile) => dispatch(deleteConnection(profile)),
+    deleteConnection: (uid, id) => dispatch(deleteConnection(uid, id)),
+    deleteUser: (uid) => dispatch(deleteUser(uid)),
   };
 };
 

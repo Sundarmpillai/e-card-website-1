@@ -62,6 +62,7 @@ function Dashboard(props) {
       }
       return null;
     });
+  console.log(notification);
   return (
     <div className={classes.root}>
       <Grid container spcing={3}>

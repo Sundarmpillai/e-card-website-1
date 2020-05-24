@@ -29,6 +29,8 @@ function Admin(props) {
 
   const classes = useStyles();
 
+  window.addEventListener("loadeddata", console.log("LOADED"));
+
   const { profiles, auth, current_user } = props;
   if (!auth.uid) return <Redirect to="/login" />;
 
@@ -63,7 +65,6 @@ function Admin(props) {
 }
 
 const mapStateToProps = (state) => {
-  // firebase.firestore().collection("notify").doc()
   return {
     profiles: state.firestore.ordered.user, // get the  list of user from the firestore
     auth: state.firebase.auth,
