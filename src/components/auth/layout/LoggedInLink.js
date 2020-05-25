@@ -22,6 +22,11 @@ const LoggedInLink = (props) => {
     <ul>
       {/* <li><NavLink to='/create'>Create Profile</NavLink></li> */}
       <li style={{ display: "inline" }}>
+        <NavLink to="/" style={{ color: "black", textDecoration: "none" }}>
+          <Button style={{ color: "white" }}>Home</Button>
+        </NavLink>
+      </li>
+      <li style={{ display: "inline" }}>
         <Button style={{ color: "white" }}>
           <div>
             <div

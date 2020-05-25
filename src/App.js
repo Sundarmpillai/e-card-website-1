@@ -11,6 +11,7 @@ import Admin from "./components/admin/AdminPage";
 import ChangePwd from "./components/settings/ChangePassword";
 import ChangeEmail from "./components/settings/ChangeEmail";
 import Graphs from "./components/admin/Graphs";
+import Content from "./components/admin/Content";
 
 // import 'bootstrap/dist/css/bootstrap.min.css';
 class App extends Component {
@@ -26,10 +27,11 @@ class App extends Component {
             <Route path="/register" component={Register} />
             <Route path="/create" component={CreateProfile} />
             <Route path="/profile" component={UserProfile} />
-            <Route path="/admin" component={Admin} />
+            <Route path="/users" component={Admin} />
             <Route path="/pwd" component={ChangePwd} />
             <Route path="/email" component={ChangeEmail} />
-            <Route path="/graph" component={Graphs} />
+            <Route path="/dashboard" component={Graphs} />
+            <Route path="/content" component={Content} />
           </Switch>
         </div>
       </BrowserRouter>

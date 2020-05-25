@@ -34,11 +34,12 @@ function Dashboard(props) {
   const conn_list = [];
   const notify_list = [];
   const { profiles, auth, current_user, notification } = props;
+  if (current_user.status) return <Redirect to="/dashboard" />;
+
   if (!auth.uid) return <Redirect to="/login" />;
 
   if (current_user.pNo === 0) return <Redirect to="/create" />;
 
-  if (current_user.status) return <Redirect to="/admin" />;
   profiles &&
     profiles.map((user) => {
       if (current_user.conn != null) {

@@ -8,7 +8,6 @@ import { updateProfile } from "../../store/actions/adminAction";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Button,
-  Container,
   Typography,
   TextField,
   Card,
@@ -22,6 +21,7 @@ import {
   Grid,
   Avatar,
 } from "@material-ui/core";
+import * as validator from "../auth/Validation";
 
 function UserProfile(props) {
   const initState = {
@@ -37,6 +37,19 @@ function UserProfile(props) {
     front: "",
     back: "",
     status: false,
+    errors: {
+      fN: "",
+      lN: "",
+      cmp: "",
+      adr: "",
+      pNo: "",
+      wNo: "",
+      pos: "",
+      eM: "",
+      pPic: "",
+      front: "",
+      back: "",
+    },
   };
 
   const [doc, setDoc] = useState(initState);
@@ -104,15 +117,47 @@ function UserProfile(props) {
     },
   }));
 
+  const [valid, setValid] = useState(true);
+
+  const validateInputAndSetState = (id, value) => {
+    const errors = validator.validate(id, value, doc.errors);
+    setDoc({ ...doc, errors, [id]: value });
+  };
+
   const handleChange = (e) => {
-    setDoc({ ...doc, [e.target.id]: e.target.value });
+    const { id, value } = e.target;
+    validateInputAndSetState(id, value);
+    setValid(validator.isErrorObjectEmpty(doc.errors)); //if the error state is empty then valid become true
+    // setDoc({ ...doc, [e.target.id]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(doc);
-    handleClose();
-    // props.updateProfile(doc);
+
+    // iterate through the component state as key value pairs and
+    //  run the validation on each value.
+    // if the validation function handles that key value pair
+    //  then it is validated otherwise skipped
+    for (let [id, value] of Object.entries(doc)) {
+      validateInputAndSetState(id, value);
+    }
+    // if error object is empty then the form is valid
+    const isFormValid = validator.isErrorObjectEmpty(doc.errors);
+    // submit if the form is valid
+
+    if (isFormValid) {
+      handleClose();
+      setValid(true); // set the valid state to true since the form is valid
+      console.log("Form is Valid.");
+      delete doc.errors; // delete error state from the final object.
+      console.log(doc);
+      // props.updateProfile(doc);
+    } else {
+      console.log("Form is INVALID. Are all errors displayed?");
+      setValid(false);
+      handleClose();
+    }
   };
 
   const onImageChange = (event) => {
@@ -286,80 +331,94 @@ function UserProfile(props) {
                     </div>
                   </div>
                 </div>
-                <div>
-                  <div style={{ clear: "left", position: "relative" }}>
-                    <div>
-                      <TextField
-                        className={classes.tField}
-                        id="fN"
-                        label="First Name"
-                        value={doc.fN}
-                        onChange={handleChange}
-                        variant="outlined"
-                      />
-                      <TextField
-                        className={classes.tField}
-                        id="lN"
-                        label="Last Name"
-                        value={doc.lN}
-                        onChange={handleChange}
-                        variant="outlined"
-                      />
-                    </div>
-                    <div>
-                      <TextField
-                        className={classes.tField}
-                        id="cmp"
-                        label="Company"
-                        value={doc.cmp}
-                        onChange={handleChange}
-                        variant="outlined"
-                      />
-                      <TextField
-                        className={classes.tField}
-                        id="pos"
-                        label="Position"
-                        value={doc.pos}
-                        onChange={handleChange}
-                        variant="outlined"
-                      />
-                    </div>
-                    <div>
-                      <TextField
-                        className={classes.tField}
-                        id="eM"
-                        label="E-Mail"
-                        value={doc.eM}
-                        onChange={handleChange}
-                        variant="outlined"
-                      />
-                      <TextField
-                        className={classes.tField}
-                        id="pNo"
-                        label="Personal Number"
-                        value={doc.pNo}
-                        onChange={handleChange}
-                        variant="outlined"
-                      />
-                    </div>
-                    <div>
-                      <TextField
-                        className={classes.tField}
-                        id="wNo"
-                        label="Work Number"
-                        value={doc.wNo}
-                        onChange={handleChange}
-                        variant="outlined"
-                      />
-                      <TextField
-                        className={classes.tField}
-                        id="adr"
-                        label="Address"
-                        value={doc.adr}
-                        onChange={handleChange}
-                        variant="outlined"
-                      />
-                    </div>
+                <div style={{ clear: "left", position: "relative" }}>
+                  <div>
+                    <TextField
+                      error={!valid}
+                      className={classes.tField}
+                      id="fN"
+                      label={valid ? "First Name" : "Error"}
+                      value={doc.fN}
+                      helperText={valid ? null : doc.errors.fN}
+                      onChange={handleChange}
+                      variant="outlined"
+                    />
+                    <TextField
+                      error={!valid}
+                      className={classes.tField}
+                      id="lN"
+                      label={valid ? "Last Name" : "Error"}
+                      value={doc.lN}
+                      helperText={valid ? null : doc.errors.lN}
+                      onChange={handleChange}
+                      variant="outlined"
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      error={!valid}
+                      className={classes.tField}
+                      id="cmp"
+                      label={valid ? "Company" : "Error"}
+                      value={doc.cmp}
+                      helperText={valid ? null : doc.errors.cmp}
+                      onChange={handleChange}
+                      variant="outlined"
+                    />
+                    <TextField
+                      error={!valid}
+                      className={classes.tField}
+                      id="pos"
+                      label={valid ? "Position" : "Error"}
+                      value={doc.pos}
+                      helperText={valid ? null : doc.errors.pos}
+                      onChange={handleChange}
+                      variant="outlined"
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      error={!valid}
+                      className={classes.tField}
+                      id="eM"
+                      label={valid ? "E-Mail" : "Error"}
+                      value={doc.eM}
+                      helperText={valid ? null : doc.errors.eM}
+                      onChange={handleChange}
+                      variant="outlined"
+                    />
+                    <TextField
+                      error={!valid}
+                      className={classes.tField}
+                      id="pNo"
+                      label={valid ? "Personal Number" : "Error"}
+                      value={doc.pNo}
+                      helperText={valid ? null : doc.errors.pNo}
+                      onChange={handleChange}
+                      variant="outlined"
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      error={!valid}
+                      className={classes.tField}
+                      id="wNo"
+                      label={valid ? "Work Phone Number" : "Error"}
+                      value={doc.wNo}
+                      helperText={valid ? null : doc.errors.wNo}
+                      onChange={handleChange}
+                      variant="outlined"
+                    />
+                    <TextField
+                      error={!valid}
+                      className={classes.tField}
+                      id="adr"
+                      label={valid ? "Address" : "Error"}
+                      value={doc.adr}
+                      helperText={valid ? null : doc.errors.adr}
+                      onChange={handleChange}
+                      variant="outlined"
+                    />
                   </div>
                 </div>
               </Grid>

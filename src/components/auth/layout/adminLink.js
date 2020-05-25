@@ -20,12 +20,25 @@ const LoggedInLink = (props) => {
   return (
     <ul>
       <li style={{ display: "inline" }}>
-        <NavLink to="/graph" style={{ color: "black", textDecoration: "none" }}>
-          <Button style={{ color: "white" }}>Graph</Button>
+        <NavLink
+          to="/dashboard"
+          style={{ color: "black", textDecoration: "none" }}
+        >
+          <Button style={{ color: "white" }}>Dashboard</Button>
         </NavLink>
       </li>
       <li style={{ display: "inline" }}>
-        <Button style={{ color: "white" }}>Update Contents</Button>
+        <NavLink to="/users" style={{ color: "black", textDecoration: "none" }}>
+          <Button style={{ color: "white" }}>Users</Button>
+        </NavLink>
+      </li>
+      <li style={{ display: "inline" }}>
+        <NavLink
+          to="/content"
+          style={{ color: "black", textDecoration: "none" }}
+        >
+          <Button style={{ color: "white" }}>Contents</Button>
+        </NavLink>
       </li>
       <li style={{ display: "inline" }}>
         <Button style={{ color: "white" }}>

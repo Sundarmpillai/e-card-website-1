@@ -65,3 +65,28 @@ export const deleteUser = (uid) => {
     //   });
   };
 };
+
+export const uploadNews = (obj) => {
+  return (dispatch, getState, { firebase }) => {
+    const firestore = firebase.firestore();
+
+    firestore
+      .collection("news")
+      .doc("msg")
+      .update({
+        ...obj,
+      });
+  };
+};
+
+export const updateContact = (obj) => {
+  return (dispatch, getState, { firebase }) => {
+    const firestore = firebase.firestore();
+    firestore
+      .collection("news")
+      .doc("msg")
+      .update({
+        ...obj,
+      });
+  };
+};

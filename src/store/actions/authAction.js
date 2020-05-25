@@ -43,3 +43,20 @@ export const register = (newUser) => {
       });
   };
 };
+
+export const resetPassword = (email) => {
+  return (dispatch, getState, { firebase }) => {
+    var auth = firebase.auth();
+    var emailAddress = email.mail.toString();
+    console.log(typeof emailAddress);
+
+    auth
+      .sendPasswordResetEmail(emailAddress)
+      .then(function () {
+        console.log("DONE");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+};
