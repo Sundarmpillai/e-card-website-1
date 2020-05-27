@@ -12,6 +12,7 @@ import ChangePwd from "./components/settings/ChangePassword";
 import ChangeEmail from "./components/settings/ChangeEmail";
 import Graphs from "./components/admin/Graphs";
 import Content from "./components/admin/Content";
+import HomePage from "./components/profile/HomePage";
 
 // import 'bootstrap/dist/css/bootstrap.min.css';
 class App extends Component {
@@ -32,6 +33,7 @@ class App extends Component {
             <Route path="/email" component={ChangeEmail} />
             <Route path="/dashboard" component={Graphs} />
             <Route path="/content" component={Content} />
+            <Route path="/home" component={HomePage} />
           </Switch>
         </div>
       </BrowserRouter>

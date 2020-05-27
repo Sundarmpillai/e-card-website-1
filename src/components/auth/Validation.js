@@ -76,11 +76,11 @@ export const validate = (id, value, _errors) => {
     }
   }
 
-  if (id === "password" || id === "pwd") {
+  if (id === "password" || id === "pwd" || id === "repwd") {
     if (checkMinLength(value, 1)) {
       errors[id] = "Please enter your password";
     } else if (checkMinLength(value, 6)) {
-      errors[id] = "Password must be at least 8 characters";
+      errors[id] = "Password must be at least 6 characters";
     } else {
       errors[id] = "";
     }

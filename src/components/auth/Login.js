@@ -14,7 +14,6 @@ import {
   Checkbox,
   Grid,
   FormControlLabel,
-  Link,
   Typography,
   TextField,
   Card,
@@ -121,14 +120,6 @@ function Login(props) {
             <Typography color="secondary">{state.errors.password}</Typography>
             <br />
 
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember Me"
-            />
-
-            <br />
-            <br />
-
             <Button type="submit" fullWidth variant="contained" color="primary">
               Login
             </Button>
@@ -140,13 +131,15 @@ function Login(props) {
 
             <Grid container>
               <Grid item xs>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleClickOpen}
-                >
-                  Forgot Password?
-                </Button>
+                <div align="center">
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleClickOpen}
+                  >
+                    Forgot Password?
+                  </Button>
+                </div>
                 <Dialog
                   open={open}
                   onClose={handleClose}
@@ -177,11 +170,6 @@ function Login(props) {
                     </Button>
                   </DialogActions>
                 </Dialog>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
               </Grid>
             </Grid>
           </CardContent>

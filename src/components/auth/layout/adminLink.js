@@ -6,6 +6,7 @@ import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import HomeIcon from "@material-ui/icons/Home";
 
 const LoggedInLink = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -19,6 +20,16 @@ const LoggedInLink = (props) => {
   };
   return (
     <ul>
+      <li style={{ display: "inline" }}>
+        <Button style={{ color: "white" }} startIcon={<HomeIcon />}>
+          <NavLink
+            to="/home"
+            style={{ color: "white", textDecoration: "none" }}
+          >
+            Home
+          </NavLink>
+        </Button>
+      </li>
       <li style={{ display: "inline" }}>
         <NavLink
           to="/dashboard"
