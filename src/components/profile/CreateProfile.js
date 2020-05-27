@@ -154,8 +154,8 @@ function CreateProfile(props) {
       console.log("Form is Valid.");
       delete doc.errors; // delete error state from the final object.
       console.log(doc);
-      // props.createProfile(doc);
-      // props.history.push("/");
+      props.createProfile(doc);
+      props.history.push("/");
     } else {
       console.log("Form is INVALID. Are all errors displayed?");
       setValid(false);

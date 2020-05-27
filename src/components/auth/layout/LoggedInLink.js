@@ -34,6 +34,13 @@ const LoggedInLink = (props) => {
       </li>
       <li style={{ display: "inline" }}>
         <Button style={{ color: "white" }}>
+          <NavLink to="/" style={{ color: "white", textDecoration: "none" }}>
+            Cards
+          </NavLink>
+        </Button>
+      </li>
+      <li style={{ display: "inline" }}>
+        <Button style={{ color: "white" }}>
           <div>
             <div
               aria-controls="simple-menu"
