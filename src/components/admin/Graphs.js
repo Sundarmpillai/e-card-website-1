@@ -18,14 +18,16 @@ function Graphs(props) {
   const [prevUser, setPrevUser] = useState([]);
   const [prevConn, setPrevConn] = useState([]);
   const [noConn, setNoConn] = useState([]);
+  const [lwUser, setlwUser] = useState([]);
+  const [lwConn, setlwConn] = useState([]);
+
   let list = [];
   let users = [];
   let prevData = [];
   let conn = [];
   let usageRate = [];
-  let prevUsersList = [];
-  let prevConnList = [];
   let userPrev = [];
+  let connPrev = [];
   let now = new Date();
   let day = now.getDay() === 0 ? 7 : now.getDay();
 
@@ -50,7 +52,10 @@ function Graphs(props) {
         for (let j = 0; j < list[6].prevC.length; j++) {
           prevData.push((list[6].prevD[j] / list[6].prevC[j]).toFixed(2));
           userPrev.push(list[6].prevD[j]);
+          connPrev.push(list[6].prevC[j]);
         }
+        setlwUser(userPrev);
+        setlwConn(connPrev);
         if (day === 1) {
           setPrevUser(list[6].prevD[6]);
           setPrevConn(list[6].prevC[6]);
@@ -144,52 +149,75 @@ function Graphs(props) {
     if (noConn !== undefined) {
       if (noUsers < prevUser) {
         return (
-          <Typography>
-            Number of Users :{noUsers}
-            <ArrowDownwardIcon style={{ color: "#b71c1c" }} />
-          </Typography>
+          <div>
+            <Typography variant="h5">Number of Users</Typography>
+            <Typography variant="h6">Previous Week:{lwUser[day]}</Typography>
+            <Typography variant="h6">
+              Current Week :{noUsers}
+              <ArrowDownwardIcon style={{ color: "#b71c1c" }} />
+            </Typography>
+          </div>
         );
       } else if (noUsers > prevUser) {
         return (
-          <Typography>
-            Number of Users :{noUsers}
-            <ArrowUpwardIcon style={{ color: "#00c853" }} />
-          </Typography>
+          <div>
+            <Typography variant="h5">Number of Users</Typography>
+            <Typography variant="h6">Previous Week:{lwUser[day]}</Typography>
+            <Typography variant="h6">
+              Current Week :{noUsers}
+              <ArrowUpwardIcon style={{ color: "#00c853" }} />
+            </Typography>
+          </div>
         );
       } else {
         return (
-          <Typography variant="h6">
-            Number of Users :{noUsers}
-            <MinimizeIcon style={{ color: "#212121" }} />
-          </Typography>
+          <div>
+            <Typography variant="h5">Number of Users</Typography>
+            <Typography variant="h6">Previous Week:{lwUser[day]}</Typography>
+            <Typography variant="h6">
+              Current Week :{noUsers}
+              <MinimizeIcon style={{ color: "#212121" }} />
+            </Typography>
+          </div>
         );
       }
     }
   }
 
   function checkStatusOfConnection() {
-    console.log(noConn, prevConn);
     if (noConn !== undefined) {
       if (noConn < prevConn) {
         return (
-          <Typography variant="h6">
-            Number of Connections :{noConn}
-            <ArrowDownwardIcon style={{ color: "#b71c1c" }} />
-          </Typography>
+          <div>
+            <Typography variant="h5">Number of Connections</Typography>
+            <Typography variant="h6">Previous Week:{lwConn[day]}</Typography>
+            <Typography variant="h6">
+              Current Week :{noConn}
+              <ArrowDownwardIcon style={{ color: "#b71c1c" }} />
+            </Typography>
+          </div>
         );
       } else if (noConn > prevConn) {
         return (
-          <Typography variant="h6">
-            Number of Connections :{noConn}
-            <ArrowUpwardIcon style={{ color: "#00c853" }} />
-          </Typography>
+          <div>
+            <Typography variant="h5">Number of Connections</Typography>
+            <Typography variant="h6">Previous Week:{lwConn[day]}</Typography>
+            <Typography variant="h6">
+              Current Week :{noConn}
+              <ArrowUpwardIcon style={{ color: "#00c853" }} />
+            </Typography>
+          </div>
         );
       } else {
         return (
-          <Typography variant="h6">
-            Number of Connections :{noConn}
-            <MinimizeIcon style={{ color: "#212121" }} />
-          </Typography>
+          <div>
+            <Typography variant="h5">Number of Connections</Typography>
+            <Typography variant="h6">Previous Week:{lwConn[day]}</Typography>
+            <Typography variant="h6">
+              Current Week :{noConn}
+              <MinimizeIcon style={{ color: "#212121" }} />
+            </Typography>
+          </div>
         );
       }
     }
@@ -203,6 +231,7 @@ function Graphs(props) {
         width: "800px",
         height: "600px",
         margin: "auto",
+        marginTop: "10px",
       }}
     >
       <Card variant="outlined">
@@ -252,6 +281,7 @@ function Graphs(props) {
               </div>
               <div>
                 {checkStatusOfUsers()}
+                <hr />
                 {checkStatusOfConnection()}
               </div>
             </CardContent>

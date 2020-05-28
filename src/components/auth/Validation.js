@@ -48,9 +48,9 @@ export const validate = (id, value, _errors) => {
   // let errors = {};
   if (id === "fN") {
     if (validNameRegex.test(value)) {
-      errors[id] = "First Name must not contain special characters or numbers";
+      errors[id] = "Can not contain special characters or numbers";
     } else if (checkMinLength(value, 3)) {
-      errors[id] = "First Name must be at least 3 characters";
+      errors[id] = "At least 3 letters needed";
     } else {
       errors[id] = "";
     }
@@ -58,9 +58,9 @@ export const validate = (id, value, _errors) => {
 
   if (id === "lN") {
     if (validNameRegex.test(value)) {
-      errors[id] = "Last Name must not contain special characters or numbers";
+      errors[id] = "Can not contain special characters or numbers";
     } else if (checkMinLength(value, 3)) {
-      errors[id] = "Last Name must be at least 3 characters";
+      errors[id] = "At least 3 letters needed";
     } else {
       errors[id] = "";
     }
@@ -80,7 +80,7 @@ export const validate = (id, value, _errors) => {
     if (checkMinLength(value, 1)) {
       errors[id] = "Please enter your password";
     } else if (checkMinLength(value, 6)) {
-      errors[id] = "Password must be at least 6 characters";
+      errors[id] = "Password is too week";
     } else {
       errors[id] = "";
     }
@@ -89,9 +89,9 @@ export const validate = (id, value, _errors) => {
   // Position
   if (id === "pos") {
     if (validNameRegex.test(value)) {
-      errors[id] = "Position must not contain special characters or numbers";
+      errors[id] = "Can not contain special characters or numbers";
     } else if (checkMinLength(value, 1)) {
-      errors[id] = "Position should not be blank";
+      errors[id] = "Field can not be blank";
     } else {
       errors[id] = "";
     }
@@ -100,7 +100,7 @@ export const validate = (id, value, _errors) => {
   // Company name
   if (id === "cmp") {
     if (checkMinLength(value, 1)) {
-      errors[id] = "Company Name should not be blank";
+      errors[id] = "Field can not be blank";
     } else {
       errors[id] = "";
     }
@@ -109,7 +109,7 @@ export const validate = (id, value, _errors) => {
   // Address
   if (id === "adr") {
     if (checkMinLength(value, 1)) {
-      errors[id] = "Address details should not be blank";
+      errors[id] = "Field can not be blank";
     } else {
       errors[id] = "";
     }
@@ -118,9 +118,9 @@ export const validate = (id, value, _errors) => {
   // personal phone number
   if (id === "pNo") {
     if (Number(value) === 0) {
-      errors[id] = "Personal Number should not be blank";
+      errors[id] = "Field can not be blank";
     } else if (!validPhoneNoRegex.test(value)) {
-      errors[id] = "Personal Number must contain exactly 10 digits";
+      errors[id] = "Field requires 10 digits";
     } else {
       errors[id] = "";
     }
@@ -129,59 +129,13 @@ export const validate = (id, value, _errors) => {
   // work phone number
   if (id === "wNo") {
     if (Number(value) === 0) {
-      errors[id] = "Work Number should not be blank";
+      errors[id] = "Field can not be blank";
     } else if (!validPhoneNoRegex.test(value)) {
-      errors[id] = "Work Number must contain exactly 10 digits";
+      errors[id] = "Field requires 10 digits";
     } else {
       errors[id] = "";
     }
   }
-
-  // profile picture
-  if (id === "pPic") {
-    if (checkMinLength(value, 1)) {
-      errors[id] = "Please upload a proper profile picture";
-    } else {
-      errors[id] = "";
-    }
-  }
-
-  // visiting card front image
-  if (id === "front") {
-    if (checkMinLength(value, 1)) {
-      errors[id] = "Please upload visiting card front view picture";
-    } else {
-      errors[id] = "";
-    }
-  }
-
-  // visiting card back image
-  if (id === "back") {
-    if (checkMinLength(value, 1)) {
-      errors[id] = "Please upload visiting card back view picture";
-    } else {
-      errors[id] = "";
-    }
-  }
-
-  // visiting card front image
-  if (id === "front") {
-    if (checkMinLength(value, 1)) {
-      errors[id] = "Please upload visiting card front view picture";
-    } else {
-      errors[id] = "";
-    }
-  }
-
-  // visiting card back image
-  if (id === "back") {
-    if (checkMinLength(value, 1)) {
-      errors[id] = "Please upload visiting card back view picture";
-    } else {
-      errors[id] = "";
-    }
-  }
-
   // return error object
   return errors;
 };

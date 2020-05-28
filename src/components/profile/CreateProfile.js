@@ -45,9 +45,6 @@ function CreateProfile(props) {
       wNo: "",
       pos: "",
       eM: "",
-      pPic: "",
-      front: "",
-      back: "",
       // status: false,
     },
   };
@@ -300,6 +297,7 @@ function CreateProfile(props) {
           <Typography variant="h4" style={{ padding: "10px" }}>
             Create Profile
           </Typography>
+          <hr />
           <Grid container spcing={1}>
             <Grid item xs={6}>
               <Typography variant="h6" style={{ padding: "10px" }}>
@@ -352,7 +350,7 @@ function CreateProfile(props) {
                   {/* Material UI built in error message is used in this textfield */}
                   {/* vlaid is a state object that returns true or false on validation*/}
                   <TextField
-                    error={!valid}
+                    error={doc.errors.fN === "" ? false : true}
                     className={classes.tField}
                     id="fN"
                     label={valid ? "First Name" : "Error"}
@@ -363,10 +361,12 @@ function CreateProfile(props) {
                   />
                   {/* No need for seperate field for the error msg */}
                   <TextField
+                    error={doc.errors.lN === "" ? false : true}
                     className={classes.tField}
                     id="lN"
-                    label="Last Name"
+                    label={valid ? "Last Name" : "Error!"}
                     value={doc.lN}
+                    helperText={valid ? null : doc.errors.lN}
                     onChange={handleChange}
                     variant="outlined"
                   />
@@ -374,10 +374,12 @@ function CreateProfile(props) {
               </div>
               <div style={{ clear: "left" }}>
                 <TextField
+                  error={doc.errors.pNo === "" ? false : true}
                   className={classes.tField}
                   id="pNo"
-                  label="Personal Number"
+                  label={valid ? "Personal Number" : "Error!"}
                   value={doc.pNo}
+                  helperText={valid ? null : doc.errors.pNo}
                   onChange={handleChange}
                   variant="outlined"
                 />
@@ -387,46 +389,56 @@ function CreateProfile(props) {
               </Typography>
               <div>
                 <TextField
+                  error={doc.errors.cmp === "" ? false : true}
                   className={classes.tField}
                   id="cmp"
-                  label="Company"
+                  label={valid ? "Company" : "Error!"}
                   value={doc.cmp}
+                  helperText={valid ? null : doc.errors.cmp}
                   onChange={handleChange}
                   variant="outlined"
                 />
                 <TextField
+                  error={doc.errors.pos === "" ? false : true}
                   className={classes.tField}
                   id="pos"
-                  label="Position"
+                  label={valid ? "Position" : "Error!"}
                   value={doc.pos}
+                  helperText={valid ? null : doc.errors.pos}
                   onChange={handleChange}
                   variant="outlined"
                 />
               </div>
               <div>
                 <TextField
+                  error={doc.errors.eM === "" ? false : true}
                   className={classes.tField}
                   id="eM"
-                  label="E-Mail"
+                  label={valid ? "E-Mail" : "Error!"}
                   value={doc.eM}
+                  helperText={valid ? null : doc.errors.eM}
                   onChange={handleChange}
                   variant="outlined"
                 />
               </div>
               <div>
                 <TextField
+                  error={doc.errors.wNo === "" ? false : true}
                   className={classes.tField}
                   id="wNo"
-                  label="Work Number"
+                  label={valid ? "Work Phone Number" : "Error!"}
                   value={doc.wNo}
+                  helperText={valid ? null : doc.errors.wNo}
                   onChange={handleChange}
                   variant="outlined"
                 />
                 <TextField
+                  error={doc.errors.adr === "" ? false : true}
                   className={classes.tField}
                   id="adr"
-                  label="Address"
+                  label={valid ? "Address" : "Error!"}
                   value={doc.adr}
+                  helperText={valid ? null : doc.errors.adr}
                   onChange={handleChange}
                   variant="outlined"
                 />

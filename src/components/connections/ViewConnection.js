@@ -7,6 +7,7 @@ import { updateConnection } from "../../store/actions/adminAction";
 import { deleteUser } from "../../store/actions/adminAction";
 import { deleteConnection } from "../../store/actions/profileAction";
 import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
@@ -20,6 +21,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
+import * as validator from "../auth/Validation";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -39,9 +41,20 @@ function ViewConnection(props) {
     front: "",
     back: "",
     status: false,
+    errors: {
+      fN: "",
+      lN: "",
+      cmp: "",
+      adr: "",
+      pNo: "",
+      wNo: "",
+      pos: "",
+      eM: "",
+    },
   };
 
   const [open, setOpen] = React.useState(false);
+  const [valid, setValid] = useState(true);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -98,14 +111,44 @@ function ViewConnection(props) {
     },
   }));
 
+  const validateInputAndSetState = (id, value) => {
+    const errors = validator.validate(id, value, doc.errors);
+    setDoc({ ...doc, errors, [id]: value });
+  };
+
   const handleChange = (e) => {
-    setDoc({ ...doc, [e.target.id]: e.target.value });
+    const { id, value } = e.target;
+    validateInputAndSetState(id, value);
+    setValid(validator.isErrorObjectEmpty(doc.errors)); //if the error state is empty then valid become true
+    // setDoc({ ...doc, [e.target.id]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    var uid = props.match.params.id;
-    props.updateConnection(doc, uid);
+    // iterate through the component state as key value pairs and
+    //  run the validation on each value.
+    // if the validation function handles that key value pair
+    //  then it is validated otherwise skipped
+    for (let [id, value] of Object.entries(doc)) {
+      validateInputAndSetState(id, value);
+    }
+    // if error object is empty then the form is valid
+    const isFormValid = validator.isErrorObjectEmpty(doc.errors);
+    // submit if the form is valid
+
+    if (isFormValid) {
+      handleClose();
+      setValid(true); // set the valid state to true since the form is valid
+      console.log("Form is Valid.");
+      delete doc.errors; // delete error state from the final object.
+      console.log(doc);
+      var uid = props.match.params.id;
+      props.updateConnection(doc, uid);
+    } else {
+      console.log("Form is INVALID. Are all errors displayed?");
+      setValid(false);
+      handleClose();
+    }
   };
 
   const onDelete = (status) => {
@@ -134,65 +177,74 @@ function ViewConnection(props) {
   return (
     <form style={{ margin: "auto", width: "80%", padding: "10px" }}>
       <Card style={{ width: "auto" }}>
+        <Typography variant="h4" style={{ padding: "10px" }}>
+          Profile
+        </Typography>
+        <hr />
         <Grid container spcing={1}>
           <Grid item xs={6}>
-            <Typography variant="h5" style={{ padding: "10px" }}>
-              Profile
-            </Typography>
-            <div style={{ marginBottom: "10px" }}>
-              <Avatar
-                className={classes.large}
-                alt={doc.fN}
-                src={
-                  doc.pPic ||
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                }
-                style={{ margin: "auto" }}
-              />
-            </div>
-            <Paper elevation={3} style={{ width: "90%", margin: "auto" }}>
-              {admin ? (
-                <div>
-                  <TextField
-                    className={classes.tField}
-                    id="fN"
-                    label="First Name"
-                    value={doc.fN}
-                    onChange={handleChange}
-                    variant="outlined"
-                  />
-                  <TextField
-                    className={classes.tField}
-                    id="lN"
-                    label="Last Name"
-                    value={doc.lN}
-                    onChange={handleChange}
-                    variant="outlined"
-                  />
-                </div>
-              ) : (
-                <Typography variant="body1" style={{ padding: "10px" }}>
-                  <label style={{ fontWeight: "bold" }}>Name - </label>
-                  {doc.fN} {doc.lN}
-                </Typography>
-              )}
-              <div>
+            <CardContent>
+              <div style={{ marginBottom: "10px" }}>
+                <Avatar
+                  className={classes.large}
+                  alt={doc.fN}
+                  src={
+                    doc.pPic ||
+                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                  }
+                  style={{ margin: "auto" }}
+                />
+              </div>
+              <div style={{ marginLeft: "20px" }}>
+                {admin ? (
+                  <div>
+                    <TextField
+                      error={doc.errors.fN === "" ? false : true}
+                      className={classes.tField}
+                      id="fN"
+                      label={valid ? "First Name" : "Error!"}
+                      value={doc.fN}
+                      helperText={valid ? null : doc.errors.fN}
+                      onChange={handleChange}
+                      variant="outlined"
+                    />
+                    <TextField
+                      error={doc.errors.lN === "" ? false : true}
+                      className={classes.tField}
+                      id="lN"
+                      label={valid ? "First Name" : "Error!"}
+                      value={doc.lN}
+                      helperText={valid ? null : doc.errors.lN}
+                      onChange={handleChange}
+                      variant="outlined"
+                    />
+                  </div>
+                ) : (
+                  <Typography variant="body1" style={{ padding: "10px" }}>
+                    <label style={{ fontWeight: "bold" }}>Name - </label>
+                    {doc.fN} {doc.lN}
+                  </Typography>
+                )}
                 <div>
                   {admin ? (
                     <div>
                       <TextField
+                        error={doc.errors.cmp === "" ? false : true}
                         className={classes.tField}
                         id="cmp"
-                        label="Company"
+                        label={valid ? "Company" : "Error!"}
                         value={doc.cmp}
+                        helperText={valid ? null : doc.errors.cmp}
                         onChange={handleChange}
                         variant="outlined"
                       />
                       <TextField
+                        error={doc.errors.pos === "" ? false : true}
                         className={classes.tField}
                         id="pos"
-                        label="Position"
+                        label={valid ? "Position" : "Error!"}
                         value={doc.pos}
+                        helperText={valid ? null : doc.errors.pos}
                         onChange={handleChange}
                         variant="outlined"
                       />
@@ -209,10 +261,12 @@ function ViewConnection(props) {
                 <div>
                   {admin ? (
                     <TextField
+                      error={doc.errors.eM === "" ? false : true}
                       className={classes.tField}
                       id="eM"
-                      label="E-Mail"
+                      label={valid ? "E-Mail" : "Error!"}
                       value={doc.eM}
+                      helperText={valid ? null : doc.errors.eM}
                       onChange={handleChange}
                       variant="outlined"
                     />
@@ -225,18 +279,22 @@ function ViewConnection(props) {
                   {admin ? (
                     <div>
                       <TextField
+                        error={doc.errors.pNo === "" ? false : true}
                         className={classes.tField}
                         id="pNo"
-                        label="Personal Number"
+                        label={valid ? "Personal Number" : "Error!"}
                         value={doc.pNo}
+                        helperText={valid ? null : doc.errors.pNo}
                         onChange={handleChange}
                         variant="outlined"
                       />
                       <TextField
+                        error={doc.errors.wNo === "" ? false : true}
                         className={classes.tField}
                         id="wNo"
-                        label="Work Number"
+                        label={valid ? "Work Phone Number" : "Error!"}
                         value={doc.wNo}
+                        helperText={valid ? null : doc.errors.wNo}
                         onChange={handleChange}
                         variant="outlined"
                       />
@@ -256,10 +314,12 @@ function ViewConnection(props) {
                   )}
                   {admin ? (
                     <TextField
+                      error={doc.errors.adr === "" ? false : true}
                       className={classes.tField}
                       id="adr"
-                      label="Address"
+                      label={valid ? "Address" : "Error!"}
                       value={doc.adr}
+                      helperText={valid ? null : doc.errors.adr}
                       onChange={handleChange}
                       variant="outlined"
                     />
@@ -275,30 +335,38 @@ function ViewConnection(props) {
                   )}
                 </div>
               </div>
-            </Paper>
+            </CardContent>
           </Grid>
           <Grid item xs={6}>
-            <Typography variant="h6" style={{ padding: "10px" }}>
-              Card Images
-            </Typography>
-            <div>
-              <img
-                className="card-view"
-                src={
-                  doc.front ||
-                  "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
-                }
-                alt="Card Front View"
-                style={{ display: "block" }}
-              />
-              <img
-                className="card-view"
-                src={
-                  doc.back ||
-                  "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
-                }
-                alt="Card Back View"
-              />
+            <div style={{ margin: "50px" }}>
+              <div align="center">
+                <Typography variant="h6" style={{ padding: "10px" }}>
+                  Card Images
+                </Typography>
+              </div>
+              <div align="center">
+                <Paper elevation={3} style={{ width: "75%", padding: "10xp" }}>
+                  <img
+                    className="card-view"
+                    src={
+                      doc.front ||
+                      "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
+                    }
+                    alt="Card Front View"
+                    style={{ display: "block" }}
+                  />
+                </Paper>
+                <Paper elevation={3} style={{ width: "75%", padding: "10xp" }}>
+                  <img
+                    className="card-view"
+                    src={
+                      doc.back ||
+                      "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
+                    }
+                    alt="Card Back View"
+                  />
+                </Paper>
+              </div>
             </div>
           </Grid>
         </Grid>

@@ -1,5 +1,6 @@
 export const login = (credentials) => {
   return (dispatch, getState, { firebase }) => {
+    console.log(credentials.email);
     firebase
       .auth()
       .signInWithEmailAndPassword(credentials.email, credentials.password)
@@ -23,22 +24,22 @@ export const logout = () => {
   };
 };
 
-var actionCodeSettings = {
-  // URL you want to redirect back to. The domain (www.example.com) for this
-  // URL must be whitelisted in the Firebase Console.
-  url: "https://localhost/finishSignUp?cartId=1234",
-  // This must be true.
-  handleCodeInApp: true,
-  iOS: {
-    bundleId: "com.example.ios",
-  },
-  android: {
-    packageName: "com.example.android",
-    installApp: true,
-    minimumVersion: "12",
-  },
-  dynamicLinkDomain: "example.page.link",
-};
+// var actionCodeSettings = {
+//   // URL you want to redirect back to. The domain (www.example.com) for this
+//   // URL must be whitelisted in the Firebase Console.
+//   url: "https://localhost/finishSignUp?cartId=1234",
+//   // This must be true.
+//   handleCodeInApp: true,
+//   iOS: {
+//     bundleId: "com.example.ios",
+//   },
+//   android: {
+//     packageName: "com.example.android",
+//     installApp: true,
+//     minimumVersion: "12",
+//   },
+//   dynamicLinkDomain: "example.page.link",
+// };
 
 export const register = (newUser) => {
   return (dispatch, getState, { firebase }) => {

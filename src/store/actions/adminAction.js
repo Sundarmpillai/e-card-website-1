@@ -53,16 +53,16 @@ export const deleteUser = (uid) => {
       .catch(function (error) {
         console.log(error);
       });
-    // firestore
-    //   .collection("user")
-    //   .doc(uid)
-    //   .delete()
-    //   .then(() => {
-    //     dispatch({ type: "DELETE_PROFILE" });
-    //   })
-    //   .catch((e) => {
-    //     dispatch({ type: "DELETE_PROFILE_ERROR", e });
-    //   });
+    firestore
+      .collection("user")
+      .doc(uid)
+      .delete()
+      .then(() => {
+        dispatch({ type: "DELETE_PROFILE" });
+      })
+      .catch((e) => {
+        dispatch({ type: "DELETE_PROFILE_ERROR", e });
+      });
   };
 };
 

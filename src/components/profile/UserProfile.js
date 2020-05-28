@@ -11,7 +11,6 @@ import {
   Typography,
   TextField,
   Card,
-  CardContent,
   Dialog,
   DialogActions,
   DialogContent,
@@ -46,15 +45,12 @@ function UserProfile(props) {
       wNo: "",
       pos: "",
       eM: "",
-      pPic: "",
-      front: "",
-      back: "",
     },
   };
 
   const [doc, setDoc] = useState(initState);
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -152,7 +148,7 @@ function UserProfile(props) {
       console.log("Form is Valid.");
       delete doc.errors; // delete error state from the final object.
       console.log(doc);
-      // props.updateProfile(doc);
+      props.updateProfile(doc);
     } else {
       console.log("Form is INVALID. Are all errors displayed?");
       setValid(false);
@@ -283,34 +279,190 @@ function UserProfile(props) {
     return (
       <form style={{ margin: "auto", width: "80%", padding: "10px" }}>
         <Card style={{ width: "auto" }}>
-          <CardContent>
-            <Grid container spcing={1}>
-              <Grid item xs={6}>
-                <Typography variant="h4" style={{ padding: "10px" }}>
-                  Profile
-                </Typography>
-                <div style={{ position: "relative" }}>
-                  <Avatar
-                    className={classes.large}
-                    alt={doc.fN}
-                    src={
-                      doc.pPic ||
-                      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                    }
-                    style={{ margin: "10px" }}
+          <Typography variant="h4" style={{ padding: "10px" }}>
+            Profile
+          </Typography>
+          <hr />
+          <Grid container spcing={1}>
+            <Grid item xs={6}>
+              <div style={{ position: "relative" }}>
+                <Avatar
+                  className={classes.large}
+                  alt={doc.fN}
+                  src={
+                    doc.pPic ||
+                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                  }
+                  style={{ margin: "10px" }}
+                />
+                <div style={{ margin: "10px" }}>
+                  <div>
+                    <input
+                      id="pPic"
+                      onChange={onImageChange}
+                      style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                      accept="image/*"
+                      className={classes.input}
+                      multiple
+                      type="file"
+                    />
+                    <label htmlFor="pPic">
+                      <Button
+                        component="span"
+                        variant="contained"
+                        color="primary"
+                        style={{ margin: "10px" }}
+                      >
+                        Select
+                      </Button>
+                    </label>
+                    <Button
+                      component="span"
+                      onClick={pPicUpload}
+                      variant="contained"
+                      color="primary"
+                    >
+                      Upload
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div style={{ clear: "left", position: "relative" }}>
+                <div>
+                  <TextField
+                    error={doc.errors.fN === "" ? false : true}
+                    className={classes.tField}
+                    id="fN"
+                    label={valid ? "First Name" : "Error!"}
+                    value={doc.fN}
+                    helperText={valid ? null : doc.errors.fN}
+                    onChange={handleChange}
+                    variant="outlined"
                   />
-                  <div style={{ margin: "10px" }}>
+                  <TextField
+                    error={doc.errors.lN === "" ? false : true}
+                    className={classes.tField}
+                    id="lN"
+                    label={valid ? "Last Name" : "Error!"}
+                    value={doc.lN}
+                    helperText={valid ? null : doc.errors.lN}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                </div>
+                <div>
+                  <TextField
+                    error={doc.errors.cmp === "" ? false : true}
+                    className={classes.tField}
+                    id="cmp"
+                    label={valid ? "Company" : "Error!"}
+                    value={doc.cmp}
+                    helperText={valid ? null : doc.errors.cmp}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                  <TextField
+                    error={doc.errors.pos === "" ? false : true}
+                    className={classes.tField}
+                    id="pos"
+                    label={valid ? "Position" : "Error!"}
+                    value={doc.pos}
+                    helperText={valid ? null : doc.errors.pos}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                </div>
+                <div>
+                  <TextField
+                    error={doc.errors.eM === "" ? false : true}
+                    className={classes.tField}
+                    id="eM"
+                    label={valid ? "E-Mail" : "Error!"}
+                    value={doc.eM}
+                    helperText={valid ? null : doc.errors.eM}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                  <TextField
+                    error={doc.errors.pNo === "" ? false : true}
+                    className={classes.tField}
+                    id="pNo"
+                    label={valid ? "Personal Number" : "Error!"}
+                    value={doc.pNo}
+                    helperText={valid ? null : doc.errors.pNo}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                </div>
+                <div>
+                  <TextField
+                    error={doc.errors.wNo === "" ? false : true}
+                    className={classes.tField}
+                    id="wNo"
+                    label={valid ? "Work Phone Number" : "Error!"}
+                    value={doc.wNo}
+                    helperText={valid ? null : doc.errors.wNo}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                  <TextField
+                    error={doc.errors.adr === "" ? false : true}
+                    className={classes.tField}
+                    id="adr"
+                    label={valid ? "Address" : "Error!"}
+                    value={doc.adr}
+                    helperText={valid ? null : doc.errors.adr}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                </div>
+              </div>
+            </Grid>
+            <Grid>
+              <Typography variant="h6" style={{ padding: "10px" }}>
+                Card Images
+              </Typography>
+              <div
+                className="CenterImage"
+                style={{
+                  paddingTop: "15px",
+                  margin: "auto",
+                  width: "50%",
+                }}
+              >
+                <div style={{ position: "relative", margin: "5px" }}>
+                  <img
+                    src={
+                      doc.front ||
+                      "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
+                    }
+                    height="160"
+                    width="250"
+                    alt="Card Front View"
+                  />
+                  <div
+                    align="right"
+                    style={{
+                      clear: "right",
+                      float: "right",
+                      marginLeft: "10px",
+                      marginBottom: "10px",
+                    }}
+                  >
                     <div>
                       <input
-                        id="pPic"
-                        onChange={onImageChange}
-                        style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                        id="front"
+                        onChange={frontView}
+                        style={{
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
+                        }}
                         accept="image/*"
                         className={classes.input}
                         multiple
                         type="file"
                       />
-                      <label htmlFor="pPic">
+                      <label htmlFor="front">
                         <Button
                           component="span"
                           variant="contained"
@@ -322,7 +474,7 @@ function UserProfile(props) {
                       </label>
                       <Button
                         component="span"
-                        onClick={pPicUpload}
+                        onClick={frontUpload}
                         variant="contained"
                         color="primary"
                       >
@@ -331,236 +483,79 @@ function UserProfile(props) {
                     </div>
                   </div>
                 </div>
-                <div style={{ clear: "left", position: "relative" }}>
-                  <div>
-                    <TextField
-                      error={!valid}
-                      className={classes.tField}
-                      id="fN"
-                      label={valid ? "First Name" : "Error"}
-                      value={doc.fN}
-                      helperText={valid ? null : doc.errors.fN}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                    <TextField
-                      error={!valid}
-                      className={classes.tField}
-                      id="lN"
-                      label={valid ? "Last Name" : "Error"}
-                      value={doc.lN}
-                      helperText={valid ? null : doc.errors.lN}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                  </div>
-                  <div>
-                    <TextField
-                      error={!valid}
-                      className={classes.tField}
-                      id="cmp"
-                      label={valid ? "Company" : "Error"}
-                      value={doc.cmp}
-                      helperText={valid ? null : doc.errors.cmp}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                    <TextField
-                      error={!valid}
-                      className={classes.tField}
-                      id="pos"
-                      label={valid ? "Position" : "Error"}
-                      value={doc.pos}
-                      helperText={valid ? null : doc.errors.pos}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                  </div>
-                  <div>
-                    <TextField
-                      error={!valid}
-                      className={classes.tField}
-                      id="eM"
-                      label={valid ? "E-Mail" : "Error"}
-                      value={doc.eM}
-                      helperText={valid ? null : doc.errors.eM}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                    <TextField
-                      error={!valid}
-                      className={classes.tField}
-                      id="pNo"
-                      label={valid ? "Personal Number" : "Error"}
-                      value={doc.pNo}
-                      helperText={valid ? null : doc.errors.pNo}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                  </div>
-                  <div>
-                    <TextField
-                      error={!valid}
-                      className={classes.tField}
-                      id="wNo"
-                      label={valid ? "Work Phone Number" : "Error"}
-                      value={doc.wNo}
-                      helperText={valid ? null : doc.errors.wNo}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                    <TextField
-                      error={!valid}
-                      className={classes.tField}
-                      id="adr"
-                      label={valid ? "Address" : "Error"}
-                      value={doc.adr}
-                      helperText={valid ? null : doc.errors.adr}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                  </div>
-                </div>
-              </Grid>
-              <Grid>
-                <Typography variant="h6" style={{ padding: "10px" }}>
-                  Card Images
-                </Typography>
                 <div
-                  className="CenterImage"
                   style={{
-                    paddingTop: "15px",
-                    margin: "auto",
-                    width: "50%",
+                    position: "relative",
+                    margin: "5px",
+                    clear: "right",
                   }}
                 >
-                  <div style={{ position: "relative", margin: "5px" }}>
-                    <img
-                      src={
-                        doc.front ||
-                        "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
-                      }
-                      height="160"
-                      width="250"
-                      alt="Card Front View"
-                    />
-                    <div
-                      align="right"
-                      style={{
-                        clear: "right",
-                        float: "right",
-                        marginLeft: "10px",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      <div>
-                        <input
-                          id="front"
-                          onChange={frontView}
-                          style={{
-                            whiteSpace: "normal",
-                            wordWrap: "break-word",
-                          }}
-                          accept="image/*"
-                          className={classes.input}
-                          multiple
-                          type="file"
-                        />
-                        <label htmlFor="front">
-                          <Button
-                            component="span"
-                            variant="contained"
-                            color="primary"
-                            style={{ margin: "10px" }}
-                          >
-                            Select
-                          </Button>
-                        </label>
-                        <Button
-                          component="span"
-                          onClick={frontUpload}
-                          variant="contained"
-                          color="primary"
-                        >
-                          Upload
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+                  <img
+                    src={
+                      doc.back ||
+                      "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
+                    }
+                    height="160"
+                    width="250"
+                    alt="Card Back View"
+                  />
                   <div
                     style={{
-                      position: "relative",
-                      margin: "5px",
-                      clear: "right",
+                      float: "right",
+                      marginLeft: "10px",
                     }}
                   >
-                    <img
-                      src={
-                        doc.back ||
-                        "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
-                      }
-                      height="160"
-                      width="250"
-                      alt="Card Back View"
-                    />
-                    <div
-                      style={{
-                        float: "right",
-                        marginLeft: "10px",
-                      }}
-                    >
-                      <div>
-                        <input
-                          id="back"
-                          onChange={backView}
-                          style={{
-                            whiteSpace: "normal",
-                            wordWrap: "break-word",
-                          }}
-                          accept="image/*"
-                          className={classes.input}
-                          multiple
-                          type="file"
-                        />
-                        <label htmlFor="back">
-                          <Button
-                            component="span"
-                            variant="contained"
-                            color="primary"
-                            style={{ margin: "10px" }}
-                          >
-                            Select
-                          </Button>
-                        </label>
+                    <div>
+                      <input
+                        id="back"
+                        onChange={backView}
+                        style={{
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
+                        }}
+                        accept="image/*"
+                        className={classes.input}
+                        multiple
+                        type="file"
+                      />
+                      <label htmlFor="back">
                         <Button
                           component="span"
-                          onClick={backUpload}
                           variant="contained"
                           color="primary"
+                          style={{ margin: "10px" }}
                         >
-                          Upload
+                          Select
                         </Button>
-                      </div>
+                      </label>
+                      <Button
+                        component="span"
+                        onClick={backUpload}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Upload
+                      </Button>
                     </div>
                   </div>
                 </div>
-              </Grid>
-            </Grid>
-            <Grid item xs={12}>
-              <div style={{ float: "right" }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  style={{ margin: 10 }}
-                  onClick={(e) => handleClickOpen()}
-                >
-                  Update
-                </Button>
-                {open ? handleDialog() : null}
               </div>
-              <div style={{ clear: "right" }}></div>
             </Grid>
-          </CardContent>
+          </Grid>
+          <Grid item xs={12}>
+            <div style={{ float: "right" }}>
+              <Button
+                variant="contained"
+                color="primary"
+                style={{ margin: 10 }}
+                onClick={(e) => handleClickOpen()}
+              >
+                Update
+              </Button>
+              {open ? handleDialog() : null}
+            </div>
+            <div style={{ clear: "right" }}></div>
+          </Grid>
         </Card>
       </form>
     );

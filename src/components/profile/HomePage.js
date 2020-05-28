@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import React from "react";
+import { connect } from "react-redux";
+import { firestoreConnect } from "react-redux-firebase";
+import { compose } from "redux";
+import moment from "moment";
 
 import {
   Typography,
@@ -7,25 +10,34 @@ import {
   CardContent,
   Paper,
   Container,
+  Grid,
 } from "@material-ui/core";
 
-function HomePage() {
+function HomePage(props) {
+  const { contact } = props;
   return (
     <div style={{ width: "75%", margin: "auto", marginTop: "10px" }}>
-      <Paper>
+      <Paper elevation={0}>
         <Card
           align="center"
-          style={{ backgroundColor: "#3949ab", color: "white" }}
+          elevation={0}
+          style={{
+            backgroundColor: "#f5f5f5",
+            border: "none",
+          }}
         >
-          <Typography variant="h3">E-Card Website</Typography>
-          <hr />
+          <div>
+            <Typography variant="h3" style={{ backgroundColor: "#f5f5f5" }}>
+              E-Card Website
+            </Typography>
+          </div>
           <Container
             style={{
               width: "90%",
               padding: "15px",
             }}
           >
-            <Typography variant="h6" align="justify">
+            <Typography variant="body1" align="justify">
               This website provides information about the E-Card mobile
               application. The E-Card Mobile application is a digital version of
               a Rolodex, which means the application will contain the user
@@ -34,7 +46,33 @@ function HomePage() {
             </Typography>
           </Container>
         </Card>
-
+        <Card>
+          <CardContent>
+            {contact &&
+              contact.map((items) => {
+                return (
+                  <div key="anc" style={{ backgroundColor: "#f5f5f5" }}>
+                    <Typography
+                      variant="h4"
+                      style={{
+                        backgroundColor: "#3949ab",
+                        color: "white",
+                        paddingLeft: "5px",
+                      }}
+                    >
+                      Announcement
+                    </Typography>
+                    <div style={{ paddingLeft: "10px" }}>
+                      <Typography variant="h6">Message:{items.msg}</Typography>
+                      <Typography variant="body1">
+                        Date:{moment(items.date.toDate()).toString()}
+                      </Typography>
+                    </div>
+                  </div>
+                );
+              })}
+          </CardContent>
+        </Card>
         <Card>
           <div>
             <CardContent>
@@ -47,6 +85,9 @@ function HomePage() {
                 }}
               >
                 <CardContent>
+                  <Typography variant="h5">
+                    Login & Register <hr />
+                  </Typography>
                   <Typography variant="h6" align="justify">
                     You can login or register in the mobile application using a
                     valid email address and a password. Alternatively you can do
@@ -92,11 +133,14 @@ function HomePage() {
                     color: "white",
                   }}
                 >
+                  <Typography variant="h5">
+                    Getting a Card of a Person <hr />
+                  </Typography>
                   <Typography variant="h6" align="justify">
-                    You can Selecet the Card of the contact that you connected
-                    by selecting from the list of connection. You can get the
-                    Card of a user by scanning their QR code only through the
-                    mobile application.
+                    You can get the Card of a user by scanning their QR code
+                    shown in the mobile applocation only through the E-Card
+                    mobile application. And then you can selecet the Card from
+                    the list of contacts that you scanned.
                   </Typography>
                 </CardContent>
               </Card>
@@ -127,11 +171,14 @@ function HomePage() {
                 }}
               >
                 <CardContent>
+                  <Typography variant="h5">
+                    Viewing the Selected Card <hr />
+                  </Typography>
                   <Typography variant="h6" align="justify">
-                    After selecting a user from the list you can view their
-                    profile. You also will be able to call the user by clicking
-                    on of the mobile numbers or you can e-mail them by clicking
-                    on the email address
+                    After selecting a Card from the list you can view its
+                    information. You also will be able to call the user by
+                    clicking on of the mobile numbers or you can e-mail them by
+                    clicking on the email address.
                   </Typography>
                 </CardContent>
               </Card>
@@ -152,7 +199,65 @@ function HomePage() {
         </Card>
         <Card>
           <CardContent>
-            <Typography variant="h4">Contact Us</Typography>
+            {contact &&
+              contact.map((items) => {
+                return (
+                  <div key={items.id}>
+                    <div>
+                      <Typography
+                        variant="h4"
+                        style={{
+                          backgroundColor: "#3949ab",
+                          color: "white",
+                          paddingLeft: "5px",
+                        }}
+                      >
+                        Contact Us
+                      </Typography>
+                    </div>
+                    <Card>
+                      <CardContent>
+                        <Grid container spcing={3}>
+                          <Grid item xs={6}>
+                            <div>
+                              <Typography variant="h6">
+                                About Mobile Application
+                                <hr />
+                              </Typography>
+                              <Typography>
+                                Name: {items.fN1} {items.lN1}
+                              </Typography>
+                              <Typography>
+                                Contact Number: {items.pNo1}
+                              </Typography>
+                              <Typography>
+                                Email Address: {items.eM1}
+                              </Typography>
+                            </div>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <div>
+                              <Typography variant="h6">
+                                About Web Application
+                                <hr />
+                              </Typography>
+                              <Typography>
+                                Name: {items.fN2} {items.lN2}
+                              </Typography>
+                              <Typography>
+                                Contact Number: {items.pNo2}
+                              </Typography>
+                              <Typography>
+                                Email Address: {items.eM2}
+                              </Typography>
+                            </div>
+                          </Grid>
+                        </Grid>
+                      </CardContent>
+                    </Card>
+                  </div>
+                );
+              })}
           </CardContent>
         </Card>
       </Paper>
@@ -160,18 +265,13 @@ function HomePage() {
   );
 }
 
-// const mapStateToProps = (state) => {
-//   return {
-//     authError: state.auth.authError,
-//     auth: state.firebase.auth,
-//   };
-// };
+const mapStateToProps = (state) => {
+  return {
+    contact: state.firestore.ordered.news,
+  };
+};
 
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     login: (creds) => dispatch(login(creds)),
-//   };
-// };
-
-// export default connect(mapStateToProps, mapDispatchToProps)(Login);
-export default HomePage;
+export default compose(
+  connect(mapStateToProps),
+  firestoreConnect([{ collection: "news" }])
+)(HomePage);
