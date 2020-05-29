@@ -6,6 +6,7 @@ import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
+import HomeIcon from "@material-ui/icons/Home";
 
 const LoggedInLink = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -20,10 +21,35 @@ const LoggedInLink = (props) => {
   return (
     <ul>
       <li style={{ display: "inline" }}>
-        <Button style={{ color: "white" }}>Graph</Button>
+        <Button style={{ color: "white" }} startIcon={<HomeIcon />}>
+          <NavLink
+            to="/home"
+            style={{ color: "white", textDecoration: "none" }}
+          >
+            Home
+          </NavLink>
+        </Button>
       </li>
       <li style={{ display: "inline" }}>
-        <Button style={{ color: "white" }}>Update Contents</Button>
+        <NavLink
+          to="/dashboard"
+          style={{ color: "black", textDecoration: "none" }}
+        >
+          <Button style={{ color: "white" }}>Dashboard</Button>
+        </NavLink>
+      </li>
+      <li style={{ display: "inline" }}>
+        <NavLink to="/users" style={{ color: "black", textDecoration: "none" }}>
+          <Button style={{ color: "white" }}>Users</Button>
+        </NavLink>
+      </li>
+      <li style={{ display: "inline" }}>
+        <NavLink
+          to="/content"
+          style={{ color: "black", textDecoration: "none" }}
+        >
+          <Button style={{ color: "white" }}>Contents</Button>
+        </NavLink>
       </li>
       <li style={{ display: "inline" }}>
         <Button style={{ color: "white" }}>

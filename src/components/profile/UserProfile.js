@@ -6,12 +6,21 @@ import { Redirect } from "react-router-dom";
 import firebase from "firebase";
 import { updateProfile } from "../../store/actions/adminAction";
 import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import Avatar from "@material-ui/core/Avatar";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import {
+  Button,
+  Typography,
+  TextField,
+  Card,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Slide,
+  Grid,
+  Avatar,
+} from "@material-ui/core";
+import * as validator from "../auth/Validation";
 
 function UserProfile(props) {
   const initState = {
@@ -27,13 +36,36 @@ function UserProfile(props) {
     front: "",
     back: "",
     status: false,
+    errors: {
+      fN: "",
+      lN: "",
+      cmp: "",
+      adr: "",
+      pNo: "",
+      wNo: "",
+      pos: "",
+      eM: "",
+    },
   };
 
   const [doc, setDoc] = useState(initState);
 
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+
   useEffect(() => {
     const profile = JSON.parse(localStorage.getItem("current_user_profile"));
-    console.log(profile);
     if (profile) {
       setDoc({
         ...doc,
@@ -76,52 +108,121 @@ function UserProfile(props) {
     tField: {
       padding: 10,
     },
+    input: {
+      display: "none",
+    },
   }));
 
+  const [valid, setValid] = useState(true);
+
+  const validateInputAndSetState = (id, value) => {
+    const errors = validator.validate(id, value, doc.errors);
+    setDoc({ ...doc, errors, [id]: value });
+  };
+
   const handleChange = (e) => {
-    setDoc({ ...doc, [e.target.id]: e.target.value });
+    const { id, value } = e.target;
+    validateInputAndSetState(id, value);
+    setValid(validator.isErrorObjectEmpty(doc.errors)); //if the error state is empty then valid become true
+    // setDoc({ ...doc, [e.target.id]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(doc);
-    props.updateProfile(doc);
+
+    // iterate through the component state as key value pairs and
+    //  run the validation on each value.
+    // if the validation function handles that key value pair
+    //  then it is validated otherwise skipped
+    for (let [id, value] of Object.entries(doc)) {
+      validateInputAndSetState(id, value);
+    }
+    // if error object is empty then the form is valid
+    const isFormValid = validator.isErrorObjectEmpty(doc.errors);
+    // submit if the form is valid
+
+    if (isFormValid) {
+      handleClose();
+      setValid(true); // set the valid state to true since the form is valid
+      console.log("Form is Valid.");
+      delete doc.errors; // delete error state from the final object.
+      console.log(doc);
+      props.updateProfile(doc);
+    } else {
+      console.log("Form is INVALID. Are all errors displayed?");
+      setValid(false);
+      handleClose();
+    }
   };
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
-      setDoc({
-        pPic: URL.createObjectURL(event.target.files[0]),
-      });
+      setDoc({ ...doc, pPic: URL.createObjectURL(event.target.files[0]) });
     }
   };
 
-  // const constrontView = (event) => {
-  //   if (event.target.files && event.target.files[0]) {
-  //     setState({
-  //       front: URL.createObjectURL(event.target.files[0]),
-  //     });
-  //   }
-  // };
-
   const backView = (event) => {
     if (event.target.files && event.target.files[0]) {
-      setDoc({
-        back: URL.createObjectURL(event.target.files[0]),
-      });
+      setDoc({ ...doc, back: URL.createObjectURL(event.target.files[0]) });
     }
   };
 
   const frontView = (event) => {
     if (event.target.files && event.target.files[0]) {
-      setDoc({
-        front: URL.createObjectURL(event.target.files[0]),
-      });
+      setDoc({ ...doc, front: URL.createObjectURL(event.target.files[0]) });
     }
   };
 
-  const fileUploadHandler = (e) => {
-    const ref = firebase.storage().ref();
+  let id = props.auth.uid;
+  const ref = firebase.storage().ref(`${id}`);
+
+  const frontUpload = (e) => {
+    const file = document.getElementById("front").files[0];
+    try {
+      const name = new Date() + "-" + file.name;
+      const metadata = {
+        contentType: file.type,
+      };
+      const task = ref.child(name).put(file, metadata);
+      task
+        .then((snapshot) => snapshot.ref.getDownloadURL())
+        .then((url) => {
+          setDoc({
+            ...doc,
+            front: url,
+          });
+          console.log("DONE");
+        })
+        .catch(console.error);
+    } catch (err) {
+      console.log(0);
+    }
+  };
+  const backUpload = (e) => {
+    const file = document.getElementById("back").files[0];
+    try {
+      const name = new Date() + "-" + file.name;
+      const metadata = {
+        contentType: file.type,
+      };
+      const task = ref.child(name).put(file, metadata);
+      task
+        .then((snapshot) => snapshot.ref.getDownloadURL())
+        .then((url) => {
+          setDoc({
+            ...doc,
+            back: url,
+          });
+          console.log("DONE");
+        })
+        .catch(console.error);
+    } catch (err) {
+      console.log(0);
+    }
+  };
+
+  const pPicUpload = (e) => {
     const file = document.getElementById("pPic").files[0];
     try {
       const name = new Date() + "-" + file.name;
@@ -133,121 +234,187 @@ function UserProfile(props) {
         .then((snapshot) => snapshot.ref.getDownloadURL())
         .then((url) => {
           setDoc({
+            ...doc,
             pPic: url,
           });
+          console.log("DONE");
         })
         .catch(console.error);
     } catch (err) {
-      console.log(err);
+      console.log(0);
     }
   };
 
-  function renderProfile(profile) {
+  function handleDialog() {
     return (
-      <form
-        onSubmit={handleSubmit}
-        style={{ margin: "auto", width: "80%", padding: "10px" }}
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-slide-title"
+        aria-describedby="alert-dialog-slide-description"
       >
+        <DialogTitle id="alert-dialog-slide-title" color="black">
+          {"Updating the profile"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Are you sure that you want to update your current profile?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            No
+          </Button>
+          <Button onClick={handleSubmit} color="primary">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  }
+
+  function renderProfile() {
+    return (
+      <form style={{ margin: "auto", width: "80%", padding: "10px" }}>
         <Card style={{ width: "auto" }}>
+          <Typography variant="h4" style={{ padding: "10px" }}>
+            Profile
+          </Typography>
+          <hr />
           <Grid container spcing={1}>
             <Grid item xs={6}>
-              <Typography variant="h4" style={{ padding: "10px" }}>
-                Profile
-              </Typography>
-              <Avatar
-                className={classes.large}
-                alt={doc.fN}
-                src={
-                  doc.pPic ||
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                }
-                style={{ margin: "10px" }}
-              />
-              <div style={{ margin: "10px" }}>
-                <div>
-                  <span style={{ fontSize: "10px" }}>Upload</span>
-                  <input
-                    type="file"
-                    id="pPic"
-                    onChange={onImageChange}
-                    style={{ whiteSpace: "normal", wordWrap: "break-word" }}
-                  />
+              <div style={{ position: "relative" }}>
+                <Avatar
+                  className={classes.large}
+                  alt={doc.fN}
+                  src={
+                    doc.pPic ||
+                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                  }
+                  style={{ margin: "10px" }}
+                />
+                <div style={{ margin: "10px" }}>
+                  <div>
+                    <input
+                      id="pPic"
+                      onChange={onImageChange}
+                      style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                      accept="image/*"
+                      className={classes.input}
+                      multiple
+                      type="file"
+                    />
+                    <label htmlFor="pPic">
+                      <Button
+                        component="span"
+                        variant="contained"
+                        color="primary"
+                        style={{ margin: "10px" }}
+                      >
+                        Select
+                      </Button>
+                    </label>
+                    <Button
+                      component="span"
+                      onClick={pPicUpload}
+                      variant="contained"
+                      color="primary"
+                    >
+                      Upload
+                    </Button>
+                  </div>
                 </div>
               </div>
-              <div>
-                <div style={{ clear: "left", position: "relative" }}>
-                  <div>
-                    <TextField
-                      className={classes.tField}
-                      id="fN"
-                      label="First Name"
-                      value={doc.fN}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                    <TextField
-                      className={classes.tField}
-                      id="lN"
-                      label="Last Name"
-                      value={doc.lN}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                  </div>
-                  <div>
-                    <TextField
-                      className={classes.tField}
-                      id="cmp"
-                      label="Company"
-                      value={doc.cmp}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                    <TextField
-                      className={classes.tField}
-                      id="pos"
-                      label="Position"
-                      value={doc.pos}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                  </div>
-                  <div>
-                    <TextField
-                      className={classes.tField}
-                      id="eM"
-                      label="E-Mail"
-                      value={doc.eM}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                    <TextField
-                      className={classes.tField}
-                      id="pNo"
-                      label="Personal Number"
-                      value={doc.pNo}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                  </div>
-                  <div>
-                    <TextField
-                      className={classes.tField}
-                      id="wNo"
-                      label="Work Number"
-                      value={doc.wNo}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                    <TextField
-                      className={classes.tField}
-                      id="adr"
-                      label="Address"
-                      value={doc.adr}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                  </div>
+              <div style={{ clear: "left", position: "relative" }}>
+                <div>
+                  <TextField
+                    error={doc.errors.fN === "" ? false : true}
+                    className={classes.tField}
+                    id="fN"
+                    label={valid ? "First Name" : "Error!"}
+                    value={doc.fN}
+                    helperText={valid ? null : doc.errors.fN}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                  <TextField
+                    error={doc.errors.lN === "" ? false : true}
+                    className={classes.tField}
+                    id="lN"
+                    label={valid ? "Last Name" : "Error!"}
+                    value={doc.lN}
+                    helperText={valid ? null : doc.errors.lN}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                </div>
+                <div>
+                  <TextField
+                    error={doc.errors.cmp === "" ? false : true}
+                    className={classes.tField}
+                    id="cmp"
+                    label={valid ? "Company" : "Error!"}
+                    value={doc.cmp}
+                    helperText={valid ? null : doc.errors.cmp}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                  <TextField
+                    error={doc.errors.pos === "" ? false : true}
+                    className={classes.tField}
+                    id="pos"
+                    label={valid ? "Position" : "Error!"}
+                    value={doc.pos}
+                    helperText={valid ? null : doc.errors.pos}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                </div>
+                <div>
+                  <TextField
+                    error={doc.errors.eM === "" ? false : true}
+                    className={classes.tField}
+                    id="eM"
+                    label={valid ? "E-Mail" : "Error!"}
+                    value={doc.eM}
+                    helperText={valid ? null : doc.errors.eM}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                  <TextField
+                    error={doc.errors.pNo === "" ? false : true}
+                    className={classes.tField}
+                    id="pNo"
+                    label={valid ? "Personal Number" : "Error!"}
+                    value={doc.pNo}
+                    helperText={valid ? null : doc.errors.pNo}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                </div>
+                <div>
+                  <TextField
+                    error={doc.errors.wNo === "" ? false : true}
+                    className={classes.tField}
+                    id="wNo"
+                    label={valid ? "Work Phone Number" : "Error!"}
+                    value={doc.wNo}
+                    helperText={valid ? null : doc.errors.wNo}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
+                  <TextField
+                    error={doc.errors.adr === "" ? false : true}
+                    className={classes.tField}
+                    id="adr"
+                    label={valid ? "Address" : "Error!"}
+                    value={doc.adr}
+                    helperText={valid ? null : doc.errors.adr}
+                    onChange={handleChange}
+                    variant="outlined"
+                  />
                 </div>
               </div>
             </Grid>
@@ -266,40 +433,109 @@ function UserProfile(props) {
                 <div style={{ position: "relative", margin: "5px" }}>
                   <img
                     src={
-                      profile.front ||
+                      doc.front ||
                       "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
                     }
                     height="160"
                     width="250"
                     alt="Card Front View"
                   />
-                  <br />
-                  <div style={{ margin: "10px" }}>
+                  <div
+                    align="right"
+                    style={{
+                      clear: "right",
+                      float: "right",
+                      marginLeft: "10px",
+                      marginBottom: "10px",
+                    }}
+                  >
                     <div>
-                      <span style={{ fontSize: "10px" }}>Upload</span>
                       <input
-                        type="file"
                         id="front"
-                        style={{ whiteSpace: "normal", wordWrap: "break-word" }}
+                        onChange={frontView}
+                        style={{
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
+                        }}
+                        accept="image/*"
+                        className={classes.input}
+                        multiple
+                        type="file"
                       />
+                      <label htmlFor="front">
+                        <Button
+                          component="span"
+                          variant="contained"
+                          color="primary"
+                          style={{ margin: "10px" }}
+                        >
+                          Select
+                        </Button>
+                      </label>
+                      <Button
+                        component="span"
+                        onClick={frontUpload}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Upload
+                      </Button>
                     </div>
                   </div>
                 </div>
-                <div style={{ position: "relative", margin: "5px" }}>
+                <div
+                  style={{
+                    position: "relative",
+                    margin: "5px",
+                    clear: "right",
+                  }}
+                >
                   <img
                     src={
-                      profile.back ||
+                      doc.back ||
                       "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg"
                     }
                     height="160"
                     width="250"
                     alt="Card Back View"
                   />
-                  <br />
-                  <div style={{ margin: "10px" }}>
+                  <div
+                    style={{
+                      float: "right",
+                      marginLeft: "10px",
+                    }}
+                  >
                     <div>
-                      <span style={{ fontSize: "10px" }}>Upload</span>
-                      <input type="file" id="back" />
+                      <input
+                        id="back"
+                        onChange={backView}
+                        style={{
+                          whiteSpace: "normal",
+                          wordWrap: "break-word",
+                        }}
+                        accept="image/*"
+                        className={classes.input}
+                        multiple
+                        type="file"
+                      />
+                      <label htmlFor="back">
+                        <Button
+                          component="span"
+                          variant="contained"
+                          color="primary"
+                          style={{ margin: "10px" }}
+                        >
+                          Select
+                        </Button>
+                      </label>
+                      <Button
+                        component="span"
+                        onClick={backUpload}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Upload
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -312,10 +548,11 @@ function UserProfile(props) {
                 variant="contained"
                 color="primary"
                 style={{ margin: 10 }}
-                onClick={handleSubmit}
+                onClick={(e) => handleClickOpen()}
               >
                 Update
               </Button>
+              {open ? handleDialog() : null}
             </div>
             <div style={{ clear: "right" }}></div>
           </Grid>
@@ -328,7 +565,7 @@ function UserProfile(props) {
   const classes = useStyles();
   if (!auth.uid) return <Redirect to="/login" />;
 
-  const profileView = doc === null ? <Redirect to="/" /> : renderProfile(doc);
+  const profileView = doc === null ? <Redirect to="/" /> : renderProfile();
   if (profileView) {
     return <div>{profileView}</div>;
   } else {

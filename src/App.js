@@ -8,9 +8,11 @@ import Register from "./components/auth/Register";
 import CreateProfile from "./components/profile/CreateProfile";
 import UserProfile from "./components/profile/UserProfile";
 import Admin from "./components/admin/AdminPage";
-// import Admin2 from "./components/admin/AdminPage2";
 import ChangePwd from "./components/settings/ChangePassword";
 import ChangeEmail from "./components/settings/ChangeEmail";
+import Graphs from "./components/admin/Graphs";
+import Content from "./components/admin/Content";
+import HomePage from "./components/profile/HomePage";
 
 // import 'bootstrap/dist/css/bootstrap.min.css';
 class App extends Component {
@@ -26,11 +28,12 @@ class App extends Component {
             <Route path="/register" component={Register} />
             <Route path="/create" component={CreateProfile} />
             <Route path="/profile" component={UserProfile} />
-            <Route path="/admin" component={Admin} />
+            <Route path="/users" component={Admin} />
             <Route path="/pwd" component={ChangePwd} />
             <Route path="/email" component={ChangeEmail} />
-
-            {/* <Route path="/admin2" component={Admin2} /> */}
+            <Route path="/dashboard" component={Graphs} />
+            <Route path="/content" component={Content} />
+            <Route path="/home" component={HomePage} />
           </Switch>
         </div>
       </BrowserRouter>
