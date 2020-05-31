@@ -2,9 +2,13 @@ const validEmailRegex = RegExp(
   /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i
 );
 
+<<<<<<< HEAD
 const validPasswordRegex = RegExp(
   "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
 );
+=======
+const validPasswordRegex = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})");
+>>>>>>> 62359d80fc46c972de7c39647508523f683ce63f
 
 const validNameRegex = RegExp(/[!@#$%^&*(),.?":{}|<>0-9]/i);
 
@@ -87,8 +91,12 @@ export const validate = (id, value, _errors) => {
     } else if (checkMinLength(value, 8)) {
       errors[id] = "Password should be 8 characters long";
     } else if (!validPasswordRegex.test(value)) {
+<<<<<<< HEAD
       errors[id] =
         "Password should contain at least 1 uppercase letter, 1 lowercase letter, 1 numeric character and 1 special character";
+=======
+      errors[id] = "Password should contain at least 1 uppercase letter, 1 lowercase letter, 1 numeric character and 1 special character";
+>>>>>>> 62359d80fc46c972de7c39647508523f683ce63f
     } else {
       errors[id] = "";
     }
