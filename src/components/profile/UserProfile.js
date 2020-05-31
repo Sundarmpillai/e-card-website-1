@@ -6,6 +6,9 @@ import { Redirect } from "react-router-dom";
 import firebase from "firebase";
 import { updateProfile } from "../../store/actions/adminAction";
 import { makeStyles } from "@material-ui/core/styles";
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 import {
   Button,
   Typography,
@@ -73,8 +76,8 @@ function UserProfile(props) {
         lN: profile.lN || "",
         cmp: profile.cmp || "",
         adr: profile.adr || "",
-        pNo: profile.pNo || 0,
-        wNo: profile.wNo || 0,
+        pNo: parseInt(profile.pNo) || 0,
+        wNo: parseInt(profile.wNo) || 0,
         pos: profile.pos || "",
         eM: profile.eM || "",
         pPic: profile.pPic || "",
@@ -115,6 +118,20 @@ function UserProfile(props) {
 
   const [valid, setValid] = useState(true);
 
+  const [snackbar, setSnackbar] = useState(false);
+
+  const handleClick = () => {
+    setSnackbar(true);
+  };
+
+  const closeSnackBar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSnackbar(false);
+  };
+
   const validateInputAndSetState = (id, value) => {
     const errors = validator.validate(id, value, doc.errors);
     setDoc({ ...doc, errors, [id]: value });
@@ -129,8 +146,7 @@ function UserProfile(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(doc);
-
+    handleClose();
     // iterate through the component state as key value pairs and
     //  run the validation on each value.
     // if the validation function handles that key value pair
@@ -141,33 +157,59 @@ function UserProfile(props) {
     // if error object is empty then the form is valid
     const isFormValid = validator.isErrorObjectEmpty(doc.errors);
     // submit if the form is valid
-
     if (isFormValid) {
-      handleClose();
       setValid(true); // set the valid state to true since the form is valid
       console.log("Form is Valid.");
       delete doc.errors; // delete error state from the final object.
-      console.log(doc);
       props.updateProfile(doc);
+      handleClick();
     } else {
       console.log("Form is INVALID. Are all errors displayed?");
       setValid(false);
-      handleClose();
     }
   };
+  //Returns Snackbar when Updating current user profile
+  const handleSnackBar = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        open={snackbar}
+        autoHideDuration={4000}
+        onClose={closeSnackBar}
+        message="Your profile is Updated."
+        action={
+          <React.Fragment>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={closeSnackBar}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
+    );
+  };
 
+  //Set selected image to profile picture
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       setDoc({ ...doc, pPic: URL.createObjectURL(event.target.files[0]) });
     }
   };
 
+  //Set selected image to Card's front view picture
   const backView = (event) => {
     if (event.target.files && event.target.files[0]) {
       setDoc({ ...doc, back: URL.createObjectURL(event.target.files[0]) });
     }
   };
-
+  //Set selected image to Card's back view picture
   const frontView = (event) => {
     if (event.target.files && event.target.files[0]) {
       setDoc({ ...doc, front: URL.createObjectURL(event.target.files[0]) });
@@ -278,6 +320,7 @@ function UserProfile(props) {
   function renderProfile() {
     return (
       <form style={{ margin: "auto", width: "80%", padding: "10px" }}>
+        {snackbar ? handleSnackBar() : null}
         <Card style={{ width: "auto" }}>
           <Typography variant="h4" style={{ padding: "10px" }}>
             Profile
@@ -333,7 +376,7 @@ function UserProfile(props) {
                     error={doc.errors.fN === "" ? false : true}
                     className={classes.tField}
                     id="fN"
-                    label={valid ? "First Name" : "Error!"}
+                    label="First Name"
                     value={doc.fN}
                     helperText={valid ? null : doc.errors.fN}
                     onChange={handleChange}
@@ -343,7 +386,7 @@ function UserProfile(props) {
                     error={doc.errors.lN === "" ? false : true}
                     className={classes.tField}
                     id="lN"
-                    label={valid ? "Last Name" : "Error!"}
+                    label="Last Name"
                     value={doc.lN}
                     helperText={valid ? null : doc.errors.lN}
                     onChange={handleChange}
@@ -355,7 +398,7 @@ function UserProfile(props) {
                     error={doc.errors.cmp === "" ? false : true}
                     className={classes.tField}
                     id="cmp"
-                    label={valid ? "Company" : "Error!"}
+                    label="Company"
                     value={doc.cmp}
                     helperText={valid ? null : doc.errors.cmp}
                     onChange={handleChange}
@@ -365,7 +408,7 @@ function UserProfile(props) {
                     error={doc.errors.pos === "" ? false : true}
                     className={classes.tField}
                     id="pos"
-                    label={valid ? "Position" : "Error!"}
+                    label="Position"
                     value={doc.pos}
                     helperText={valid ? null : doc.errors.pos}
                     onChange={handleChange}
@@ -377,7 +420,7 @@ function UserProfile(props) {
                     error={doc.errors.eM === "" ? false : true}
                     className={classes.tField}
                     id="eM"
-                    label={valid ? "E-Mail" : "Error!"}
+                    label="E-Mail"
                     value={doc.eM}
                     helperText={valid ? null : doc.errors.eM}
                     onChange={handleChange}
@@ -387,7 +430,7 @@ function UserProfile(props) {
                     error={doc.errors.pNo === "" ? false : true}
                     className={classes.tField}
                     id="pNo"
-                    label={valid ? "Personal Number" : "Error!"}
+                    label="Personal Number"
                     value={doc.pNo}
                     helperText={valid ? null : doc.errors.pNo}
                     onChange={handleChange}
@@ -399,7 +442,7 @@ function UserProfile(props) {
                     error={doc.errors.wNo === "" ? false : true}
                     className={classes.tField}
                     id="wNo"
-                    label={valid ? "Work Phone Number" : "Error!"}
+                    label="Work Phone Number"
                     value={doc.wNo}
                     helperText={valid ? null : doc.errors.wNo}
                     onChange={handleChange}
@@ -409,7 +452,7 @@ function UserProfile(props) {
                     error={doc.errors.adr === "" ? false : true}
                     className={classes.tField}
                     id="adr"
-                    label={valid ? "Address" : "Error!"}
+                    label="Address"
                     value={doc.adr}
                     helperText={valid ? null : doc.errors.adr}
                     onChange={handleChange}

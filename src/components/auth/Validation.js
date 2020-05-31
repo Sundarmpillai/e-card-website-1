@@ -2,6 +2,10 @@ const validEmailRegex = RegExp(
   /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i
 );
 
+const validPasswordRegex = RegExp(
+  "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
+);
+
 const validNameRegex = RegExp(/[!@#$%^&*(),.?":{}|<>0-9]/i);
 
 const validPhoneNoRegex = RegExp("^[0-9]{10}$");
@@ -76,11 +80,24 @@ export const validate = (id, value, _errors) => {
     }
   }
 
-  if (id === "password" || id === "pwd" || id === "repwd") {
+  //password for register
+  if (id === "pwd" || id === "repwd") {
     if (checkMinLength(value, 1)) {
       errors[id] = "Please enter your password";
-    } else if (checkMinLength(value, 6)) {
-      errors[id] = "Password is too week";
+    } else if (checkMinLength(value, 8)) {
+      errors[id] = "Password should be 8 characters long";
+    } else if (!validPasswordRegex.test(value)) {
+      errors[id] =
+        "Password should contain at least 1 uppercase letter, 1 lowercase letter, 1 numeric character and 1 special character";
+    } else {
+      errors[id] = "";
+    }
+  }
+
+  //password for login
+  if (id === "password") {
+    if (checkMinLength(value, 1)) {
+      errors[id] = "Please enter the password";
     } else {
       errors[id] = "";
     }

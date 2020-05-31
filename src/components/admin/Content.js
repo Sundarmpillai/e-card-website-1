@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
+import { Redirect } from "react-router-dom";
 
 import { uploadNews, updateContact } from "../../store/actions/adminAction";
 import {
@@ -50,6 +51,10 @@ function Content(props) {
     console.log(contact);
     props.updateContact(contact);
   }
+
+  const { auth } = props;
+  if (!auth.uid) return <Redirect to="/login" />;
+
   return (
     <div style={{ width: "750px", margin: "auto", marginTop: "10px" }}>
       <Card>
@@ -162,9 +167,8 @@ function Content(props) {
 
 const mapStateToProps = (state) => {
   return {
-    profiles: state.firestore.ordered.user, // get the  list of user from the firestore
+    content: state.firestore.ordered.news, // get the  list of user from the firestore
     auth: state.firebase.auth,
-    current_user: state.firebase.profile,
   };
 };
 
@@ -176,5 +180,5 @@ const mapDispatchToProps = (dispatch) => {
 };
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  firestoreConnect([{ collection: "user" }])
+  firestoreConnect([{ collection: "news" }])
 )(Content);

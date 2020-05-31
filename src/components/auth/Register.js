@@ -3,6 +3,7 @@ import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { register } from "../../store/actions/authAction";
 import * as validator from "./Validation";
+import ReactPasswordStrength from "react-password-strength";
 import {
   Button,
   Container,
@@ -20,6 +21,7 @@ function Register(props) {
     errors: {
       pwd: "",
       eM: "",
+      repwd: "",
     },
   };
 
@@ -107,7 +109,7 @@ function Register(props) {
               autoComplete="current-password"
               onChange={handleChange}
             />
-            <Typography color="secondary">{state.errors.pwd}</Typography>
+            <Typography color="secondary">{state.errors.repwd}</Typography>
             <br />
             <br />
 

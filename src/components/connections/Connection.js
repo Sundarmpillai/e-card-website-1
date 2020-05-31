@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Connection = ({ profile }) => {
   const classes = useStyles();
-  //set the profile prop object values
+  //set the profile prop values
   return (
     <div>
       <Card className={classes.root}>

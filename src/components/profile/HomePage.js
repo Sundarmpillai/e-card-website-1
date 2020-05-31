@@ -29,6 +29,7 @@ function HomePage(props) {
           <div>
             <Typography variant="h3" style={{ backgroundColor: "#f5f5f5" }}>
               E-Card Website
+              <hr />
             </Typography>
           </div>
           <Container
