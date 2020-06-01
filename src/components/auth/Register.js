@@ -3,7 +3,6 @@ import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { register } from "../../store/actions/authAction";
 import * as validator from "./Validation";
-import ReactPasswordStrength from "react-password-strength";
 import {
   Button,
   Container,
@@ -49,14 +48,11 @@ function Register(props) {
 
     // if error object is empty then the form is valid
     const isFormValid = validator.isErrorObjectEmpty(state.errors);
-    console.log(state);
     // submit if the form is valid
     if (isFormValid && state.repwd === state.pwd) {
-      console.log("Form is valid");
       props.register(state);
-      props.history.push(state, "/create"); // After the registration is completed, create page will be loaded.
+      props.history.push(state, "/verify"); // After the registration is completed, create page will be loaded.
     } else {
-      console.log("Form is invalid. Are errors displayed?");
     }
   };
   const { auth, authError } = props;

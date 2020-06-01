@@ -13,6 +13,7 @@ import ChangeEmail from "./components/settings/ChangeEmail";
 import Graphs from "./components/admin/Graphs";
 import Content from "./components/admin/Content";
 import HomePage from "./components/profile/HomePage";
+import Verification from "./components/auth/Verification";
 
 // import 'bootstrap/dist/css/bootstrap.min.css';
 class App extends Component {
@@ -34,6 +35,7 @@ class App extends Component {
             <Route path="/dashboard" component={Graphs} />
             <Route path="/content" component={Content} />
             <Route path="/home" component={HomePage} />
+            <Route path="/verify" component={Verification} />
           </Switch>
         </div>
       </BrowserRouter>

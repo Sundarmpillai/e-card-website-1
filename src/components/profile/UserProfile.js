@@ -4,6 +4,7 @@ import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
 import { Redirect } from "react-router-dom";
 import firebase from "firebase";
+import "firebase/storage";
 import { updateProfile } from "../../store/actions/adminAction";
 import { makeStyles } from "@material-ui/core/styles";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -159,12 +160,10 @@ function UserProfile(props) {
     // submit if the form is valid
     if (isFormValid) {
       setValid(true); // set the valid state to true since the form is valid
-      console.log("Form is Valid.");
       delete doc.errors; // delete error state from the final object.
       props.updateProfile(doc);
       handleClick();
     } else {
-      console.log("Form is INVALID. Are all errors displayed?");
       setValid(false);
     }
   };
@@ -234,7 +233,6 @@ function UserProfile(props) {
             ...doc,
             front: url,
           });
-          console.log("DONE");
         })
         .catch(console.error);
     } catch (err) {
@@ -256,7 +254,6 @@ function UserProfile(props) {
             ...doc,
             back: url,
           });
-          console.log("DONE");
         })
         .catch(console.error);
     } catch (err) {
@@ -279,7 +276,6 @@ function UserProfile(props) {
             ...doc,
             pPic: url,
           });
-          console.log("DONE");
         })
         .catch(console.error);
     } catch (err) {

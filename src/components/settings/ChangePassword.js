@@ -71,11 +71,9 @@ function ChangePWd(props) {
     // submit if the form is valid
 
     if (isFormValid && (doc.pwd === doc.repwd) & (doc.pwd !== doc.password)) {
-      console.log("Form Valid");
       props.changePwd(doc);
       props.logout();
     } else {
-      console.log("Form invalid");
     }
   };
   const { authError, auth } = props;

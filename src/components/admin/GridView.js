@@ -325,8 +325,7 @@ function GridView(props) {
   }
 
   function handleDelete(id) {
-    // props.deleteUser(id);
-    console.log(id);
+    props.deleteUser(id);
     handleClose();
     handleClick();
   }

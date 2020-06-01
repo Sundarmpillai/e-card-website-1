@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { createProfile } from "../../store/actions/profileAction";
 import { Redirect } from "react-router-dom";
 import firebase from "firebase";
+import "firebase/storage";
 import { makeStyles } from "@material-ui/core/styles";
 import * as validator from "../auth/Validation";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -168,7 +169,6 @@ function CreateProfile(props) {
       props.createProfile(doc);
       props.history.push("/");
     } else {
-      console.log("Form is INVALID. Are all errors displayed?");
       setValid(false);
     }
   };
@@ -244,7 +244,6 @@ function CreateProfile(props) {
             ...doc,
             front: url,
           });
-          console.log("DONE");
         })
         .catch(console.error);
     } catch (err) {
@@ -266,7 +265,6 @@ function CreateProfile(props) {
             ...doc,
             back: url,
           });
-          console.log("DONE");
         })
         .catch(console.error);
     } catch (err) {
@@ -289,7 +287,6 @@ function CreateProfile(props) {
             ...doc,
             pPic: url,
           });
-          console.log("DONE");
         })
         .catch(console.error);
     } catch (err) {
@@ -332,6 +329,7 @@ function CreateProfile(props) {
   const { auth } = props;
   const classes = useStyles();
   if (!auth.uid) return <Redirect to="/login" />;
+  if (!auth.emailVerified) return <Redirect to="/verify" />;
   return (
     <form style={{ margin: "auto", width: "80%", padding: "10px" }}>
       {snackbar ? handleSnackBar() : null}

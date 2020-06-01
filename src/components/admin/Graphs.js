@@ -5,11 +5,15 @@ import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
 import { Bar, Line } from "react-chartjs-2";
 import Card from "@material-ui/core/Card";
+import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
 import { Typography } from "@material-ui/core";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import MinimizeIcon from "@material-ui/icons/Minimize";
+
+let usageRate = [];
+let prevData = [];
 
 function Graphs(props) {
   const [chartAData, setchartAData] = useState({});
@@ -23,13 +27,11 @@ function Graphs(props) {
 
   let list = [];
   let users = [];
-  let prevData = [];
   let conn = [];
-  let usageRate = [];
   let userPrev = [];
   let connPrev = [];
   let now = new Date();
-  let day = now.getDay() === 0 ? 7 : now.getDay();
+  let day = now.getDay() === 0 ? 6 : now.getDay();
 
   const { dataList, auth } = props;
   const chart = () => {
@@ -38,7 +40,6 @@ function Graphs(props) {
         return list.push(data);
       });
     if (list !== undefined) {
-      console.log(day, list);
       for (let i = 0; i < day; i++) {
         if (list.length !== 0) {
           usageRate.push((list[i].noConn / list[i].noUser).toFixed(2));
@@ -143,6 +144,7 @@ function Graphs(props) {
   };
   useEffect(() => {
     chart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataList]);
 
   function checkStatusOfUsers() {
@@ -150,7 +152,6 @@ function Graphs(props) {
       if (noUsers < prevUser) {
         return (
           <div>
-            <Typography variant="h5">Number of Users</Typography>
             <Typography variant="h6">Previous Week:{lwUser[day]}</Typography>
             <Typography variant="h6">
               Current Week :{noUsers}
@@ -161,7 +162,6 @@ function Graphs(props) {
       } else if (noUsers > prevUser) {
         return (
           <div>
-            <Typography variant="h5">Number of Users</Typography>
             <Typography variant="h6">Previous Week:{lwUser[day]}</Typography>
             <Typography variant="h6">
               Current Week :{noUsers}
@@ -172,7 +172,6 @@ function Graphs(props) {
       } else {
         return (
           <div>
-            <Typography variant="h5">Number of Users</Typography>
             <Typography variant="h6">Previous Week:{lwUser[day]}</Typography>
             <Typography variant="h6">
               Current Week :{noUsers}
@@ -189,7 +188,6 @@ function Graphs(props) {
       if (noConn < prevConn) {
         return (
           <div>
-            <Typography variant="h5">Number of Connections</Typography>
             <Typography variant="h6">Previous Week:{lwConn[day]}</Typography>
             <Typography variant="h6">
               Current Week :{noConn}
@@ -200,7 +198,6 @@ function Graphs(props) {
       } else if (noConn > prevConn) {
         return (
           <div>
-            <Typography variant="h5">Number of Connections</Typography>
             <Typography variant="h6">Previous Week:{lwConn[day]}</Typography>
             <Typography variant="h6">
               Current Week :{noConn}
@@ -211,7 +208,6 @@ function Graphs(props) {
       } else {
         return (
           <div>
-            <Typography variant="h5">Number of Connections</Typography>
             <Typography variant="h6">Previous Week:{lwConn[day]}</Typography>
             <Typography variant="h6">
               Current Week :{noConn}
@@ -228,106 +224,147 @@ function Graphs(props) {
     <div
       style={{
         position: "relative",
-        width: "800px",
-        height: "600px",
         margin: "auto",
         marginTop: "10px",
       }}
     >
-      <Card variant="outlined">
-        <CardContent>
-          <Line
-            type={"line"}
-            data={chartAData}
-            options={{
-              responsive: true,
-              title: { text: "Mobile Usage", display: true, fontSize: 25 },
-              scales: {
-                yAxes: [
-                  {
-                    ticks: {
-                      autoSkip: true,
-                      maxTicksLimit: 10,
-                      beginAtZero: true,
-                    },
-                    gridLines: {
-                      display: true,
-                    },
+      <Grid container spcing={3}>
+        <Grid item xs={6}>
+          <Card variant="outlined">
+            <CardContent>
+              <Line
+                type={"line"}
+                data={chartAData}
+                options={{
+                  responsive: true,
+                  title: { text: "Mobile Usage", display: true, fontSize: 25 },
+                  scales: {
+                    yAxes: [
+                      {
+                        ticks: {
+                          autoSkip: true,
+                          maxTicksLimit: 10,
+                          beginAtZero: true,
+                        },
+                        gridLines: {
+                          display: true,
+                        },
+                      },
+                    ],
+                    xAxes: [
+                      {
+                        ticks: {
+                          autoSkip: true,
+                          maxTicksLimit: 10,
+                        },
+                        gridLines: {
+                          display: true,
+                        },
+                      },
+                    ],
                   },
-                ],
-                xAxes: [
-                  {
-                    ticks: {
-                      autoSkip: true,
-                      maxTicksLimit: 10,
-                    },
-                    gridLines: {
-                      display: true,
-                    },
+                  tooltips: {
+                    enabled: true,
                   },
-                ],
-              },
-              tooltips: {
-                enabled: true,
-              },
-            }}
-          />
+                }}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={6}>
+          <Card variant="outlined">
+            <CardContent>
+              <Bar
+                type={"bar"}
+                data={chartBData}
+                options={{
+                  responsive: true,
+                  title: {
+                    text: "Number of Users",
+                    display: true,
+                    fontSize: 25,
+                  },
+                  scales: {
+                    yAxes: [
+                      {
+                        ticks: {
+                          autoSkip: true,
+                          maxTicksLimit: 10,
+                          beginAtZero: true,
+                        },
+                        gridLines: {
+                          display: true,
+                        },
+                      },
+                    ],
+                    xAxes: [
+                      {
+                        ticks: {
+                          autoSkip: true,
+                          maxTicksLimit: 10,
+                        },
+                        gridLines: {
+                          display: true,
+                        },
+                      },
+                    ],
+                  },
+                  tooltips: {
+                    enabled: true,
+                  },
+                }}
+              />
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={4}>
           <Card>
             <CardContent>
-              <div style={{ margin: "auto" }}>
-                <Typography align="center" variant="h4">
-                  Status
+              <div>
+                <Typography variant="h5" align="center">
+                  Number of Users
                 </Typography>
               </div>
-              <div>
+              <div style={{ margin: "auto" }} align="center">
                 {checkStatusOfUsers()}
-                <hr />
+              </div>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={4} align="justify">
+          <Card>
+            <CardContent>
+              <div>
+                <Typography variant="h5" align="center">
+                  Number of Connections
+                </Typography>
+              </div>
+              <div style={{ margin: "auto" }} align="center">
                 {checkStatusOfConnection()}
               </div>
             </CardContent>
           </Card>
-        </CardContent>
-      </Card>
-      <Card variant="outlined">
-        <CardContent>
-          <Bar
-            type={"bar"}
-            data={chartBData}
-            options={{
-              responsive: true,
-              title: { text: "Number of Users", display: true, fontSize: 25 },
-              scales: {
-                yAxes: [
-                  {
-                    ticks: {
-                      autoSkip: true,
-                      maxTicksLimit: 10,
-                      beginAtZero: true,
-                    },
-                    gridLines: {
-                      display: true,
-                    },
-                  },
-                ],
-                xAxes: [
-                  {
-                    ticks: {
-                      autoSkip: true,
-                      maxTicksLimit: 10,
-                    },
-                    gridLines: {
-                      display: true,
-                    },
-                  },
-                ],
-              },
-              tooltips: {
-                enabled: true,
-              },
-            }}
-          />
-        </CardContent>
-      </Card>
+        </Grid>
+        <Grid item xs={4}>
+          <Card>
+            <CardContent>
+              <div>
+                <Typography variant="h5" align="center">
+                  Mobile Application Usage
+                </Typography>
+              </div>
+              <div style={{ margin: "auto" }} align="center">
+                <Typography variant="h6">
+                  Current Week: {usageRate[day]}
+                </Typography>
+                <Typography variant="h6">
+                  Previous Week: {prevData[day]}
+                </Typography>
+              </div>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
     </div>
   );
 }

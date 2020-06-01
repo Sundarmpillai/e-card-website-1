@@ -44,8 +44,6 @@ export const updateEmail = (credentials) => {
   return (dispatch, getState, { firebase }) => {
     const mail = getState().firebase.auth.email.toString();
     const user = firebase.auth().currentUser;
-    console.log(mail);
-
     const credential = firebase.auth.EmailAuthProvider.credential(
       mail,
       credentials.password
@@ -70,8 +68,6 @@ export const changePwd = (credentials) => {
   return (dispatch, getState, { firebase }) => {
     const mail = getState().firebase.auth.email.toString();
     const user = firebase.auth().currentUser;
-    console.log("Current", credentials.currPwd);
-    console.log("New", credentials.password);
 
     const credential = firebase.auth.EmailAuthProvider.credential(
       mail,

@@ -290,36 +290,95 @@ function ViewConnection(props) {
                 />
               </div>
               <div style={{ marginLeft: "20px" }}>
-                {admin ? (
-                  <div>
-                    <TextField
-                      error={doc.errors.fN === "" ? false : true}
-                      className={classes.tField}
-                      id="fN"
-                      label="First Name"
-                      value={doc.fN}
-                      helperText={valid ? null : doc.errors.fN}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                    <TextField
-                      error={doc.errors.lN === "" ? false : true}
-                      className={classes.tField}
-                      id="lN"
-                      label="Last Name"
-                      value={doc.lN}
-                      helperText={valid ? null : doc.errors.lN}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                  </div>
-                ) : (
-                  <Typography variant="body1" style={{ padding: "10px" }}>
-                    <label style={{ fontWeight: "bold" }}>Name - </label>
-                    {doc.fN} {doc.lN}
-                  </Typography>
-                )}
                 <div>
+                  <Typography variant="h5">
+                    Personal Information <hr />
+                  </Typography>
+                  {admin ? (
+                    <div>
+                      <TextField
+                        error={doc.errors.fN === "" ? false : true}
+                        className={classes.tField}
+                        id="fN"
+                        label="First Name"
+                        value={doc.fN}
+                        helperText={valid ? null : doc.errors.fN}
+                        onChange={handleChange}
+                        variant="outlined"
+                      />
+                      <TextField
+                        error={doc.errors.lN === "" ? false : true}
+                        className={classes.tField}
+                        id="lN"
+                        label="Last Name"
+                        value={doc.lN}
+                        helperText={valid ? null : doc.errors.lN}
+                        onChange={handleChange}
+                        variant="outlined"
+                      />
+                    </div>
+                  ) : (
+                    <div>
+                      <Typography variant="body1" style={{ padding: "10px" }}>
+                        <label style={{ fontWeight: "bold" }}>
+                          First Name -{" "}
+                        </label>
+                        {doc.fN}
+                      </Typography>
+                      <Typography variant="body1" style={{ padding: "10px" }}>
+                        <label style={{ fontWeight: "bold" }}>
+                          {" "}
+                          Last Name -{" "}
+                        </label>
+                        {doc.lN}
+                      </Typography>
+                    </div>
+                  )}
+                </div>
+                <div>
+                  {admin ? (
+                    <div>
+                      <TextField
+                        error={doc.errors.pNo === "" ? false : true}
+                        className={classes.tField}
+                        id="pNo"
+                        label="Personal Number"
+                        value={doc.pNo}
+                        helperText={valid ? null : doc.errors.pNo}
+                        onChange={handleChange}
+                        variant="outlined"
+                      />
+                    </div>
+                  ) : (
+                    <Typography variant="body1" style={{ padding: "10px" }}>
+                      <label style={{ fontWeight: "bold" }}>
+                        Personal Number -{" "}
+                      </label>
+                      {doc.pNo}
+                    </Typography>
+                  )}
+                </div>
+                <Typography variant="h5" style={{ marginTop: "10px" }}>
+                  Work Information <hr />
+                </Typography>
+                <div>
+                  {admin ? (
+                    <TextField
+                      error={doc.errors.eM === "" ? false : true}
+                      className={classes.tField}
+                      id="eM"
+                      label="E-Mail"
+                      value={doc.eM}
+                      helperText={valid ? null : doc.errors.eM}
+                      onChange={handleChange}
+                      variant="outlined"
+                    />
+                  ) : (
+                    <Typography variant="body1" style={{ padding: "10px" }}>
+                      <label style={{ fontWeight: "bold" }}>E-Mail - </label>
+                      {doc.eM}
+                    </Typography>
+                  )}
                   {admin ? (
                     <div>
                       <TextField
@@ -346,41 +405,16 @@ function ViewConnection(props) {
                     <Typography variant="body1" style={{ padding: "10px" }}>
                       <label style={{ fontWeight: "bold" }}>Company - </label>
                       {doc.cmp}
-                      <label style={{ fontWeight: "bold" }}> Position - </label>
+
+                      <label style={{ fontWeight: "bold", marginLeft: "15px" }}>
+                        {" "}
+                        Position -{" "}
+                      </label>
                       {doc.pos}
-                    </Typography>
-                  )}
-                </div>
-                <div>
-                  {admin ? (
-                    <TextField
-                      error={doc.errors.eM === "" ? false : true}
-                      className={classes.tField}
-                      id="eM"
-                      label="E-Mail"
-                      value={doc.eM}
-                      helperText={valid ? null : doc.errors.eM}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                  ) : (
-                    <Typography variant="body1" style={{ padding: "10px" }}>
-                      <label style={{ fontWeight: "bold" }}>E-Mail - </label>
-                      {doc.eM}
                     </Typography>
                   )}
                   {admin ? (
                     <div>
-                      <TextField
-                        error={doc.errors.pNo === "" ? false : true}
-                        className={classes.tField}
-                        id="pNo"
-                        label="Personal Number"
-                        value={doc.pNo}
-                        helperText={valid ? null : doc.errors.pNo}
-                        onChange={handleChange}
-                        variant="outlined"
-                      />
                       <TextField
                         error={doc.errors.wNo === "" ? false : true}
                         className={classes.tField}
@@ -393,36 +427,39 @@ function ViewConnection(props) {
                       />
                     </div>
                   ) : (
-                    <Typography variant="body1" style={{ padding: "10px" }}>
+                    <Typography
+                      id="adr"
+                      variant="body1"
+                      style={{ padding: "10px" }}
+                    >
                       <label style={{ fontWeight: "bold" }}>
-                        Personal Number -{" "}
-                      </label>
-                      {doc.pNo}
-                      <label style={{ fontWeight: "bold" }}>
-                        {" "}
                         Work Number -{" "}
                       </label>
                       {doc.wNo}
                     </Typography>
                   )}
+                </div>
+                <div>
                   {admin ? (
-                    <TextField
-                      error={doc.errors.adr === "" ? false : true}
-                      className={classes.tField}
-                      id="adr"
-                      label="Address"
-                      value={doc.adr}
-                      helperText={valid ? null : doc.errors.adr}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
+                    <div>
+                      <TextField
+                        error={doc.errors.adr === "" ? false : true}
+                        className={classes.tField}
+                        id="adr"
+                        label="Address"
+                        value={doc.adr}
+                        helperText={valid ? null : doc.errors.adr}
+                        onChange={handleChange}
+                        variant="outlined"
+                      />
+                    </div>
                   ) : (
                     <Typography
                       id="adr"
                       variant="body1"
                       style={{ padding: "10px" }}
                     >
-                      <label style={{ fontWeight: "bold" }}>Address - </label>
+                      <label style={{ fontWeight: "bold" }}> Address - </label>
                       {doc.adr}
                     </Typography>
                   )}
@@ -439,6 +476,7 @@ function ViewConnection(props) {
               </div>
               <div align="center">
                 <Paper elevation={3} style={{ width: "75%", padding: "10xp" }}>
+                  <Typography variant="body1">Front View</Typography>
                   <img
                     className="card-view"
                     src={
@@ -450,6 +488,8 @@ function ViewConnection(props) {
                   />
                 </Paper>
                 <Paper elevation={3} style={{ width: "75%", padding: "10xp" }}>
+                  <Typography variant="body1">Back View</Typography>
+
                   <img
                     className="card-view"
                     src={

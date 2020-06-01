@@ -24,9 +24,7 @@ const checkMinLength = (value, length) => value.length < length;
 //   return count;
 // };
 
-export const fromValidations = () => {
-  console.log("from validations.js");
-};
+export const fromValidations = () => {};
 
 export const isErrorObjectEmpty = (errors) => {
   let valid = true;
@@ -35,7 +33,6 @@ export const isErrorObjectEmpty = (errors) => {
       valid = false;
     }
   });
-  console.log("in check validity function. Validity?", valid);
   return valid;
 };
 
@@ -50,7 +47,7 @@ export const isErrorObjectEmpty = (errors) => {
 export const validate = (id, value, _errors) => {
   let errors = _errors;
   // let errors = {};
-  if (id === "fN") {
+  if (id === "fN" || id === "fN1" || id === "fN2") {
     if (validNameRegex.test(value)) {
       errors[id] = "Can not contain special characters or numbers";
     } else if (checkMinLength(value, 3)) {
@@ -60,7 +57,7 @@ export const validate = (id, value, _errors) => {
     }
   }
 
-  if (id === "lN") {
+  if (id === "lN" || id === "lN1" || id === "lN2") {
     if (validNameRegex.test(value)) {
       errors[id] = "Can not contain special characters or numbers";
     } else if (checkMinLength(value, 3)) {
@@ -70,7 +67,13 @@ export const validate = (id, value, _errors) => {
     }
   }
 
-  if (id === "email" || id === "em" || id === "eM") {
+  if (
+    id === "email" ||
+    id === "em" ||
+    id === "eM" ||
+    id === "eM1" ||
+    id === "eM2"
+  ) {
     if (checkMinLength(value, 1)) {
       errors[id] = "Email cannot be blank";
     } else if (!validEmailRegex.test(value)) {
@@ -133,7 +136,7 @@ export const validate = (id, value, _errors) => {
   }
 
   // personal phone number
-  if (id === "pNo") {
+  if (id === "pNo" || id === "pNo1" || id === "pNo2") {
     if (Number(value) === 0) {
       errors[id] = "Field can not be blank";
     } else if (!validPhoneNoRegex.test(value)) {
