@@ -21,6 +21,9 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 
 import {
   Button,
@@ -31,7 +34,6 @@ import {
   DialogContentText,
   DialogTitle,
   Slide,
-  IconButton,
 } from "@material-ui/core";
 
 import { deleteUser } from "../../store/actions/adminAction";
@@ -162,19 +164,33 @@ const useStyles = makeStyles((theme) => ({
 function GridView(props) {
   const { profiles } = props;
   const classes = useStyles();
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("fN");
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("fN");
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [dense, setDense] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [term, setTerm] = useState("");
   const [id, setID] = useState("fN");
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const [prof, setProf] = useState({});
+
+  const [snackbar, setSnackbar] = useState(false);
+
+  const handleClick = () => {
+    setSnackbar(true);
+  };
+
+  const closeSnackBar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSnackbar(false);
+  };
 
   const handleClickOpen = (prof) => {
     setProf(prof);
@@ -183,6 +199,35 @@ function GridView(props) {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  //Returns Snackbar when deleteing a user from the table
+  const handleSnackBar = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        open={snackbar}
+        autoHideDuration={4000}
+        onClose={closeSnackBar}
+        message="User Deleted"
+        action={
+          <React.Fragment>
+            {prof.fN} {prof.lN}
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={closeSnackBar}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
+    );
   };
 
   const Transition = React.forwardRef(function Transition(props, ref) {
@@ -282,9 +327,11 @@ function GridView(props) {
   function handleDelete(id) {
     props.deleteUser(id);
     handleClose();
+    handleClick();
   }
   return (
     <div className={classes.root}>
+      {snackbar ? handleSnackBar() : null}
       <Card className={classes.paper} variant="outlined">
         <div style={{ display: "inline", float: "left", margin: "10px" }}>
           <h2>Registered Users</h2>
@@ -424,19 +471,12 @@ function GridView(props) {
   );
 }
 const mapStateToProps = (state) => {
-  // firebase.firestore().collection("notify").doc()
   return {
     profiles: state.firestore.ordered.user, // get the  list of user from the firestore
     auth: state.firebase.auth,
     current_user: state.firebase.profile,
   };
 };
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     deleteConnection: (id) => dispatch(deleteConnection(id)),
-//   };
-// };
 
 export default compose(
   connect(mapStateToProps, { deleteUser }),

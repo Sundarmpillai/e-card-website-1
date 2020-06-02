@@ -5,7 +5,7 @@ import moment from "moment";
 const Notification = ({ notification }) => {
   // const { notification } = props;
   return (
-    <div className="notify">
+    <div style={{ marginBottom: "20px" }}>
       <Typography
         style={{ display: "inline", padding: "5px" }}
         component="span"

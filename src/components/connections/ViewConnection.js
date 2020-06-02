@@ -21,12 +21,16 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 import * as validator from "../auth/Validation";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+//Initiate state when the page loads
 function ViewConnection(props) {
   const initState = {
     fN: "",
@@ -53,6 +57,8 @@ function ViewConnection(props) {
     },
   };
 
+  // Used for the state of the dialog
+  //if the user deletes or updates a profile the dialog popup will be triggered
   const [open, setOpen] = React.useState(false);
   const [valid, setValid] = useState(true);
 
@@ -66,6 +72,37 @@ function ViewConnection(props) {
 
   const [doc, setDoc] = useState(initState);
 
+  //Snackbar when the user profile is updated
+  const [snackbarUpdate, setSnackbarUpdate] = useState(false);
+
+  const handleClickUpdate = () => {
+    setSnackbarUpdate(true);
+  };
+
+  const closeSnackbarUpdate = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSnackbarUpdate(false);
+  };
+
+  // Snackbar when a user is deleted
+  const [snackbarDelete, setsnackbarDelete] = useState(false);
+
+  const handleClickDelete = () => {
+    setsnackbarDelete(true);
+  };
+
+  const closeSnackbarDelete = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setsnackbarDelete(false);
+  };
+
+  // Using persisted state for the component
   useEffect(() => {
     const profile = JSON.parse(localStorage.getItem("profile"));
     if (profile) {
@@ -116,6 +153,63 @@ function ViewConnection(props) {
     setDoc({ ...doc, errors, [id]: value });
   };
 
+  //Returns Snackbar when Updating a user from the profile through admin access
+  const handleUpdateSnackBar = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        open={snackbarUpdate}
+        autoHideDuration={4000}
+        onClose={closeSnackbarUpdate}
+        message="Profile Updated"
+        action={
+          <React.Fragment>
+            {doc.fN} {doc.lN}
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={closeSnackbarUpdate}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
+    );
+  };
+
+  //Returns Snackbar when deleteing a user from the table
+  const handleDeleteSnackBar = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        open={snackbarDelete}
+        autoHideDuration={4000}
+        onClose={closeSnackbarDelete}
+        message="The profile is Deleted from the list."
+        action={
+          <React.Fragment>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={closeSnackbarDelete}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
+    );
+  };
+
   const handleChange = (e) => {
     const { id, value } = e.target;
     validateInputAndSetState(id, value);
@@ -135,31 +229,27 @@ function ViewConnection(props) {
     // if error object is empty then the form is valid
     const isFormValid = validator.isErrorObjectEmpty(doc.errors);
     // submit if the form is valid
-
+    handleClose();
+    handleClickUpdate();
     if (isFormValid) {
-      handleClose();
       setValid(true); // set the valid state to true since the form is valid
-      console.log("Form is Valid.");
       delete doc.errors; // delete error state from the final object.
-      console.log(doc);
       var uid = props.match.params.id;
       props.updateConnection(doc, uid);
     } else {
-      console.log("Form is INVALID. Are all errors displayed?");
       setValid(false);
-      handleClose();
     }
   };
 
   const onDelete = (status) => {
     handleClose();
+    handleClickDelete();
     var uid = props.match.params.id;
     if (status) {
       // if the user is an admin it will delete the profile from the system
       props.deleteUser(uid);
       props.history.goBack();
     } else {
-      console.log(props.admin_profile.id);
       // if the user is normal user it will remove the connectin list from their list.
       props.deleteConnection(uid, props.admin_profile.id);
       props.history.goBack();
@@ -170,12 +260,16 @@ function ViewConnection(props) {
   const classes = useStyles();
   let admin = admin_profile.status;
 
+  // checks if the user has logged out or not
   if (!auth.uid) return <Redirect to="/" />;
+  // Check if the logged in user is an admin or not
   if (admin_profile.isEmpty) {
     admin = true;
   }
   return (
     <form style={{ margin: "auto", width: "80%", padding: "10px" }}>
+      {snackbarUpdate ? handleUpdateSnackBar() : null}
+      {snackbarDelete ? handleDeleteSnackBar() : null}
       <Card style={{ width: "auto" }}>
         <Typography variant="h4" style={{ padding: "10px" }}>
           Profile
@@ -192,47 +286,122 @@ function ViewConnection(props) {
                     doc.pPic ||
                     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                   }
-                  style={{ margin: "auto" }}
+                  style={{ margin: "auto", border: "2.5px solid #3f51b5" }}
                 />
               </div>
               <div style={{ marginLeft: "20px" }}>
-                {admin ? (
+                <Typography variant="h5">
+                  Personal Information <hr />
+                </Typography>
+                <Paper
+                  elevation={3}
+                  style={{
+                    borderRight: "3px solid #3f51b5",
+                  }}
+                >
                   <div>
-                    <TextField
-                      error={doc.errors.fN === "" ? false : true}
-                      className={classes.tField}
-                      id="fN"
-                      label={valid ? "First Name" : "Error!"}
-                      value={doc.fN}
-                      helperText={valid ? null : doc.errors.fN}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                    <TextField
-                      error={doc.errors.lN === "" ? false : true}
-                      className={classes.tField}
-                      id="lN"
-                      label={valid ? "First Name" : "Error!"}
-                      value={doc.lN}
-                      helperText={valid ? null : doc.errors.lN}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
+                    {admin ? (
+                      <div>
+                        <TextField
+                          error={doc.errors.fN === "" ? false : true}
+                          className={classes.tField}
+                          id="fN"
+                          label="First Name"
+                          value={doc.fN}
+                          helperText={valid ? null : doc.errors.fN}
+                          onChange={handleChange}
+                          variant="outlined"
+                        />
+                        <TextField
+                          error={doc.errors.lN === "" ? false : true}
+                          className={classes.tField}
+                          id="lN"
+                          label="Last Name"
+                          value={doc.lN}
+                          helperText={valid ? null : doc.errors.lN}
+                          onChange={handleChange}
+                          variant="outlined"
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <Typography variant="body1" style={{ padding: "10px" }}>
+                          <label style={{ fontWeight: "bold" }}>
+                            First Name -{" "}
+                          </label>
+                          {doc.fN}
+                        </Typography>
+                        <Typography variant="body1" style={{ padding: "10px" }}>
+                          <label style={{ fontWeight: "bold" }}>
+                            {" "}
+                            Last Name -{" "}
+                          </label>
+                          {doc.lN}
+                        </Typography>
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  <Typography variant="body1" style={{ padding: "10px" }}>
-                    <label style={{ fontWeight: "bold" }}>Name - </label>
-                    {doc.fN} {doc.lN}
-                  </Typography>
-                )}
-                <div>
+                  <div>
+                    {admin ? (
+                      <div>
+                        <TextField
+                          error={doc.errors.pNo === "" ? false : true}
+                          className={classes.tField}
+                          id="pNo"
+                          label="Personal Number"
+                          value={doc.pNo}
+                          helperText={valid ? null : doc.errors.pNo}
+                          onChange={handleChange}
+                          variant="outlined"
+                        />
+                      </div>
+                    ) : (
+                      <Typography variant="body1" style={{ padding: "10px" }}>
+                        <label style={{ fontWeight: "bold" }}>
+                          Personal Number -{" "}
+                        </label>
+                        {doc.pNo}
+                      </Typography>
+                    )}
+                  </div>
+
+                  <div>
+                    {admin ? (
+                      <TextField
+                        error={doc.errors.eM === "" ? false : true}
+                        className={classes.tField}
+                        id="eM"
+                        label="E-Mail"
+                        value={doc.eM}
+                        helperText={valid ? null : doc.errors.eM}
+                        onChange={handleChange}
+                        variant="outlined"
+                        style={{ width: "95%" }}
+                      />
+                    ) : (
+                      <Typography variant="body1" style={{ padding: "10px" }}>
+                        <label style={{ fontWeight: "bold" }}>E-Mail - </label>
+                        {doc.eM}
+                      </Typography>
+                    )}
+                  </div>
+                </Paper>
+                <Typography variant="h5" style={{ marginTop: "10px" }}>
+                  Work Information <hr />
+                </Typography>
+                <Paper
+                  elevation={3}
+                  style={{
+                    borderRight: "3px solid #3f51b5",
+                  }}
+                >
                   {admin ? (
                     <div>
                       <TextField
                         error={doc.errors.cmp === "" ? false : true}
                         className={classes.tField}
                         id="cmp"
-                        label={valid ? "Company" : "Error!"}
+                        label="Company"
                         value={doc.cmp}
                         helperText={valid ? null : doc.errors.cmp}
                         onChange={handleChange}
@@ -242,7 +411,7 @@ function ViewConnection(props) {
                         error={doc.errors.pos === "" ? false : true}
                         className={classes.tField}
                         id="pos"
-                        label={valid ? "Position" : "Error!"}
+                        label="Position"
                         value={doc.pos}
                         helperText={valid ? null : doc.errors.pos}
                         onChange={handleChange}
@@ -253,46 +422,21 @@ function ViewConnection(props) {
                     <Typography variant="body1" style={{ padding: "10px" }}>
                       <label style={{ fontWeight: "bold" }}>Company - </label>
                       {doc.cmp}
-                      <label style={{ fontWeight: "bold" }}> Position - </label>
+
+                      <label style={{ fontWeight: "bold", marginLeft: "15px" }}>
+                        {" "}
+                        Position -{" "}
+                      </label>
                       {doc.pos}
-                    </Typography>
-                  )}
-                </div>
-                <div>
-                  {admin ? (
-                    <TextField
-                      error={doc.errors.eM === "" ? false : true}
-                      className={classes.tField}
-                      id="eM"
-                      label={valid ? "E-Mail" : "Error!"}
-                      value={doc.eM}
-                      helperText={valid ? null : doc.errors.eM}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                  ) : (
-                    <Typography variant="body1" style={{ padding: "10px" }}>
-                      <label style={{ fontWeight: "bold" }}>E-Mail - </label>
-                      {doc.eM}
                     </Typography>
                   )}
                   {admin ? (
                     <div>
                       <TextField
-                        error={doc.errors.pNo === "" ? false : true}
-                        className={classes.tField}
-                        id="pNo"
-                        label={valid ? "Personal Number" : "Error!"}
-                        value={doc.pNo}
-                        helperText={valid ? null : doc.errors.pNo}
-                        onChange={handleChange}
-                        variant="outlined"
-                      />
-                      <TextField
                         error={doc.errors.wNo === "" ? false : true}
                         className={classes.tField}
                         id="wNo"
-                        label={valid ? "Work Phone Number" : "Error!"}
+                        label="Work Phone Number"
                         value={doc.wNo}
                         helperText={valid ? null : doc.errors.wNo}
                         onChange={handleChange}
@@ -300,40 +444,47 @@ function ViewConnection(props) {
                       />
                     </div>
                   ) : (
-                    <Typography variant="body1" style={{ padding: "10px" }}>
-                      <label style={{ fontWeight: "bold" }}>
-                        Personal Number -{" "}
-                      </label>
-                      {doc.pNo}
-                      <label style={{ fontWeight: "bold" }}>
-                        {" "}
-                        Work Number -{" "}
-                      </label>
-                      {doc.wNo}
-                    </Typography>
-                  )}
-                  {admin ? (
-                    <TextField
-                      error={doc.errors.adr === "" ? false : true}
-                      className={classes.tField}
-                      id="adr"
-                      label={valid ? "Address" : "Error!"}
-                      value={doc.adr}
-                      helperText={valid ? null : doc.errors.adr}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                  ) : (
                     <Typography
                       id="adr"
                       variant="body1"
                       style={{ padding: "10px" }}
                     >
-                      <label style={{ fontWeight: "bold" }}>Address - </label>
-                      {doc.adr}
+                      <label style={{ fontWeight: "bold" }}>
+                        Work Number -{" "}
+                      </label>
+                      {doc.wNo}
                     </Typography>
                   )}
-                </div>
+                  <div>
+                    {admin ? (
+                      <div>
+                        <TextField
+                          error={doc.errors.adr === "" ? false : true}
+                          className={classes.tField}
+                          id="adr"
+                          label="Address"
+                          value={doc.adr}
+                          helperText={valid ? null : doc.errors.adr}
+                          onChange={handleChange}
+                          variant="outlined"
+                          style={{ width: "95%" }}
+                        />
+                      </div>
+                    ) : (
+                      <Typography
+                        id="adr"
+                        variant="body1"
+                        style={{ padding: "10px" }}
+                      >
+                        <label style={{ fontWeight: "bold" }}>
+                          {" "}
+                          Address -{" "}
+                        </label>
+                        {doc.adr}
+                      </Typography>
+                    )}
+                  </div>
+                </Paper>
               </div>
             </CardContent>
           </Grid>
@@ -346,6 +497,7 @@ function ViewConnection(props) {
               </div>
               <div align="center">
                 <Paper elevation={3} style={{ width: "75%", padding: "10xp" }}>
+                  <Typography variant="body1">Front View</Typography>
                   <img
                     className="card-view"
                     src={
@@ -357,6 +509,8 @@ function ViewConnection(props) {
                   />
                 </Paper>
                 <Paper elevation={3} style={{ width: "75%", padding: "10xp" }}>
+                  <Typography variant="body1">Back View</Typography>
+
                   <img
                     className="card-view"
                     src={
@@ -422,10 +576,6 @@ function ViewConnection(props) {
     </form>
   );
 }
-
-// const sendMail = (e) => {
-//   window.location.href = "mailto:" + props.conn_profile.eM;
-// };
 
 const mapStateToProps = (state, ownProps) => {
   //for id receive from selecting an item from the list

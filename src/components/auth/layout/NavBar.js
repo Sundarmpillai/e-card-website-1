@@ -35,8 +35,8 @@ const Navbar = (props) => {
       <AppBar position="static" style={{ backgroundColor: "#3949ab" }}>
         <Toolbar variant="dense">
           <Typography variant="h4" className={classes.title}>
-            <Link to="/" style={{ color: "white", textDecoration: "none" }}>
-              E-Card Website
+            <Link to="/home" style={{ color: "white", textDecoration: "none" }}>
+              E-Card
             </Link>
           </Typography>
           {adminlinks === null ? links : adminlinks}

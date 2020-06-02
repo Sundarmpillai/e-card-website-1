@@ -29,8 +29,6 @@ function Admin(props) {
 
   const classes = useStyles();
 
-  window.addEventListener("loadeddata", console.log("LOADED"));
-
   const { profiles, auth, current_user } = props;
   if (!auth.uid) return <Redirect to="/login" />;
 

@@ -2,10 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
-import * as firebase from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/auth"; // for authentication
-import "firebase/storage"; // for storage
 import "firebase/firestore";
+import "firebase/storage"; // for storage
 import * as serviceWorker from "./serviceWorker";
 import { createStore, applyMiddleware, compose } from "redux";
 import rootReducer from "./store/reducer/rootReducer";

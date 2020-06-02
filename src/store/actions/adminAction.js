@@ -50,9 +50,7 @@ export const deleteUser = (uid) => {
           file.delete();
         });
       })
-      .catch(function (error) {
-        console.log(error);
-      });
+      .catch(function (error) {});
     firestore
       .collection("user")
       .doc(uid)

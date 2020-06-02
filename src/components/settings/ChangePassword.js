@@ -25,11 +25,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 function ChangePWd(props) {
   const initState = {
-    email: "",
     password: "",
+    pwd: "",
+    repwd: "",
     errors: {
-      email: "",
       password: "",
+      pwd: "",
+      repwd: "",
     },
   };
   const [doc, setDoc] = useState(initState);
@@ -68,15 +70,10 @@ function ChangePWd(props) {
     const isFormValid = validator.isErrorObjectEmpty(doc.errors);
     // submit if the form is valid
 
-    if (
-      isFormValid &&
-      (doc.password === doc.repwd) & (doc.password !== doc.currPwd)
-    ) {
-      console.log("Form Valid");
+    if (isFormValid && (doc.pwd === doc.repwd) & (doc.pwd !== doc.password)) {
       props.changePwd(doc);
       props.logout();
     } else {
-      console.log("Form invalid");
     }
   };
   const { authError, auth } = props;
@@ -102,7 +99,7 @@ function ChangePWd(props) {
               name="newPassword"
               label="New Password"
               type="password"
-              id="password"
+              id="pwd"
               autoComplete="current-password"
               onChange={handleChange}
               style={{ marginBottom: "20px" }}
@@ -134,7 +131,7 @@ function ChangePWd(props) {
               name="password"
               label="Current Password"
               type="password"
-              id="currPwd"
+              id="password"
               autoComplete="current-password"
               onChange={handleChange}
               style={{ marginBottom: "20px" }}

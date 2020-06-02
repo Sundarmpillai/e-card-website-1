@@ -3,8 +3,12 @@ import { connect } from "react-redux";
 import { createProfile } from "../../store/actions/profileAction";
 import { Redirect } from "react-router-dom";
 import firebase from "firebase";
+import "firebase/storage";
 import { makeStyles } from "@material-ui/core/styles";
 import * as validator from "../auth/Validation";
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 import {
   Button,
   Typography,
@@ -45,7 +49,6 @@ function CreateProfile(props) {
       wNo: "",
       pos: "",
       eM: "",
-      // status: false,
     },
   };
 
@@ -60,6 +63,20 @@ function CreateProfile(props) {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const [snackbar, setSnackbar] = useState(false);
+
+  const handleClick = () => {
+    setSnackbar(true);
+  };
+
+  const closeSnackBar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSnackbar(false);
   };
 
   const Transition = React.forwardRef(function Transition(props, ref) {
@@ -132,7 +149,6 @@ function CreateProfile(props) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("in handle submit");
 
     // iterate through the component state as key value pairs and
     //  run the validation on each value.
@@ -147,16 +163,41 @@ function CreateProfile(props) {
 
     handleClose();
     if (isFormValid) {
+      handleClick();
       setValid(true); // set the valid state to true since the form is valid
-      console.log("Form is Valid.");
       delete doc.errors; // delete error state from the final object.
-      console.log(doc);
       props.createProfile(doc);
       props.history.push("/");
     } else {
-      console.log("Form is INVALID. Are all errors displayed?");
       setValid(false);
     }
+  };
+
+  const handleSnackBar = () => {
+    return (
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        open={snackbar}
+        autoHideDuration={4000}
+        onClose={closeSnackBar}
+        message="Your profile has been Created."
+        action={
+          <React.Fragment>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={closeSnackBar}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
+    );
   };
 
   const onImageChange = (event) => {
@@ -185,7 +226,8 @@ function CreateProfile(props) {
       });
     }
   };
-  const ref = firebase.storage().ref();
+  let id = props.auth.uid;
+  const ref = firebase.storage().ref(`${id}`);
 
   const frontUpload = (e) => {
     const file = document.getElementById("front").files[0];
@@ -202,7 +244,6 @@ function CreateProfile(props) {
             ...doc,
             front: url,
           });
-          console.log("DONE");
         })
         .catch(console.error);
     } catch (err) {
@@ -224,7 +265,6 @@ function CreateProfile(props) {
             ...doc,
             back: url,
           });
-          console.log("DONE");
         })
         .catch(console.error);
     } catch (err) {
@@ -247,7 +287,6 @@ function CreateProfile(props) {
             ...doc,
             pPic: url,
           });
-          console.log("DONE");
         })
         .catch(console.error);
     } catch (err) {
@@ -290,8 +329,10 @@ function CreateProfile(props) {
   const { auth } = props;
   const classes = useStyles();
   if (!auth.uid) return <Redirect to="/login" />;
+  if (!auth.emailVerified) return <Redirect to="/verify" />;
   return (
     <form style={{ margin: "auto", width: "80%", padding: "10px" }}>
+      {snackbar ? handleSnackBar() : null}
       <Card style={{ width: "auto" }}>
         <CardContent>
           <Typography variant="h4" style={{ padding: "10px" }}>
@@ -353,7 +394,7 @@ function CreateProfile(props) {
                     error={doc.errors.fN === "" ? false : true}
                     className={classes.tField}
                     id="fN"
-                    label={valid ? "First Name" : "Error"}
+                    label="First Name"
                     value={doc.fN}
                     helperText={valid ? null : doc.errors.fN}
                     onChange={handleChange}
@@ -364,7 +405,7 @@ function CreateProfile(props) {
                     error={doc.errors.lN === "" ? false : true}
                     className={classes.tField}
                     id="lN"
-                    label={valid ? "Last Name" : "Error!"}
+                    label="Last Name"
                     value={doc.lN}
                     helperText={valid ? null : doc.errors.lN}
                     onChange={handleChange}
@@ -377,7 +418,7 @@ function CreateProfile(props) {
                   error={doc.errors.pNo === "" ? false : true}
                   className={classes.tField}
                   id="pNo"
-                  label={valid ? "Personal Number" : "Error!"}
+                  label="Personal Number"
                   value={doc.pNo}
                   helperText={valid ? null : doc.errors.pNo}
                   onChange={handleChange}
@@ -392,7 +433,7 @@ function CreateProfile(props) {
                   error={doc.errors.cmp === "" ? false : true}
                   className={classes.tField}
                   id="cmp"
-                  label={valid ? "Company" : "Error!"}
+                  label="Company"
                   value={doc.cmp}
                   helperText={valid ? null : doc.errors.cmp}
                   onChange={handleChange}
@@ -402,7 +443,7 @@ function CreateProfile(props) {
                   error={doc.errors.pos === "" ? false : true}
                   className={classes.tField}
                   id="pos"
-                  label={valid ? "Position" : "Error!"}
+                  label="Position"
                   value={doc.pos}
                   helperText={valid ? null : doc.errors.pos}
                   onChange={handleChange}
@@ -414,7 +455,7 @@ function CreateProfile(props) {
                   error={doc.errors.eM === "" ? false : true}
                   className={classes.tField}
                   id="eM"
-                  label={valid ? "E-Mail" : "Error!"}
+                  label="E-Mail"
                   value={doc.eM}
                   helperText={valid ? null : doc.errors.eM}
                   onChange={handleChange}
@@ -426,7 +467,7 @@ function CreateProfile(props) {
                   error={doc.errors.wNo === "" ? false : true}
                   className={classes.tField}
                   id="wNo"
-                  label={valid ? "Work Phone Number" : "Error!"}
+                  label="Work Phone Number"
                   value={doc.wNo}
                   helperText={valid ? null : doc.errors.wNo}
                   onChange={handleChange}
@@ -436,7 +477,7 @@ function CreateProfile(props) {
                   error={doc.errors.adr === "" ? false : true}
                   className={classes.tField}
                   id="adr"
-                  label={valid ? "Address" : "Error!"}
+                  label="Address"
                   value={doc.adr}
                   helperText={valid ? null : doc.errors.adr}
                   onChange={handleChange}
@@ -563,12 +604,26 @@ function CreateProfile(props) {
             </Grid>
           </Grid>
           <Grid item xs={12} style={{ clear: "right" }}>
-            <div style={{ clear: "left" }}>
+            <div
+              style={{
+                clear: "left",
+                float: "right",
+                position: "relative",
+                marginRight: "80px",
+                width: "300px",
+              }}
+            >
+              <Typography variant="body1">
+                <b>Note</b>: You need to upload each images individually by
+                clicking on the "UPLOAD" Button under the images.
+              </Typography>
+            </div>
+            <div align="center" style={{ clear: "right" }}>
               <Button
                 variant="contained"
                 color="primary"
                 type="submit"
-                style={{ float: "right", margin: "10px" }}
+                style={{ margin: "10px" }}
                 onClick={(e) => handleClickOpen(e)}
               >
                 Create

@@ -72,7 +72,6 @@ function ChangeEmail(props) {
       props.updateEmail(doc);
       props.logout();
     } else {
-      console.log("Form invalid");
     }
   };
   const { authError, auth } = props;

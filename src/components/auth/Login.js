@@ -41,7 +41,6 @@ function Login(props) {
   };
 
   const handleForgotPwd = (e) => {
-    console.log(mail);
     props.resetPassword(mail);
   };
   const validateInputAndSetState = (id, value) => {
@@ -72,10 +71,7 @@ function Login(props) {
     // submit if the form is valid
 
     if (isFormValid) {
-      console.log(state);
       props.login(state);
-    } else {
-      console.log("Form invalid");
     }
   };
   const { authError, auth } = props;
@@ -143,7 +139,9 @@ function Login(props) {
                   onClose={handleClose}
                   aria-labelledby="form-dialog-title"
                 >
-                  <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+                  <DialogTitle id="form-dialog-title">
+                    Re-set Password
+                  </DialogTitle>
                   <DialogContent>
                     <DialogContentText>
                       To reset your password, please type in your email address
