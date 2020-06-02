@@ -12,9 +12,6 @@ import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import MinimizeIcon from "@material-ui/icons/Minimize";
 
-let usageRate = [];
-let prevData = [];
-
 function Graphs(props) {
   const [chartAData, setchartAData] = useState({});
   const [chartBData, setchartBData] = useState({});
@@ -24,12 +21,16 @@ function Graphs(props) {
   const [noConn, setNoConn] = useState([]);
   const [lwUser, setlwUser] = useState([]);
   const [lwConn, setlwConn] = useState([]);
+  const [usageValue, setUsageValue] = useState([]);
+  const [prevValue, setPrevValue] = useState([]);
 
   let list = [];
   let users = [];
   let conn = [];
   let userPrev = [];
   let connPrev = [];
+  let usageRate = [];
+  let prevData = [];
   let now = new Date();
   let day = now.getDay() === 0 ? 6 : now.getDay();
 
@@ -47,6 +48,7 @@ function Graphs(props) {
           conn.push(list[i].noConn);
         }
       }
+      setUsageValue(usageRate);
       setNoUsers(users[day - 1]);
       setNoConn(conn[day - 1]);
       if (list[6] !== undefined) {
@@ -55,6 +57,7 @@ function Graphs(props) {
           userPrev.push(list[6].prevD[j]);
           connPrev.push(list[6].prevC[j]);
         }
+        setPrevValue(prevData);
         setlwUser(userPrev);
         setlwConn(connPrev);
         if (day === 1) {
@@ -151,30 +154,33 @@ function Graphs(props) {
     if (noConn !== undefined) {
       if (noUsers < prevUser) {
         return (
-          <div>
-            <Typography variant="h6">Previous Week:{lwUser[day]}</Typography>
+          <div align="left">
+            <Typography variant="h6">Previous Week : {lwUser[day]}</Typography>
+            <Typography variant="h6">Yesterday : {prevUser}</Typography>
             <Typography variant="h6">
-              Current Week :{noUsers}
+              Today : {noUsers}
               <ArrowDownwardIcon style={{ color: "#b71c1c" }} />
             </Typography>
           </div>
         );
       } else if (noUsers > prevUser) {
         return (
-          <div>
-            <Typography variant="h6">Previous Week:{lwUser[day]}</Typography>
+          <div align="left">
+            <Typography variant="h6">Previous Week : {lwUser[day]}</Typography>
+            <Typography variant="h6">Yesterday : {prevUser}</Typography>
             <Typography variant="h6">
-              Current Week :{noUsers}
+              Today : {noUsers}
               <ArrowUpwardIcon style={{ color: "#00c853" }} />
             </Typography>
           </div>
         );
       } else {
         return (
-          <div>
-            <Typography variant="h6">Previous Week:{lwUser[day]}</Typography>
+          <div align="left">
+            <Typography variant="h6">Previous Week : {lwUser[day]}</Typography>
+            <Typography variant="h6">Yesterday : {prevUser}</Typography>
             <Typography variant="h6">
-              Current Week :{noUsers}
+              Today : {noUsers}
               <MinimizeIcon style={{ color: "#212121" }} />
             </Typography>
           </div>
@@ -187,30 +193,33 @@ function Graphs(props) {
     if (noConn !== undefined) {
       if (noConn < prevConn) {
         return (
-          <div>
-            <Typography variant="h6">Previous Week:{lwConn[day]}</Typography>
+          <div align="left">
+            <Typography variant="h6">Previous Week : {lwConn[day]}</Typography>
+            <Typography variant="h6">Yesterday : {prevConn}</Typography>
             <Typography variant="h6">
-              Current Week :{noConn}
+              Today : {noConn}
               <ArrowDownwardIcon style={{ color: "#b71c1c" }} />
             </Typography>
           </div>
         );
       } else if (noConn > prevConn) {
         return (
-          <div>
-            <Typography variant="h6">Previous Week:{lwConn[day]}</Typography>
+          <div align="left">
+            <Typography variant="h6">Previous Week : {lwConn[day]}</Typography>
+            <Typography variant="h6">Yesterday : {prevConn}</Typography>
             <Typography variant="h6">
-              Current Week :{noConn}
+              Today : {noConn}
               <ArrowUpwardIcon style={{ color: "#00c853" }} />
             </Typography>
           </div>
         );
       } else {
         return (
-          <div>
-            <Typography variant="h6">Previous Week:{lwConn[day]}</Typography>
+          <div align="left">
+            <Typography variant="h6">Previous Week : {lwConn[day]}</Typography>
+            <Typography variant="h6">Yesterday : {prevConn}</Typography>
             <Typography variant="h6">
-              Current Week :{noConn}
+              Today : {noConn}
               <MinimizeIcon style={{ color: "#212121" }} />
             </Typography>
           </div>
@@ -219,6 +228,9 @@ function Graphs(props) {
     }
   }
   if (auth.isEmpty) return <Redirect to="/login" />;
+
+  var prevDay = day === 1 ? 6 : day - 2;
+  console.log(prevDay);
 
   return (
     <div
@@ -322,11 +334,22 @@ function Graphs(props) {
             <CardContent>
               <div>
                 <Typography variant="h5" align="center">
-                  Number of Users
+                  Mobile Application Usage <hr />
                 </Typography>
               </div>
-              <div style={{ margin: "auto" }} align="center">
-                {checkStatusOfUsers()}
+              <div style={{ margin: "auto", width: "45%" }} align="center">
+                <div align="left">
+                  <Typography variant="h6">
+                    Previous Week: {prevValue[day - 1]}
+                  </Typography>
+
+                  <Typography variant="h6">
+                    Yesterday : {usageValue[prevDay]}
+                  </Typography>
+                  <Typography variant="h6">
+                    Today : {usageValue[day - 1]}
+                  </Typography>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -336,10 +359,10 @@ function Graphs(props) {
             <CardContent>
               <div>
                 <Typography variant="h5" align="center">
-                  Number of Connections
+                  Number of Connections <hr />
                 </Typography>
               </div>
-              <div style={{ margin: "auto" }} align="center">
+              <div style={{ margin: "auto", width: "45%" }} align="center">
                 {checkStatusOfConnection()}
               </div>
             </CardContent>
@@ -350,16 +373,11 @@ function Graphs(props) {
             <CardContent>
               <div>
                 <Typography variant="h5" align="center">
-                  Mobile Application Usage
+                  Number of Users <hr />
                 </Typography>
               </div>
-              <div style={{ margin: "auto" }} align="center">
-                <Typography variant="h6">
-                  Current Week: {usageRate[day]}
-                </Typography>
-                <Typography variant="h6">
-                  Previous Week: {prevData[day]}
-                </Typography>
+              <div style={{ margin: "auto", width: "40%" }} align="center">
+                {checkStatusOfUsers()}
               </div>
             </CardContent>
           </Card>

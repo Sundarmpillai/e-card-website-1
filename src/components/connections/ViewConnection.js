@@ -286,99 +286,115 @@ function ViewConnection(props) {
                     doc.pPic ||
                     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                   }
-                  style={{ margin: "auto" }}
+                  style={{ margin: "auto", border: "2.5px solid #3f51b5" }}
                 />
               </div>
               <div style={{ marginLeft: "20px" }}>
-                <div>
-                  <Typography variant="h5">
-                    Personal Information <hr />
-                  </Typography>
-                  {admin ? (
-                    <div>
-                      <TextField
-                        error={doc.errors.fN === "" ? false : true}
-                        className={classes.tField}
-                        id="fN"
-                        label="First Name"
-                        value={doc.fN}
-                        helperText={valid ? null : doc.errors.fN}
-                        onChange={handleChange}
-                        variant="outlined"
-                      />
-                      <TextField
-                        error={doc.errors.lN === "" ? false : true}
-                        className={classes.tField}
-                        id="lN"
-                        label="Last Name"
-                        value={doc.lN}
-                        helperText={valid ? null : doc.errors.lN}
-                        onChange={handleChange}
-                        variant="outlined"
-                      />
-                    </div>
-                  ) : (
-                    <div>
+                <Typography variant="h5">
+                  Personal Information <hr />
+                </Typography>
+                <Paper
+                  elevation={3}
+                  style={{
+                    borderRight: "3px solid #3f51b5",
+                  }}
+                >
+                  <div>
+                    {admin ? (
+                      <div>
+                        <TextField
+                          error={doc.errors.fN === "" ? false : true}
+                          className={classes.tField}
+                          id="fN"
+                          label="First Name"
+                          value={doc.fN}
+                          helperText={valid ? null : doc.errors.fN}
+                          onChange={handleChange}
+                          variant="outlined"
+                        />
+                        <TextField
+                          error={doc.errors.lN === "" ? false : true}
+                          className={classes.tField}
+                          id="lN"
+                          label="Last Name"
+                          value={doc.lN}
+                          helperText={valid ? null : doc.errors.lN}
+                          onChange={handleChange}
+                          variant="outlined"
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <Typography variant="body1" style={{ padding: "10px" }}>
+                          <label style={{ fontWeight: "bold" }}>
+                            First Name -{" "}
+                          </label>
+                          {doc.fN}
+                        </Typography>
+                        <Typography variant="body1" style={{ padding: "10px" }}>
+                          <label style={{ fontWeight: "bold" }}>
+                            {" "}
+                            Last Name -{" "}
+                          </label>
+                          {doc.lN}
+                        </Typography>
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    {admin ? (
+                      <div>
+                        <TextField
+                          error={doc.errors.pNo === "" ? false : true}
+                          className={classes.tField}
+                          id="pNo"
+                          label="Personal Number"
+                          value={doc.pNo}
+                          helperText={valid ? null : doc.errors.pNo}
+                          onChange={handleChange}
+                          variant="outlined"
+                        />
+                      </div>
+                    ) : (
                       <Typography variant="body1" style={{ padding: "10px" }}>
                         <label style={{ fontWeight: "bold" }}>
-                          First Name -{" "}
+                          Personal Number -{" "}
                         </label>
-                        {doc.fN}
+                        {doc.pNo}
                       </Typography>
-                      <Typography variant="body1" style={{ padding: "10px" }}>
-                        <label style={{ fontWeight: "bold" }}>
-                          {" "}
-                          Last Name -{" "}
-                        </label>
-                        {doc.lN}
-                      </Typography>
-                    </div>
-                  )}
-                </div>
-                <div>
-                  {admin ? (
-                    <div>
+                    )}
+                  </div>
+
+                  <div>
+                    {admin ? (
                       <TextField
-                        error={doc.errors.pNo === "" ? false : true}
+                        error={doc.errors.eM === "" ? false : true}
                         className={classes.tField}
-                        id="pNo"
-                        label="Personal Number"
-                        value={doc.pNo}
-                        helperText={valid ? null : doc.errors.pNo}
+                        id="eM"
+                        label="E-Mail"
+                        value={doc.eM}
+                        helperText={valid ? null : doc.errors.eM}
                         onChange={handleChange}
                         variant="outlined"
+                        style={{ width: "95%" }}
                       />
-                    </div>
-                  ) : (
-                    <Typography variant="body1" style={{ padding: "10px" }}>
-                      <label style={{ fontWeight: "bold" }}>
-                        Personal Number -{" "}
-                      </label>
-                      {doc.pNo}
-                    </Typography>
-                  )}
-                </div>
+                    ) : (
+                      <Typography variant="body1" style={{ padding: "10px" }}>
+                        <label style={{ fontWeight: "bold" }}>E-Mail - </label>
+                        {doc.eM}
+                      </Typography>
+                    )}
+                  </div>
+                </Paper>
                 <Typography variant="h5" style={{ marginTop: "10px" }}>
                   Work Information <hr />
                 </Typography>
-                <div>
-                  {admin ? (
-                    <TextField
-                      error={doc.errors.eM === "" ? false : true}
-                      className={classes.tField}
-                      id="eM"
-                      label="E-Mail"
-                      value={doc.eM}
-                      helperText={valid ? null : doc.errors.eM}
-                      onChange={handleChange}
-                      variant="outlined"
-                    />
-                  ) : (
-                    <Typography variant="body1" style={{ padding: "10px" }}>
-                      <label style={{ fontWeight: "bold" }}>E-Mail - </label>
-                      {doc.eM}
-                    </Typography>
-                  )}
+                <Paper
+                  elevation={3}
+                  style={{
+                    borderRight: "3px solid #3f51b5",
+                  }}
+                >
                   {admin ? (
                     <div>
                       <TextField
@@ -386,6 +402,7 @@ function ViewConnection(props) {
                         className={classes.tField}
                         id="cmp"
                         label="Company"
+                        value={doc.cmp}
                         helperText={valid ? null : doc.errors.cmp}
                         onChange={handleChange}
                         variant="outlined"
@@ -438,32 +455,36 @@ function ViewConnection(props) {
                       {doc.wNo}
                     </Typography>
                   )}
-                </div>
-                <div>
-                  {admin ? (
-                    <div>
-                      <TextField
-                        error={doc.errors.adr === "" ? false : true}
-                        className={classes.tField}
+                  <div>
+                    {admin ? (
+                      <div>
+                        <TextField
+                          error={doc.errors.adr === "" ? false : true}
+                          className={classes.tField}
+                          id="adr"
+                          label="Address"
+                          value={doc.adr}
+                          helperText={valid ? null : doc.errors.adr}
+                          onChange={handleChange}
+                          variant="outlined"
+                          style={{ width: "95%" }}
+                        />
+                      </div>
+                    ) : (
+                      <Typography
                         id="adr"
-                        label="Address"
-                        value={doc.adr}
-                        helperText={valid ? null : doc.errors.adr}
-                        onChange={handleChange}
-                        variant="outlined"
-                      />
-                    </div>
-                  ) : (
-                    <Typography
-                      id="adr"
-                      variant="body1"
-                      style={{ padding: "10px" }}
-                    >
-                      <label style={{ fontWeight: "bold" }}> Address - </label>
-                      {doc.adr}
-                    </Typography>
-                  )}
-                </div>
+                        variant="body1"
+                        style={{ padding: "10px" }}
+                      >
+                        <label style={{ fontWeight: "bold" }}>
+                          {" "}
+                          Address -{" "}
+                        </label>
+                        {doc.adr}
+                      </Typography>
+                    )}
+                  </div>
+                </Paper>
               </div>
             </CardContent>
           </Grid>

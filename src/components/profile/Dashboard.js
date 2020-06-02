@@ -8,7 +8,7 @@ import { Redirect } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import { Card, Paper } from "@material-ui/core";
+import { Card, Paper, CardContent } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -44,6 +44,7 @@ function Dashboard(props) {
 
   const conn_list = [];
   const notify_list = [];
+  var num = 0;
   const { profiles, auth, current_user, notification } = props;
   if (current_user.status) return <Redirect to="/dashboard" />;
 
@@ -52,6 +53,10 @@ function Dashboard(props) {
 
   if (current_user.pNo === 0) return <Redirect to="/create" />;
 
+  if (current_user.isLoaded) {
+    console.log(current_user);
+    num = current_user.conn.length;
+  }
   profiles &&
     profiles.map((user) => {
       if (current_user.conn != null) {
@@ -76,11 +81,23 @@ function Dashboard(props) {
       return null;
     });
   return (
-    <div className={classes.root} style={{ marginTop: "15px" }}>
+    <div
+      className={classes.root}
+      style={{ marginTop: "15px", marginBottom: "20px" }}
+    >
       <Paper elevation={3} style={{ width: "90%", margin: "auto" }}>
-        <Grid container spcing={3}>
+        <div align="center">
+          <Typography variant="h3">
+            Dashboard
+            <hr />
+          </Typography>
+        </div>
+        <Grid container spcing={2}>
           <Grid item xs={6}>
-            <div className={classes.paper} style={{ display: "flex" }}>
+            <div
+              className={classes.paper}
+              style={{ display: "flex", marginLeft: "60px" }}
+            >
               <TextField
                 id="filled-basic"
                 label="Search"
@@ -94,7 +111,6 @@ function Dashboard(props) {
                   marginLeft: 0,
                   paddingTop: "8px",
                   paddingLeft: "2px",
-                  // border: "1px solid grey",
                 }}
               >
                 <InputLabel id="demo-simple-select-label">Search By</InputLabel>
@@ -129,15 +145,18 @@ function Dashboard(props) {
                 </Select>
               </div>
             </div>
-          </Grid>
-        </Grid>
-        <Grid container spacing={3}>
-          <Grid item xs={6}>
-            <div align="center" style={{ width: "80%", margin: "auto" }}>
-              <Typography variant="h5">Your Card List</Typography>
-              <hr />
+            <div
+              align="center"
+              style={{
+                margin: "auto",
+                width: "80%",
+              }}
+            >
+              <Typography variant="h5">
+                Your Card List <hr />
+              </Typography>
             </div>
-            <div style={{ overflow: "auto", height: "400px" }}>
+            <div style={{ overflow: "auto", height: "380px" }}>
               {conn_list.filter(searchingFor(term, id)).map((person) => (
                 <ul key={person.id}>
                   <ConnectionList profiles={person} />
@@ -147,31 +166,55 @@ function Dashboard(props) {
             </div>
           </Grid>
           <Grid item xs={6}>
+            <Card
+              align="center"
+              style={{
+                margin: "auto",
+                width: "70%",
+                marginBottom: "28px",
+                background: "#3f51b5",
+                color: "white",
+                height: "100px",
+              }}
+            >
+              <CardContent>
+                <Typography variant="h4">
+                  {current_user.fN} {current_user.lN}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  style={{
+                    paddingTop: "10px",
+                  }}
+                >
+                  Number of Cards - {num}
+                </Typography>
+              </CardContent>
+            </Card>
             <div
               style={{
                 margin: "auto",
                 width: "70%",
               }}
             >
-              <Card
-                style={{
-                  borderTop: "2px solid #3f51b5",
-                  borderRight: "5px solid #3f51b5",
-                }}
-              >
-                <Typography
-                  variant="h5"
-                  style={{ paddingLeft: "15px", paddingBottom: "5px" }}
-                  align="center"
-                >
-                  Notifications
+              <Card style={{ borderRight: "3px solid #3f51b5" }}>
+                <div style={{ background: "#3f51b5", color: "white" }}>
+                  <Typography
+                    variant="h5"
+                    style={{ paddingLeft: "15px", paddingBottom: "5px" }}
+                    align="center"
+                  >
+                    Notifications
+                  </Typography>
                   <hr />
-                </Typography>
+                </div>
                 <div
                   style={{
                     margin: "auto",
                     marginLeft: "15%",
                     overflow: "auto",
+                    height: "120px",
+                    marginTop: "15px",
                   }}
                 >
                   <NotificationList notification={notify_list} />
@@ -203,5 +246,8 @@ const mapStateToProps = (state) => {
 
 export default compose(
   connect(mapStateToProps),
-  firestoreConnect([{ collection: "user" }, { collection: "notify" }])
+  firestoreConnect([
+    { collection: "user" },
+    { collection: "notify", orderBy: ["time", "desc"] },
+  ])
 )(Dashboard);
